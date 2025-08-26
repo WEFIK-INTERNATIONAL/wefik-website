@@ -25,10 +25,10 @@ const ApplicationTable = ({ isLoading, currentItems }) => {
 			<Table className="min-w-full">
 				<TableHeader>
 					<TableRow>
-						<TableHead className="text-gray-500">JobID</TableHead>
-						<TableHead className="text-gray-500">JobTitle</TableHead>
-						<TableHead className="text-gray-500">CandidateName</TableHead>
-						<TableHead className="text-gray-500">CandidateEmail</TableHead>
+						<TableHead className="text-gray-500">Job ID</TableHead>
+						<TableHead className="text-gray-500">Job Title</TableHead>
+						<TableHead className="text-gray-500">Candidate Name</TableHead>
+						<TableHead className="text-gray-500">Candidate Email</TableHead>
 						<TableHead className="text-gray-500">Resume</TableHead>
 						<TableHead className="text-gray-500">Applied Date</TableHead>
 						<TableHead className="text-gray-500">Status</TableHead>

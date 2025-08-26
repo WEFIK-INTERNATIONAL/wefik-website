@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState,useEffect, useMemo } from "react";
 
 import ApplicationTable from "@/components/dashboard/ApplicationTable";
 import ApplicationTableHeader from "@/components/dashboard/ApplicationTableHeader";
@@ -34,7 +34,60 @@ const allApplications = [
 		status: "Accepted",
 		resume: "resume3.pdf",
 	},
-	// ... more data
+	{
+		id: 4,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
+		status: "Accepted",
+		resume: "resume3.pdf",
+	},
+	{
+		id: 5,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
+		status: "Accepted",
+		resume: "resume3.pdf",
+	},
+	{
+		id: 6,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
+		status: "Accepted",
+		resume: "resume3.pdf",
+	},
+	{
+		id: 7,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
+		status: "Accepted",
+		resume: "resume3.pdf",
+	},
+	{
+		id: 8,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
+		status: "Accepted",
+		resume: "resume3.pdf",
+	},
+	{
+		id: 9,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
+		status: "Accepted",
+		resume: "resume3.pdf",
+	},
 ];
 
 export default function ApplicationsPage() {
@@ -46,19 +99,16 @@ export default function ApplicationsPage() {
 
 	// Filtering + Sorting Logic
 	const filteredApps = useMemo(() => {
-		let result = allApplications;
+		let result = allApplications;		
 
-		// 🔍 Search
-		if (searchTerm) {
+		if (searchTerm.trim() !== "") {
 			result = result.filter(
 				(app) =>
 					app.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-					app.candidateName.toLowerCase().includes(searchTerm.toLowerCase()) ||
 					app.candidateEmail.toLowerCase().includes(searchTerm.toLowerCase())
 			);
 		}
 
-		// ↕️ Sort
 		if (sortOrder === "newest") {
 			result = [...result].sort(
 				(a, b) => new Date(b.appliedDate) - new Date(a.appliedDate)
@@ -72,7 +122,6 @@ export default function ApplicationsPage() {
 		return result;
 	}, [searchTerm, sortOrder]);
 
-	// Pagination Logic
 	const totalItems = filteredApps.length;
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
 	const indexOfLast = currentPage * itemsPerPage;
