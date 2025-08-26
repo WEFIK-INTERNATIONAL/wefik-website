@@ -10,16 +10,25 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 
-import {
-	DropdownMenu,
-	DropdownMenuContent,
-	DropdownMenuItem,
-	DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
+import ApplicationDropdown from "./ApplicationDropdown";
 
 const ApplicationTable = ({ isLoading, currentItems }) => {
+	const getStatusBadge = (status) => {
+		switch (status) {
+			case "Pending":
+				return "bg-yellow-500 text-white";
+			case "Reviewed":
+				return "bg-blue-500 text-white";
+			case "Interview-Scheduled":
+				return "bg-slate-900 text-white";
+			case "Accepted":
+				return "bg-green-500 text-white";
+			default:
+				return "bg-gray-500 text-white";
+		}
+	};
+
 	return (
 		<div className="overflow-x-auto relative">
 			<Table className="min-w-full">
@@ -71,36 +80,16 @@ const ApplicationTable = ({ isLoading, currentItems }) => {
 								<TableCell>{app.appliedDate}</TableCell>
 								<TableCell>
 									<Badge
-										className={
-											app.status === "Pending"
-												? "bg-yellow-500 text-white"
-												: app.status === "Reviewed"
-												? "bg-blue-500 text-white"
-												: "bg-green-500 text-white"
-										}
+										className={`px-2 py-1 rounded-full ${getStatusBadge(
+											app.status
+										)}`}
 									>
 										{app.status}
 									</Badge>
 								</TableCell>
 
-								{/* Sticky Action Column (only mobile & tablet) */}
 								<TableCell className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
-									<DropdownMenu>
-										<DropdownMenuTrigger className="hover:cursor-pointer">
-											<EllipsisVertical />
-										</DropdownMenuTrigger>
-										<DropdownMenuContent>
-											<DropdownMenuItem>
-												<PencilLine />
-												Edit
-											</DropdownMenuItem>
-											<DropdownMenuItem>Status</DropdownMenuItem>
-											<DropdownMenuItem className="hover:bg-red-500 text-red-600">
-												<Trash2 />
-												Delete
-											</DropdownMenuItem>
-										</DropdownMenuContent>
-									</DropdownMenu>
+									<ApplicationDropdown/>
 								</TableCell>
 							</TableRow>
 						))}

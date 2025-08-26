@@ -40,7 +40,7 @@ const allApplications = [
 		candidateName: "Charlie",
 		candidateEmail: "charlie@mail.com",
 		appliedDate: "2025-08-20",
-		status: "Accepted",
+		status: "Interview-Scheduled",
 		resume: "resume3.pdf",
 	},
 	{
@@ -85,6 +85,15 @@ const allApplications = [
 		candidateName: "Charlie",
 		candidateEmail: "charlie@mail.com",
 		appliedDate: "2025-08-20",
+		status: "Interview-Scheduled",
+		resume: "resume3.pdf",
+	},
+	{
+		id: 10,
+		title: "UI Designer",
+		candidateName: "Charlie",
+		candidateEmail: "charlie@mail.com",
+		appliedDate: "2025-08-20",
 		status: "Accepted",
 		resume: "resume3.pdf",
 	},
@@ -95,7 +104,7 @@ export default function ApplicationsPage() {
 	const [sortOrder, setSortOrder] = useState("");
 	const [currentPage, setCurrentPage] = useState(1);
 	const [isLoading, setIsLoading] = useState(false);
-	const itemsPerPage = 5;
+	const itemsPerPage = 10;
 
 	// Filtering + Sorting Logic
 	const filteredApps = useMemo(() => {
