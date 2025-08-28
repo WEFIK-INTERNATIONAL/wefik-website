@@ -16,10 +16,7 @@ const ApplicationTableHeader = ({ onSearch, onSort }) => {
 	const debouncedSearch = useDebounce(searchTerm, 1000);
 
 	useEffect(() => {
-		if (debouncedSearch) {
-			onSearch(debouncedSearch);
-			console.log("Searching for:", debouncedSearch);
-		}
+		onSearch(debouncedSearch);
 	}, [debouncedSearch]);
 
 	return (
@@ -28,7 +25,7 @@ const ApplicationTableHeader = ({ onSearch, onSort }) => {
 				<h1 className="text-xl md:text-2xl font-extrabold">
 					Application Table
 				</h1>
-				<p className="text-gray-500 text-sm md:text-base">
+				<p className="text-[#F7A5A5] text-sm md:text-base">
 					Manage all the applications
 				</p>
 			</div>
@@ -36,9 +33,9 @@ const ApplicationTableHeader = ({ onSearch, onSort }) => {
 			<div className="flex flex-col sm:flex-row gap-4 sm:gap-6 w-full md:w-auto">
 				<div className="relative flex items-center w-full sm:w-72">
 					<input
-						className="bg-gray-200/30 w-full py-2 pl-4 pr-10 rounded-md text-sm md:text-base"
+						className="bg-gray-200/30 w-full py-2 pl-4 pr-10 rounded-md text-sm md:text-sm"
 						type="text"
-						placeholder="Search..."
+						placeholder="Search by job id or email..."
 						value={searchTerm}
 						onChange={(e) => setSearchTerm(e.target.value)}
 					/>
