@@ -43,6 +43,67 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+@theme {
+  --container-center: true;
+  --container-padding: 1rem;
+  --container-padding-md: 2rem;
+  --container-padding-lg: 4rem;
+
+  --breakpoint-sm: 375px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1200px;
+}
+
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto; /* center container if --container-center is true */
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+@media (min-width: var(--breakpoint-md)) {
+  .container {
+    padding-left: var(--container-padding-md);
+    padding-right: var(--container-padding-md);
+  }
+}
+
+@media (min-width: var(--breakpoint-lg)) {
+  .container {
+    padding-left: var(--container-padding-lg);
+    padding-right: var(--container-padding-lg);
+    max-width: var(--breakpoint-lg); /* keeps container width consistent */
+  }
+}
+
+@keyframes move-left {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes move-right {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
+}
+
+@layer utilities {
+  .animate-move-left {
+    animation: move-left 30s linear infinite;
+  }
+  .animate-move-right {
+    animation: move-right 15s linear infinite;
+  }
+}
+
 :root {
   --radius: 0.625rem;
   --background: oklch(1 0 0);
@@ -119,4 +180,14 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+::selection {
+  background-color: #9ae600;
+  color: black;
+}
+
+::-moz-selection {
+  background-color: #9ae600;
+  color: black;
 }
