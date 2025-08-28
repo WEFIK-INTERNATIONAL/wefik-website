@@ -2,183 +2,255 @@
 import React from "react";
 import Link from "next/link";
 
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+import { Github, Linkedin, Globe, FileUser } from "lucide-react";
+
 const ApplicationDetails = () => {
 	const application = {
-		// Personal Details
-		name: "John Doe",
-		email: "johndoe@example.com",
-		phone: "123-456-7890",
-		address: "123 Main St, City, Country",
-		resume: "resume-john-doe.pdf",
-		links: {
-			github: "https://github.com/johndoe",
-			linkedin: "https://linkedin.com/in/johndoe",
-			portfolio: "https://johndoe.dev",
+		candidateInfo: {
+			fullName: "John Doe",
+			email: "johndoe@example.com",
+			phone: "+1 123-456-7890",
+			address: "123 Main St",
+			city: "New York",
+			state: "NY",
+			country: "USA",
+			pinCode: "10001",
 		},
 
-		// Education
-		education: [
+		resume: {
+			url: "/resumes/john-doe.pdf",
+			filename: "John-Doe-Resume.pdf",
+		},
+
+		educationInfo: [
 			{
 				degree: "B.Sc. Computer Science",
 				institution: "XYZ University",
-				year: "2022",
+				fieldOfStudy: "Computer Science",
+				startDate: "2018-08-01",
+				endDate: "2022-06-30",
+				grade: "3.8 GPA",
 			},
 			{
 				degree: "High School Diploma",
 				institution: "ABC High School",
-				year: "2018",
+				fieldOfStudy: "Science",
+				startDate: "2016-06-01",
+				endDate: "2018-05-30",
+				grade: "A+",
 			},
 		],
 
-		// Experience
-		experience: [
-			{
-				role: "Frontend Developer",
-				company: "TechCorp",
-				duration: "2022 - Present",
-				details: "Working on React and Next.js projects.",
-			},
-			{
-				role: "Intern",
-				company: "WebSolutions",
-				duration: "2021 - 2022",
-				details: "Assisted in building UI components.",
-			},
+		socialLinks: {
+			github: { url: "https://github.com/johndoe" },
+			linkedin: { url: "https://linkedin.com/in/johndoe" },
+			portfolio: { url: "https://johndoe.dev" },
+		},
+
+		skills: [
+			{ name: "React", level: "Advanced" },
+			{ name: "JavaScript", level: "Advanced" },
+			{ name: "TypeScript", level: "Intermediate" },
+			{ name: "TailwindCSS", level: "Intermediate" },
 		],
 
-		// Skills
-		skills: ["React", "JavaScript", "TypeScript", "TailwindCSS"],
-
-		// Job details
-		position: "Frontend Developer",
-		jobId: "JOB-12345",
-		employmentType: "Full-time",
-		jobType: "Remote",
-		salary: "$75,000 / year",
+		status: "Pending",
 		appliedAt: "2025-08-20",
 	};
 
+	if (!application) {
+		return <p className="text-center text-gray-500">No application found.</p>;
+	}
+
+	const {
+		candidateInfo,
+		educationInfo,
+		skills,
+		resume,
+		socialLinks,
+		status,
+		appliedAt,
+	} = application;
+
+	const links = [
+		{ name: "GitHub", url: socialLinks?.github?.url, icon: <Github /> },
+		{ name: "LinkedIn", url: socialLinks?.linkedin?.url, icon: <Linkedin /> },
+		{ name: "Portfolio", url: socialLinks?.portfolio?.url, icon: <Globe /> },
+	];
+
 	return (
-		<div className="h-96 overflow-x-scroll space-y-8 text-sm">
-			{/* Job Details */}
-			<div className="space-y-3">
-				<h2 className="text-lg font-bold border-b pb-1">Job Details</h2>
-				<div className="flex justify-between">
-					<p>
-						<span className="font-semibold">Job Title:</span>{" "}
-						{application?.position}
-					</p>
-					<p>
-						<span className="font-semibold">Job ID:</span> {application?.jobId}
-					</p>
-				</div>
-				<div className="flex justify-between">
-					<p>
-						<span className="font-semibold">Employment Type:</span>{" "}
-						{application?.employmentType}
-					</p>
-					<p>
-						<span className="font-semibold">Job Type:</span>{" "}
-						{application?.jobType}
-					</p>
-				</div>
-				<p>
-					<span className="font-semibold">Salary:</span> {application?.salary}
-				</p>
-				<p>
-					<span className="font-semibold">Applied On:</span>{" "}
-					{application?.appliedAt}
-				</p>
-			</div>
-
-			{/* Personal Details */}
-			<div className="space-y-3">
-				<h2 className="text-lg font-bold border-b pb-1">Personal Details</h2>
-				<p>
-					<span className="font-semibold">Name:</span> {application?.name}
-				</p>
-				<p>
-					<span className="font-semibold">Email:</span> {application?.email}
-				</p>
-				<p>
-					<span className="font-semibold">Phone:</span> {application?.phone}
-				</p>
-				<p>
-					<span className="font-semibold">Address:</span> {application?.address}
-				</p>
-
-				{application?.links && (
-					<div className="flex items-center gap-3">
-						<p className="font-semibold">Links:</p>
-						{application?.links?.github && (
-							<Link
-								href={application.links.github}
-								target="_blank"
-								className="text-blue-600"
-							>
-								Github
-							</Link>
-						)}
-						{application?.links?.linkedin && (
-							<Link
-								href={application.links.linkedin}
-								target="_blank"
-								className="text-blue-600"
-							>
-								LinkedIn
-							</Link>
-						)}
-						{application?.links?.portfolio && (
-							<Link
-								href={application.links.portfolio}
-								target="_blank"
-								className="text-blue-600"
-							>
-								Portfolio
-							</Link>
-						)}
+		<div className="space-y-3 overflow-y-scroll h-[78vh]">
+			{/* Candidate Info */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg font-bold">
+						Candidate Information
+					</CardTitle>
+				</CardHeader>
+				<CardContent className="grid md:grid-cols-2 md:gap-4">
+					<div>
+						<p className="font-semibold">Full Name</p>
+						<p className="text-gray-500">{candidateInfo?.fullName}</p>
 					</div>
-				)}
-
-				<Link href={application?.resume} className="text-blue-600">
-					Resume Link
-				</Link>
-			</div>
-
-			{/* Education */}
-			<div className="space-y-3">
-				<h2 className="text-lg font-bold border-b pb-1">Education</h2>
-				{application.education.map((edu, index) => (
-					<div key={index}>
-						<p className="font-semibold">{edu.degree}</p>
-						<p>
-							{edu.institution} - {edu.year}
+					<div>
+						<p className="font-semibold">Email</p>
+						<p className="text-gray-500">{candidateInfo?.email}</p>
+					</div>
+					<div>
+						<p className="font-semibold">Phone</p>
+						<p className="text-gray-500">{candidateInfo?.phone}</p>
+					</div>
+					<div>
+						<p className="font-semibold">Address</p>
+						<p className="text-gray-500">
+							{candidateInfo?.address}, {candidateInfo?.city},{" "}
+							{candidateInfo?.state}, {candidateInfo?.country} -{" "}
+							{candidateInfo?.pinCode}
 						</p>
 					</div>
-				))}
-			</div>
+				</CardContent>
+			</Card>
 
-			{/* Experience */}
-			<div className="space-y-3">
-				<h2 className="text-lg font-bold border-b pb-1">Experience</h2>
-				{application.experience.map((exp, index) => (
-					<div key={index} className="space-y-1">
-						<div className="flex justify-between">
-							<p className="font-semibold">
-								{exp.role} @ {exp.company}
-							</p>
-							<p className="text-gray-600">{exp.duration}</p>
+			{/* Resume */}
+			{resume?.url && (
+				<Card>
+					<CardHeader>
+						<CardTitle>Resume</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<Link
+							href={resume?.url}
+							target="_blank"
+							className="flex items-center gap-2 text-blue-600"
+						>
+							<FileUser/>{resume?.filename || "Download Resume"}
+						</Link>
+					</CardContent>
+				</Card>
+			)}
+
+			{/* Resume */}
+			{socialLinks && (
+				<Card>
+					<CardHeader>
+						<CardTitle>Social Links</CardTitle>
+					</CardHeader>
+					<CardContent>
+						<div className="flex gap-6">
+							{links
+								.filter((link) => link.url)
+								.map((link, idx) => (
+									<Link
+										key={idx}
+										href={link.url}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="flex items-center gap-2 text-blue-600 hover:underline"
+									>
+										{link.icon}
+										{link.name}
+									</Link>
+								))}
 						</div>
-						<p>{exp.details}</p>
-					</div>
-				))}
-			</div>
+					</CardContent>
+				</Card>
+			)}
+
+			{/* Education */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg font-bold">Education</CardTitle>
+				</CardHeader>
+				<CardContent>
+					{educationInfo && educationInfo.length > 0 ? (
+						educationInfo.map((edu, index) => (
+							<div key={index} className="mb-4">
+								<p className="font-semibold">
+									<span className="font-bold">Degree:</span> {edu?.degree}
+								</p>
+								<p>
+									<span className="font-bold">Institution:</span>{" "}
+									{edu?.institution}
+								</p>
+								<p>
+									<span className="font-bold">Field Of Study:</span>{" "}
+									{edu?.fieldOfStudy}
+								</p>
+								<p>
+									<span className="font-bold">Date: </span>
+									{edu?.startDate
+										? new Date(edu?.startDate).toLocaleDateString()
+										: "N/A"}{" "}
+									-{" "}
+									{edu?.endDate
+										? new Date(edu?.endDate).toLocaleDateString()
+										: "Present"}
+								</p>
+								<p>
+									<span className="font-bold">Grade:</span>{" "}
+									{edu?.grade || "N/A"}
+								</p>
+								{index !== educationInfo.length - 1 && (
+									<Separator className="my-2" />
+								)}
+							</div>
+						))
+					) : (
+						<p className="text-gray-500">No education info available.</p>
+					)}
+				</CardContent>
+			</Card>
 
 			{/* Skills */}
-			<div className="space-y-3">
-				<h2 className="text-lg font-bold border-b pb-1">Skills</h2>
-				<p>{application.skills.join(", ")}</p>
-			</div>
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg font-bold">Skills</CardTitle>
+				</CardHeader>
+				<CardContent className="flex flex-wrap gap-2">
+					{skills && skills.length > 0 ? (
+						skills.map((skill, index) => (
+							<Badge key={index} variant="outline">
+								{skill?.name} ({skill?.level})
+							</Badge>
+						))
+					) : (
+						<p className="text-gray-500">No skills added.</p>
+					)}
+				</CardContent>
+			</Card>
+
+			{/* Status */}
+			<Card>
+				<CardHeader>
+					<CardTitle className="text-lg font-bold">
+						Application Status
+					</CardTitle>
+				</CardHeader>
+				<CardContent>
+					<Badge
+						className={`${
+							status === "Pending"
+								? "bg-yellow-500 text-white"
+								: status === "Reviewed"
+								? "bg-blue-500 text-white"
+								: status === "Shortlisted"
+								? "bg-purple-500 text-white"
+								: status === "Rejected"
+								? "bg-red-500 text-white"
+								: "bg-green-600 text-white"
+						}`}
+					>
+						{status}
+					</Badge>
+					<p className="text-sm text-gray-500 mt-2">
+						Applied on {new Date(appliedAt).toLocaleDateString()}
+					</p>
+				</CardContent>
+			</Card>
 		</div>
 	);
 };

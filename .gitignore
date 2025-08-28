@@ -42,3 +42,10 @@ next-env.d.ts
 
 
 // temporary
+src/lib/dbConnect.js
+src/app/api
+src/models
+src/app/form
+src/app/test
+src/utils
+src/components/forms

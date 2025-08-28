@@ -27,7 +27,7 @@ const ApplicationTableHeader = ({ onSearch, onSort }) => {
 				<h1 className="text-xl md:text-2xl font-extrabold">
 					Application Table
 				</h1>
-				<p className="text-gray-500 text-sm md:text-base">
+				<p className="text-[#F7A5A5] text-sm md:text-base">
 					Manage all the applications
 				</p>
 			</div>

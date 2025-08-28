@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -97,7 +98,14 @@ export default function AdminLayout({ children }) {
 						<button className="lg:hidden" onClick={() => setSidebarOpen(true)}>
 							<Menu className="h-6 w-6 text-gray-700" />
 						</button>
-						<h2 className="text-xl font-extrabold">Admin Dashboard</h2>
+						<Image
+							src="/icons/groundhog.png"
+							alt="Ground Hog Logo"
+							width={100}
+							height={100}
+							className="w-10 h-10 md:w-12 md:h-12"
+						/>
+						<h2 className="md:text-3xl font-extrabold">Admin</h2>
 					</div>
 					<Button
 						variant="outline"

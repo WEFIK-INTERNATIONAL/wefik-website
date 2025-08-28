@@ -89,7 +89,7 @@ const ApplicationTable = ({ isLoading, currentItems }) => {
 								</TableCell>
 
 								<TableCell className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
-									<ApplicationDropdown/>
+									<ApplicationDropdown application={app} />
 								</TableCell>
 							</TableRow>
 						))}

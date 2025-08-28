@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link";
 
 import {
 	DropdownMenu,
@@ -33,6 +34,11 @@ import {
 import ApplicationDetails from "./ApplicationDetails";
 
 const ApplicationDropdown = ({ application }) => {
+	const handleOnDelete = (id) => {
+		// Implement delete logic here
+		console.log("Delete application:", id);
+	};
+
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className="hover:cursor-pointer">
@@ -73,37 +79,24 @@ const ApplicationDropdown = ({ application }) => {
 							<AlertDialogCancel className="hover:cursor-pointer">
 								Cancel
 							</AlertDialogCancel>
-							<AlertDialogAction className="hover:cursor-pointer">
+							<AlertDialogAction
+								onClick={() => handleOnDelete(application.id)}
+								className="hover:cursor-pointer"
+							>
 								Continue
 							</AlertDialogAction>
 						</AlertDialogFooter>
 					</AlertDialogContent>
 				</AlertDialog>
 
-				{/* View Details with Dialog */}
-				<Dialog>
-					<DialogTrigger asChild>
-						<DropdownMenuItem
-							onSelect={(e) => e.preventDefault()}
-							className="hover:cursor-pointer"
-						>
-							<BookOpen className="mr-2 h-4 w-4" />
-							View Details
-						</DropdownMenuItem>
-					</DialogTrigger>
-
-					<DialogContent className="max-w-lg">
-						<DialogHeader>
-							<DialogTitle className="text-2xl font-bold">Application Details</DialogTitle>
-							<DialogDescription>
-								Detailed information about this application
-							</DialogDescription>
-						</DialogHeader>
-
-						{/* ApplicationDetails component */}
-						<ApplicationDetails application={application} />
-					</DialogContent>
-				</Dialog>
+				<DropdownMenuItem
+					className="hover:cursor-pointer"
+				>
+					<Link href={`/admin/dashboard/applications/application-details`} className="flex items-center">
+						<BookOpen className="mr-2 h-4 w-4" />
+					View Details	
+					</Link>
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
