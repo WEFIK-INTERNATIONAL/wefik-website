@@ -6,7 +6,16 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CircleArrowLeft } from "lucide-react";
 
-const Page = () => {
+import { useDashboardContext } from "@/contexts";
+
+const Page = ({ params }) => {
+	const resolvedParams = React.use(params);
+	const slug = resolvedParams.slug;
+
+	const { applications } = useDashboardContext();
+
+	const application = applications.find((app) => app.id == slug);
+
 	return (
 		<div className="max-w-6xl mx-auto space-y-3 p-2">
 			{/* Back Button */}
@@ -24,7 +33,7 @@ const Page = () => {
 			</div>
 
 			{/* Application Details */}
-			<ApplicationDetails />
+			<ApplicationDetails application={application} />
 		</div>
 	);
 };

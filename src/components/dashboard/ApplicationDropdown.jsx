@@ -33,11 +33,12 @@ import {
 
 import ApplicationDetails from "./ApplicationDetails";
 
-const ApplicationDropdown = ({ application }) => {
+const ApplicationDropdown = ({ applicationID }) => {
 	const handleOnDelete = (id) => {
 		// Implement delete logic here
 		console.log("Delete application:", id);
 	};
+	
 
 	return (
 		<DropdownMenu>
@@ -80,7 +81,7 @@ const ApplicationDropdown = ({ application }) => {
 								Cancel
 							</AlertDialogCancel>
 							<AlertDialogAction
-								onClick={() => handleOnDelete(application.id)}
+								onClick={() => handleOnDelete(applicationID)}
 								className="hover:cursor-pointer"
 							>
 								Continue
@@ -92,7 +93,7 @@ const ApplicationDropdown = ({ application }) => {
 				<DropdownMenuItem
 					className="hover:cursor-pointer"
 				>
-					<Link href={`/admin/dashboard/applications/application-details`} className="flex items-center">
+					<Link href={`/admin/dashboard/applications/${applicationID}`} className="flex items-center">
 						<BookOpen className="mr-2 h-4 w-4" />
 					View Details	
 					</Link>

@@ -8,59 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import { Github, Linkedin, Globe, FileUser } from "lucide-react";
 
-const ApplicationDetails = () => {
-	const application = {
-		candidateInfo: {
-			fullName: "John Doe",
-			email: "johndoe@example.com",
-			phone: "+1 123-456-7890",
-			address: "123 Main St",
-			city: "New York",
-			state: "NY",
-			country: "USA",
-			pinCode: "10001",
-		},
-
-		resume: {
-			url: "/resumes/john-doe.pdf",
-			filename: "John-Doe-Resume.pdf",
-		},
-
-		educationInfo: [
-			{
-				degree: "B.Sc. Computer Science",
-				institution: "XYZ University",
-				fieldOfStudy: "Computer Science",
-				startDate: "2018-08-01",
-				endDate: "2022-06-30",
-				grade: "3.8 GPA",
-			},
-			{
-				degree: "High School Diploma",
-				institution: "ABC High School",
-				fieldOfStudy: "Science",
-				startDate: "2016-06-01",
-				endDate: "2018-05-30",
-				grade: "A+",
-			},
-		],
-
-		socialLinks: {
-			github: { url: "https://github.com/johndoe" },
-			linkedin: { url: "https://linkedin.com/in/johndoe" },
-			portfolio: { url: "https://johndoe.dev" },
-		},
-
-		skills: [
-			{ name: "React", level: "Advanced" },
-			{ name: "JavaScript", level: "Advanced" },
-			{ name: "TypeScript", level: "Intermediate" },
-			{ name: "TailwindCSS", level: "Intermediate" },
-		],
-
-		status: "Pending",
-		appliedAt: "2025-08-20",
-	};
+const ApplicationDetails = ({application}) => {
 
 	if (!application) {
 		return <p className="text-center text-gray-500">No application found.</p>;
