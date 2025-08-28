@@ -16,9 +16,7 @@ const ApplicationTableHeader = ({ onSearch, onSort }) => {
 	const debouncedSearch = useDebounce(searchTerm, 1000);
 
 	useEffect(() => {
-		if (debouncedSearch) {
-			onSearch(debouncedSearch);
-		}
+		onSearch(debouncedSearch);
 	}, [debouncedSearch]);
 
 	return (

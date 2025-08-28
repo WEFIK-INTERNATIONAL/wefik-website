@@ -14,16 +14,19 @@ import { Badge } from "@/components/ui/badge";
 import ApplicationDropdown from "./ApplicationDropdown";
 
 const ApplicationTable = ({ isLoading, currentItems }) => {
+	
 	const getStatusBadge = (status) => {
 		switch (status) {
 			case "Pending":
 				return "bg-yellow-500 text-white";
 			case "Reviewed":
 				return "bg-blue-500 text-white";
-			case "Interview-Scheduled":
+			case "Shortlisted":
 				return "bg-slate-900 text-white";
 			case "Accepted":
 				return "bg-green-500 text-white";
+			case "Rejected":
+				return "bg-red-500 text-white";
 			default:
 				return "bg-gray-500 text-white";
 		}
@@ -68,16 +71,16 @@ const ApplicationTable = ({ isLoading, currentItems }) => {
 					<TableBody>
 						{currentItems.map((app, index) => (
 							<TableRow key={index}>
-								<TableCell>{app.id}</TableCell>
+								<TableCell>{app.jobId}</TableCell>
 								<TableCell>{app.title}</TableCell>
-								<TableCell>{app.candidateName}</TableCell>
-								<TableCell>{app.candidateEmail}</TableCell>
+								<TableCell>{app.candidateInfo.fullName}</TableCell>
+								<TableCell>{app.candidateInfo.email}</TableCell>
 								<TableCell>
-									<Link href={`/${app.resume}`} className="text-blue-500">
+									<Link href={`/${app.resume.url}`} className="text-blue-500">
 										View Resume
 									</Link>
 								</TableCell>
-								<TableCell>{app.appliedDate}</TableCell>
+								<TableCell>{app.appliedAt}</TableCell>
 								<TableCell>
 									<Badge
 										className={`px-2 py-1 rounded-full ${getStatusBadge(
@@ -89,7 +92,7 @@ const ApplicationTable = ({ isLoading, currentItems }) => {
 								</TableCell>
 
 								<TableCell className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
-									<ApplicationDropdown application={app} />
+									<ApplicationDropdown applicationID={app.id} />
 								</TableCell>
 							</TableRow>
 						))}
