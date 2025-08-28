@@ -1,7 +1,7 @@
-export default function Home() {
+export default function Page() {
     return (
         <div className="text-white font-neue flex items-center justify-center w-screen h-screen">
-            <h1 className="text-5xl">Home Page</h1>
+            <h1 className="text-5xl">Contact Page</h1>
         </div>
     );
 }
