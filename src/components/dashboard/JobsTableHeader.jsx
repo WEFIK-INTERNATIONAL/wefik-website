@@ -27,7 +27,7 @@ const JobsTableHeader = ({ onSearch, onSort }) => {
   }, [debouncedSearch]);
 
   return (
-    <div className="flex flex-col md:flex-row md:justify-between md:items-center pr-4 md:pr-10 py-6 gap-4">
+    <div className="flex flex-col md:flex-row md:justify-between md:items-center py-6 gap-4">
       {/* Left Section */}
       <div>
         <h1 className="text-xl md:text-2xl font-extrabold">Jobs Table</h1>
@@ -66,7 +66,9 @@ const JobsTableHeader = ({ onSearch, onSort }) => {
             <SelectItem value="oldest">Oldest</SelectItem>
           </SelectContent>
         </Select>
-        <Link href="/admin/dashboard/jobs/create-job">Create a job</Link>
+        <div className="flex items-center justify-center bg-amber-500 hover:bg-amber-600 text-white px-5 h-10 rounded-md text-sm md:text-base font-medium transition-colors">
+          <Link href="/admin/dashboard/jobs/create-job">Create a job</Link>
+        </div>
       </div>
     </div>
   );

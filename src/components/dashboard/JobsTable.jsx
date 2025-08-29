@@ -29,7 +29,7 @@ const JobsTable = ({ isLoading, currentItems }) => {
           <TableRow>
             <TableHead className="text-gray-500">Job ID</TableHead>
             <TableHead className="text-gray-500">Job Title</TableHead>
-            <TableHead className="text-gray-500">Company</TableHead>
+            <TableHead className="text-gray-500">Employment type</TableHead>
             <TableHead className="text-gray-500">Location</TableHead>
             <TableHead className="text-gray-500">Posted Date</TableHead>
             <TableHead className="text-gray-500">Status</TableHead>
@@ -63,7 +63,7 @@ const JobsTable = ({ isLoading, currentItems }) => {
               <TableRow key={index}>
                 <TableCell>{job.id}</TableCell>
                 <TableCell>{job.title}</TableCell>
-                <TableCell>{job.company}</TableCell>
+                <TableCell>{job.employmentType}</TableCell>
                 <TableCell>{job.location}</TableCell>
                 <TableCell>{job.postedDate}</TableCell>
                 <TableCell>

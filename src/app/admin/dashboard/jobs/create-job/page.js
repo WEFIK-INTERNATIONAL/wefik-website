@@ -1,133 +1,180 @@
 export default function JobPostForm() {
   return (
-    <div className="h-[80vh] overflow-y-scroll ">
-      <div className="w-full max-w-5x1 bg-white shadow-xl rounded-2xl p-8">
-        {/* Title */}
-        <h2 className="text-2xl font-bold text-center mb-8">Post a Job</h2>
-
+    <div className="h-[80vh] overflow-y-scroll">
+      <div className="w-full max-w-7xl bg-white shadow-lg rounded-2xl p-8">
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">Post a Job</h2>
         <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
           {/* Company Name */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Name of Company*</label>
+            <label className="font-medium">Company Name</label>
             <input
               type="text"
               placeholder="Enter company name"
-              className="w-full border rounded-lg px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 outline-none"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+            />
+          </div>
+
+          {/* Company Website */}
+          <div className="space-y-2">
+            <label className="font-medium">Company Website / LinkedIn</label>
+            <input
+              type="url"
+              placeholder="https://example.com"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
             />
           </div>
 
           {/* Job Profile */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Job Profile*</label>
+            <label className="font-medium">Job Profile</label>
             <input
               type="text"
-              placeholder="Enter job profile"
-              className="w-full border rounded-lg px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="e.g. Software Engineer"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
             />
           </div>
 
           {/* Job Category */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Job Category</label>
-            <input
-              type="text"
-              placeholder="Web Development, Data Science, etc."
-              className="w-full border rounded-lg px-4 py-2 text-base hover:bg-gray-100 outline-none"
-            />
+            <label className="font-medium">Job Category</label>
+            <select className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+              <option>Software Development</option>
+              <option>Data Science</option>
+              <option>Marketing</option>
+              <option>Design</option>
+              <option>Other</option>
+            </select>
           </div>
 
-          {/* Stipend */}
-          <div className="space-y-2">
-            <label className="font-medium text-base">Stipend</label>
-            <div className="flex gap-4 mt-1">
-              <label className="flex items-center gap-2 text-sm">
-                <input type="radio" name="stipend" value="paid" defaultChecked />
+          {/* Compensation Type */}
+          <div className="space-y-2 md:col-span-2">
+            <label className="font-medium">Stipend</label>
+            <div className="flex gap-6">
+              <label className="flex items-center gap-2">
+                <input type="radio" name="compensation" value="paid" />
                 Paid
               </label>
-              <label className="flex items-center gap-2 text-sm">
-                <input type="radio" name="stipend" value="unpaid" />
+              <label className="flex items-center gap-2">
+                <input type="radio" name="compensation" value="unpaid" />
                 Unpaid
               </label>
             </div>
           </div>
 
+          {/* Salary */}
+          <div className="space-y-2">
+            <label className="font-medium">Salary / Stipend (if Paid)</label>
+            <input
+              type="text"
+              placeholder="e.g. ₹10,000 per month or 5–7 LPA"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+            />
+          </div>
+
           {/* Job Type */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Job Type</label>
-            <div className="flex flex-wrap gap-4 mt-1 text-sm">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Internship
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Full Time
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Include All
-              </label>
-            </div>
+            <label className="font-medium">Job Type</label>
+            <select className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+              <option>Internship</option>
+              <option>Full-time</option>
+              <option>Part-time</option>
+            </select>
           </div>
 
           {/* Experience Level */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Experience Level</label>
-            <div className="flex flex-wrap gap-4 mt-1 text-sm">
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                Freshers
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                1-2 years
-              </label>
-              <label className="flex items-center gap-2">
-                <input type="checkbox" />
-                3-5 years
-              </label>
-            </div>
+            <label className="font-medium">Experience Level</label>
+            <select className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+              <option>0–1 years</option>
+              <option>1–3 years</option>
+              <option>3–5 years</option>
+              <option>5+ years</option>
+            </select>
           </div>
 
           {/* Location */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Location</label>
+            <label className="font-medium">Location</label>
+            <select className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+              <option>On-site</option>
+              <option>Remote</option>
+              <option>Hybrid</option>
+            </select>
+          </div>
+
+          {/* Application Deadline */}
+          <div className="space-y-2">
+            <label className="font-medium">Application Deadline</label>
             <input
-              type="text"
-              placeholder="Enter job location"
-              className="w-full border rounded-lg px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 outline-none"
+              type="date"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
             />
           </div>
 
-          {/* Salary */}
+          {/* Number of Openings */}
           <div className="space-y-2">
-            <label className="font-medium text-base">Salary</label>
+            <label className="font-medium">Number of Openings</label>
+            <input
+              type="number"
+              min="1"
+              placeholder="e.g. 3"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+            />
+          </div>
+
+          {/* Required Skills */}
+          <div className="md:col-span-2 space-y-2">
+            <label className="font-medium">Required Skills</label>
             <input
               type="text"
-              placeholder="Enter salary (e.g. 5 LPA)"
-              className="w-full border rounded-lg px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 outline-none"
+              placeholder="e.g. React, Node.js, SQL"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+            />
+          </div>
+
+          {/* Education */}
+          <div className="space-y-2">
+            <label className="font-medium">Education Qualification</label>
+            <select className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none">
+              <option>Any Graduate</option>
+              <option>B.Tech / BE</option>
+              <option>MBA</option>
+              <option>MCA</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          {/* Apply Link */}
+          <div className="md:col-span-2 space-y-2">
+            <label className="font-medium">Contact Email</label>
+            <input
+              type="text"
+              placeholder="Enter application link or email"
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
             />
           </div>
 
           {/* Job Description */}
-          <div className="space-y-2 col-span-1 md:col-span-2">
-            <label className="font-medium text-base">Job Description</label>
+          <div className="md:col-span-2 space-y-2">
+            <label className="font-medium">Job Description</label>
             <textarea
               rows="4"
-              placeholder="Enter job description"
-              className="w-full border rounded-lg px-4 py-2 text-base focus:ring-2 focus:ring-blue-500 outline-none"
-            ></textarea>
+              placeholder="Describe the role, responsibilities, and expectations..."
+              className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-amber-500 outline-none"
+            />
           </div>
 
-          {/* Submit Button (Full Row) */}
-          <div className="md:col-span-2 flex justify-center">
+          {/* Submit Button */}
+          <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
-              className="bg-orange-400 hover:bg-orange-500 text-white px-6 py-2 rounded-lg font-semibold"
+              className="bg-amber-600 text-white px-6 py-2 rounded-lg hover:bg-amber-700 transition"
             >
-              Post Job →
+              Post Job
             </button>
           </div>
+
         </form>
       </div>
     </div>
