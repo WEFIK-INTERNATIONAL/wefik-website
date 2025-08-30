@@ -3,6 +3,8 @@ import { ppNeueMontreal } from "./fonts";
 import "./globals.css";
 import AppLayoutClient from "@/components/common/AppLayoutClient";
 
+import { Toaster } from "@/components/ui/sonner"
+
 export const metadata = {
     title: "Wefik - Real Life Genie Of Your Ideas",
     description:
