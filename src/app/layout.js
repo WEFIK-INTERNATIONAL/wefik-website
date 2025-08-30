@@ -21,7 +21,10 @@ export default function RootLayout({ children }) {
         <html lang="en" className={`${ppNeueMontreal.variable}`}>
             <body className="antialiased bg-black">
                 <BackgroundNoise />
-                <AppLayoutClient>{children}</AppLayoutClient>
+                <AppLayoutClient>
+                    {children}
+                    <Toaster position="top-right" richColors />
+                </AppLayoutClient>
             </body>
         </html>
     );
