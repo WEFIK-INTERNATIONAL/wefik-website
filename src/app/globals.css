@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+body {
+    overflow-x: hidden;
+}
+
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
@@ -95,12 +99,28 @@
     }
 }
 
+@keyframes blob {
+    0%,
+    100% {
+        transform: translate(0, 0) scale(1);
+    }
+    50% {
+        transform: translate(100px, -20px) scale(1.1);
+    }
+}
+
 @layer utilities {
     .animate-move-left {
         animation: move-left 30s linear infinite;
     }
     .animate-move-right {
         animation: move-right 15s linear infinite;
+    }
+    .animate-blob {
+        animation: blob 8s infinite;
+    }
+    .animation-delay-2000 {
+        animation-delay: 2s;
     }
 }
 
