@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { LogOut } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import { DashboardProvider } from "@/contexts/DashboardContext";
 import DashboardLinks from "@/components/dashboard/DashboardLinks";
-import { Button } from "@/components/ui/button";
+
+import { LogOut } from "lucide-react";
 
 import { ThemeProvider } from "next-themes";
 import ThemeToggle from "@/components/ThemeToggle";

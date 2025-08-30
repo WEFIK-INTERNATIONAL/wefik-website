@@ -9,12 +9,12 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-
 import { Badge } from "@/components/ui/badge";
-import ApplicationDropdown from "./ApplicationDropdown";
-import { formatDate } from "@/utils/formatDate";
 
 import Loader from "../Loader";
+import ApplicationDropdown from "./ApplicationDropdown";
+
+import { formatDate } from "@/utils/formatDate";
 
 const ApplicationTable = ({ isLoading, currentItems }) => {
     const [showEmpty, setShowEmpty] = useState(false);
@@ -115,9 +115,7 @@ const ApplicationTable = ({ isLoading, currentItems }) => {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
-                                    <ApplicationDropdown
-                                        id={app._id}
-                                    />
+                                    <ApplicationDropdown id={app._id} />
                                 </TableCell>
                             </TableRow>
                         ))

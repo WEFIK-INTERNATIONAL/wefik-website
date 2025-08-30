@@ -44,9 +44,7 @@ next-env.d.ts
 // temporary
 src/services
 src/app/api/job
-
 src/models/job.js
 src/app/form
 src/app/test
-src/utils
 src/components/forms

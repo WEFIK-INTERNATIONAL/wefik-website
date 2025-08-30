@@ -1,5 +1,6 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+
 import {
     Dialog,
     DialogTrigger,
@@ -13,12 +14,27 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-import applicationService from "@/services/ApplicationServices";
 import { useDashboardContext } from "@/contexts";
+import applicationService from "@/services/ApplicationServices";
 
-const EditStatus = ({ id }) => {
+const EditStatus = ({ id, currentStatus = "Pending" }) => {
     const { updateItem } = useDashboardContext();
-    const [selectedStatus, setSelectedStatus] = useState("Pending");
+    const [selectedStatus, setSelectedStatus] = useState(currentStatus);
+    const [open, setOpen] = useState(false);
+
+    useEffect(() => {
+        if (open) {
+            setSelectedStatus(currentStatus);
+        }
+    }, [open, currentStatus]);
+
+    const statuses = [
+        "Pending",
+        "Reviewed",
+        "Shortlisted",
+        "Accepted",
+        "Rejected",
+    ];
 
     const getStatusBadge = (status) => {
         switch (status) {
@@ -36,25 +52,21 @@ const EditStatus = ({ id }) => {
                 return "bg-gray-500 text-white";
         }
     };
-    const statuses = [
-        "Pending",
-        "Reviewed",
-        "Shortlisted",
-        "Accepted",
-        "Rejected",
-    ];
 
-    const updateStatus = () => {
-        updateItem(id, { status: selectedStatus }, () =>
+    const updateStatus = async () => {
+        await updateItem(id, { status: selectedStatus }, () =>
             applicationService.updateApplication(id, { status: selectedStatus })
         );
+        setOpen(false);
     };
 
     return (
-        <Dialog>
-            <DialogTrigger>Edit Status</DialogTrigger>
+        <Dialog open={open} onOpenChange={setOpen}>
+            <DialogTrigger asChild>
+                <Button variant="outline">Edit Status</Button>
+            </DialogTrigger>
 
-            <DialogContent>
+            <DialogContent className="sm:max-w-md">
                 <DialogHeader>
                     <DialogTitle>Edit Status</DialogTitle>
                 </DialogHeader>
@@ -69,9 +81,12 @@ const EditStatus = ({ id }) => {
                             <RadioGroupItem
                                 value={status}
                                 id={`status-${idx}`}
+                                className="hover:cursor-pointer"
                             />
                             <Badge
-                                className={`px-4 rounded-full ${getStatusBadge(status)}`}
+                                className={`px-4 rounded-full cursor-pointer ${getStatusBadge(
+                                    status
+                                )}`}
                             >
                                 {status}
                             </Badge>
@@ -83,12 +98,7 @@ const EditStatus = ({ id }) => {
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button
-                        type="button"
-                        onClick={() => {
-                            updateStatus();
-                        }}
-                    >
+                    <Button type="button" onClick={updateStatus}>
                         Save changes
                     </Button>
                 </DialogFooter>
