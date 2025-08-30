@@ -24,10 +24,15 @@ import {
 } from "@/components/ui/alert-dialog";
 import EditStatus from "./EditStatus";
 
+import { useDashboardContext } from "@/contexts";
+
+import applicationService from "@/services/ApplicationServices";
+
 const ApplicationDropdown = ({ id }) => {
-    const handleOnDelete = (id) => {
-        // Implement delete logic here
-        console.log("Delete application:", id);
+    const { deleteItem } = useDashboardContext();
+    
+    const handleOnDelete = async (id) => {
+        await deleteItem(id, () => applicationService.deleteApplication(id));
     };
 
     return (
@@ -46,7 +51,7 @@ const ApplicationDropdown = ({ id }) => {
                     onSelect={(e) => e.preventDefault()}
                 >
                     <PencilLine className="mr-2 h-4 w-4" />
-                    <EditStatus id={id}/>
+                    <EditStatus id={id} />
                 </DropdownMenuItem>
 
                 {/* Delete with AlertDialog */}
@@ -72,7 +77,12 @@ const ApplicationDropdown = ({ id }) => {
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel className="hover:cursor-pointer">
+                            <AlertDialogCancel
+                                className="hover:cursor-pointer"
+                                onClick={() => {
+                                    handleOnDelete();
+                                }}
+                            >
                                 Cancel
                             </AlertDialogCancel>
                             <AlertDialogAction

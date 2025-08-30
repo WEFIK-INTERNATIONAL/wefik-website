@@ -8,6 +8,7 @@ import {
 } from "react";
 import { toast } from "sonner";
 import API from "@/lib/axiosConfig";
+import applicationService from "@/services/ApplicationServices";
 
 const DashboardContext = createContext(null);
 
@@ -22,10 +23,8 @@ export const DashboardProvider = ({ children }) => {
     useEffect(() => {
         const fetchApplications = async () => {
             try {
-                const response = await API.get("/application");
-                console.log(response);
-                
-                setApplications(response.data?.data ?? []);
+                const response = await applicationService.getApplications();
+                setApplications(response?.data ?? []);
             } catch (error) {
                 console.error("❌ Failed to fetch applications:", error);
                 toast.error("Failed to load applications.");
