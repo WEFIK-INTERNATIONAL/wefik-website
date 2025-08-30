@@ -14,7 +14,7 @@ const Page = ({ params }) => {
 
 	const { applications } = useDashboardContext();
 
-	const application = applications.find((app) => app.id == slug);
+	const application = applications.find((app) => app._id == slug);
 
 	return (
 		<div className="max-w-6xl mx-auto space-y-3 p-2">

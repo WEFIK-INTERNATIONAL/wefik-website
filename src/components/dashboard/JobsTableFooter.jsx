@@ -20,7 +20,7 @@ const JobsTableFooter = ({
   indexOfLast,
 }) => {
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center pr-10 py-8">
       {/* Left side - Showing info */}
       <div>
         {isLoading ? (

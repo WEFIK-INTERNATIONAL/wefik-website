@@ -68,7 +68,7 @@ export default function JobsPage() {
   const currentItems = filteredJobs.slice(indexOfFirst, indexOfLast);
 
   return (
-    <div>
+    <div className="">
       <JobsTableHeader onSearch={setSearchTerm} onSort={setSortOrder} />
       <JobsTable isLoading={isLoading} currentItems={currentItems} />
       <JobsTableFooter

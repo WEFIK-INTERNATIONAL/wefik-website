@@ -42,11 +42,8 @@ next-env.d.ts
 
 
 // temporary
-src/lib/dbConnect.js
-src/lib/axiosConfig.js
-src/app/api
-src/models
+src/app/api/job
+src/models/job.js
 src/app/form
 src/app/test
-src/utils
 src/components/forms
