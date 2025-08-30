@@ -30,7 +30,7 @@ export default function JobsPage() {
   const [sortOrder, setSortOrder] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
 
   // 🔍 Filtering + Sorting
   const filteredJobs = useMemo(() => {
@@ -66,7 +66,7 @@ export default function JobsPage() {
   const currentItems = filteredJobs.slice(indexOfFirst, indexOfLast);
 
   return (
-    <div className="p-4">
+    <div className="">
       <JobsTableHeader onSearch={setSearchTerm} onSort={setSortOrder} />
       <JobsTable isLoading={isLoading} currentItems={currentItems} />
       <JobsTableFooter

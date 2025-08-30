@@ -19,7 +19,7 @@ const ApllicationTableFooter = ({
 	indexOfLast,
 }) => {
 	return (
-		<div className="flex justify-between items-center pr-10 py-8">
+		<div className="flex justify-between items-center py-6">
 			<div>
 				{
 					isLoading ? (

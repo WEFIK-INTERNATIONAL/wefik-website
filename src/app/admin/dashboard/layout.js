@@ -1,134 +1,63 @@
 "use client";
 import React, { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import Image from "next/image";
-
-import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-	Home,
-	Briefcase,
-	Users,
-	Settings,
-	LogOut,
-	Menu,
-	X,
-} from "lucide-react";
+import Link from "next/link";
+import { LogOut } from "lucide-react";
 
 import { DashboardProvider } from "@/contexts/DashboardContext";
+import DashboardLinks from "@/components/dashboard/DashboardLinks";
+import { Button } from "@/components/ui/button";
 
-const navItems = [
-	{ name: "Dashboard", href: "/admin/dashboard", icon: Home },
-	{ name: "Jobs Management", href: "/admin/dashboard/jobs", icon: Briefcase },
-	{
-		name: "Application Management",
-		href: "/admin/dashboard/applications",
-		icon: Users,
-	},
-	{ name: "Settings", href: "/admin/settings", icon: Settings },
-];
+import { ThemeProvider } from "next-themes";
+import ThemeToggle from "@/components/ThemeToggle";
 
-export default function AdminLayout({ children }) {
-	const pathname = usePathname();
-	const [sidebarOpen, setSidebarOpen] = useState(false);
-	return (
-		<DashboardProvider>
-			<div className="flex min-h-screen bg-gray-100">
-				<aside
-					className={`fixed inset-y-0 left-0 z-50 w-72 bg-white shadow-lg transition-transform duration-300 flex flex-col justify-between lg:static lg:translate-x-0 ${
-						sidebarOpen ? "translate-x-0" : "-translate-x-full"
-					}`}
-				>
-					<div>
-						<div className="border-b p-4 flex justify-between items-center">
-							<h1 className="text-2xl font-bold text-gray-800">Wefik</h1>
-							{/* Close button on mobile */}
-							<button
-								className="lg:hidden"
-								onClick={() => setSidebarOpen(false)}
-							>
-								<X className="h-6 w-6 text-gray-700" />
-							</button>
-						</div>
-						<nav className="space-y-2 mt-6 px-2">
-							{navItems.map((item) => {
-								const isActive = pathname === item.href;
-								const Icon = item.icon;
+const Layout = ({ children }) => {
+    const [sidebarOpen, setSidebarOpen] = useState(false);
 
-								return (
-									<Link
-										key={item.name}
-										href={item.href}
-										className={`flex items-center font-bold gap-3 px-4 py-2 rounded-lg transition-colors ${
-											isActive
-												? "bg-blue-100 text-blue-600 font-bold"
-												: "text-gray-700 hover:bg-gray-100"
-										}`}
-									>
-										<Icon
-											className={`h-5 w-5 ${isActive ? "text-blue-600" : ""}`}
-										/>
-										{item.name}
-									</Link>
-								);
-							})}
-						</nav>
-					</div>
-					<div className="py-8 px-5 flex items-center justify-between">
-						<div className="flex items-center space-x-3">
-							<Avatar>
-								<AvatarImage src="https://github.com/shadcn.png" />
-								<AvatarFallback>CN</AvatarFallback>
-							</Avatar>
-							<div>
-								<p className="font-medium">John Doe</p>
-								<p className="text-sm text-gray-500">Admin</p>
-							</div>
-						</div>
-					</div>
-				</aside>
+    return (
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <DashboardProvider>
+                <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+                    <aside className="hidden md:block border-r">
+                        <div className="flex flex-col max-h-screen h-full gap-2">
+                            <div className="h-18 flex items-center border-b px-4">
+                                <h1 className="text-2xl font-extrabold">WEFIK</h1>
+                            </div>
+                            <DashboardLinks />
+                        </div>
+                    </aside>
 
-				{/* Overlay for mobile */}
-				{sidebarOpen && (
-					<div
-						className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-						onClick={() => setSidebarOpen(false)}
-					/>
-				)}
+                    <div className="flex flex-col">
+                        <header className="h-18 mb-2 px-4 flex items-center justify-between border-b">
+                            <div className="flex items-center justify-center gap-3">
+                                <Image
+                                    src="/icons/groundhog.png"
+                                    alt="Wefik Logo"
+                                    width={50}
+                                    height={50}
+                                    className="object-contain h-10 w-10"
+                                />
+                                <h1 className="text-2xl font-semibold">
+                                    Admin
+                                </h1>
+                            </div>
+                            <div className="flex items-center justify-center gap-3">
+                                <ThemeToggle />
+                                <Button
+                                    variant="outline"
+                                    className="text-white bg-red-500/80 hover:text-white hover:bg-red-500/90 dark:text-red-500 hover:cursor-pointer"
+                                >
+                                    Logout
+                                    <LogOut className="ml-2 h-4 w-4" />
+                                </Button>
+                            </div>
+                        </header>
+                        <div className="px-6 py-4">{children}</div>
+                    </div>
+                </div>
+            </DashboardProvider>
+        </ThemeProvider>
+    );
+};
 
-				<main className="flex-1 p-1 max-h-screen overflow-y-hidden">
-					<header className="h-16 flex justify-between items-center bg-white p-4 shadow mb-1 rounded-md">
-						<div className="flex items-center gap-3">
-							{/* Hamburger button for mobile */}
-							<button
-								className="lg:hidden"
-								onClick={() => setSidebarOpen(true)}
-							>
-								<Menu className="h-6 w-6 text-gray-700" />
-							</button>
-							<Image
-								src="/icons/groundhog.png"
-								alt="Ground Hog Logo"
-								width={100}
-								height={100}
-								className="w-10 h-10 md:w-12 md:h-12"
-							/>
-							<h2 className="md:text-3xl font-extrabold">Admin</h2>
-						</div>
-						<Button
-							variant="outline"
-							className="text-white bg-red-500/80 hover:text-white hover:bg-red-500/90"
-						>
-							Logout
-							<LogOut className="ml-2 h-4 w-4" />
-						</Button>
-					</header>
-					<div className="bg-white p-4 rounded-md shadow h-[calc(100vh-100px+22px)]">
-						{children}
-					</div>
-				</main>
-			</div>
-		</DashboardProvider>
-	);
-}
+export default Layout;

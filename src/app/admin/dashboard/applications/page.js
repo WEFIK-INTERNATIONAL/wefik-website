@@ -8,7 +8,7 @@ import ApllicationTableFooter from "@/components/dashboard/ApllicationTableFoote
 import { useDashboardContext } from "@/contexts";
 
 export default function ApplicationsPage() {
-	const { loading, applications } = useDashboardContext();
+	const { isLoading, applications } = useDashboardContext();
 
 	const [searchTerm, setSearchTerm] = useState("");
 	const [sortOrder, setSortOrder] = useState("");
@@ -26,7 +26,7 @@ export default function ApplicationsPage() {
 			result = result.filter(
 				(app) =>
 					app.jobId.toString().includes(term) ||
-					app.title.toLowerCase().includes(term) ||
+					app.jobTitle.toLowerCase().includes(term) ||
 					app.candidateInfo.fullName.toLowerCase().includes(term) ||
 					app.candidateInfo.email.toLowerCase().includes(term)
 			);
@@ -52,14 +52,14 @@ export default function ApplicationsPage() {
 	return (
 		<div>
 			<ApplicationTableHeader onSearch={setSearchTerm} onSort={setSortOrder} />
-			<ApplicationTable isLoading={loading} currentItems={currentItems} />
+			<ApplicationTable isLoading={isLoading} currentItems={currentItems} />
 			<ApllicationTableFooter
-				isLoading={loading}
+				isLoading={isLoading}
 				currentPage={currentPage}
 				setCurrentPage={setCurrentPage}
 				totalPages={totalPages}
 				totalItems={totalItems}
-				indexOfFirst={indexOfFirst + 1}
+				indexOfFirst={indexOfFirst}
 				indexOfLast={Math.min(indexOfLast, totalItems)}
 			/>
 		</div>
