@@ -4,7 +4,7 @@ import { useScroll, useTransform } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import Tag from "@/components/ui/Tag";
 
-const text = `At WEFIK, we help ambitious businesses scale with bold, minimal, and modern digital solutions — from strategy and UX to high-performing websites, apps, and campaigns . Your ideas deserve more than presence; they deserve to lead and grow.`;
+const text = `Our digital agency creates impact for brands. In the disciplines Websites, social media, content marketing, campaigning and branding. Between timeless and zeitgeist. When we communicate: Effectively. Quick witted. Ambitious`;
 
 const words = text.split(" ");
 
@@ -24,24 +24,17 @@ function Introduction() {
         });
     }, [wordIndex]);
     return (
-        <section className="text-white relative">
-            <div className="absolute inset-0 bg-gradient-to-bl from-gray-900 via-black to-transparent"></div>
-            <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-pink-500/10 rounded-full filter blur-3xl animate-pulse"></div>
-            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-lime-400/10 rounded-full filter blur-3xl animate-pulse animation-delay-2000"></div>
-            <div
-                className="absolute inset-0 opacity-5"
-                style={{
-                    backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.1) 1px, transparent 0)`,
-                    backgroundSize: "50px 50px",
-                }}
-            ></div>
+        <section className="text-white relative bg-black w-full overflow-x-clip">
+            <div className="absolute inset-0 bg-gradient-to-bl from-gray-900 via-black to-transparent overflow-x-hidden"></div>
+            <div className="absolute top-1/4 left-1/4 w-[300px] h-[300px] bg-pink-500/10 rounded-full filter blur-3xl animate-pulse overflow-x-hidden"></div>
+            <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-lime-400/10 rounded-full filter blur-3xl animate-pulse animation-delay-2000 overflow-x-hidden"></div>
             <div className="container pt-24">
-                <div className="sticky top-20 md:top-28 lg:top-40">
+                <div className="sticky top-28 md:top-28 lg:top-40">
                     <div className="flex justify-center">
-                        <Tag>Introducing Wefik</Tag>
+                        <Tag>This is Wefik</Tag>
                     </div>
-                    <div className="text-4xl md:text-6xl lg:text-7xl text-center font-medium mt-10">
-                        <span>Your digital presence deserves better.</span>{" "}
+                    <div className="text-center text-3xl lg:text-6xl mt-10 max-w-7xl mx-auto">
+                        <span>Culture-driven, creative and competitive.</span>{" "}
                         <span>
                             {words.map((word, wordIndex) => (
                                 <span
@@ -54,7 +47,7 @@ function Introduction() {
                             ))}
                         </span>
                         <span className="bg-clip-text text-transparent bg-gradient-to-r from-lime-400 to-pink-500 block">
-                            That&apos;s why we built WEFIK.
+                            This is Wefik for you.
                         </span>
                     </div>
                 </div>
