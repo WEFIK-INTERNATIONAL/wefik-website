@@ -10,7 +10,7 @@ export default function AppLayoutClient({ children }) {
     return (
         <>
             <LenisProvider>
-                <NavBar contentRef={contentRef} />
+                {/* <NavBar contentRef={contentRef} /> */}
                 <div ref={contentRef} data-scroll-container>
                     {children}
                 </div>
