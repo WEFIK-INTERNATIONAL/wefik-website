@@ -1,25 +1,39 @@
 "use client";
 import { useState } from "react";
 
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-import { toast } from "sonner";
+import API from "@/lib/axiosConfig";
 
 export default function LoginPage() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [formData, setFormData] = useState({
+        username: "",
+        password: "",
+    });
     const [isLoading, setIsLoading] = useState(false);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({ ...prev, [name]: value }));
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
-        try {            
-            toast.success("Login successful.");
+        setIsLoading(true);
+        try {
+            const res = await API.post("/login", formData);
+            console.log(res);
+
+            toast.success("Login successful ✅");
         } catch (error) {
             console.error(error);
             toast.error(
                 error.response?.data?.message ||
                     "Login failed. Please try again ❌"
             );
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -32,20 +46,22 @@ export default function LoginPage() {
 
             <div className="flex flex-col gap-4">
                 <input
-                    type="username"
+                    type="text"
+                    name="username"
                     placeholder="Username"
                     className="w-full p-2 rounded-md bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#9AE600]"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={formData.username}
+                    onChange={handleChange}
                     required
                 />
 
                 <input
                     type="password"
+                    name="password"
                     placeholder="Password"
                     className="w-full p-2 rounded-md bg-white/10 border border-white/30 text-white placeholder-gray-300 focus:outline-none focus:ring-1 focus:ring-[#9AE600]"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={formData.password}
+                    onChange={handleChange}
                     required
                 />
             </div>
