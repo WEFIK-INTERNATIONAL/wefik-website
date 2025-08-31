@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import NavBar from "./navbar/NavBar";
 import LenisProvider from "./LenisProvider";
 import BackgroundNoise from "@/components/common/BackgroundNoise";
+import Footer from "./Footer";
 
 export default function AppLayoutClient({ children }) {
     const contentRef = useRef(null);
@@ -21,6 +22,7 @@ export default function AppLayoutClient({ children }) {
                 <div ref={contentRef} data-scroll-container>
                     {children}
                 </div>
+                <Footer />
             </LenisProvider>
         </div>
     );
