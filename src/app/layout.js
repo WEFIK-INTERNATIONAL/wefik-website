@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" className={`${ppNeueMontreal.variable}`}>
             <body className="antialiased">
-                <BackgroundNoise />
+                {/* <BackgroundNoise /> */}
                 {/* <AppLayoutClient> */}
                     {children}
                     <Toaster position="top-right" richColors />
