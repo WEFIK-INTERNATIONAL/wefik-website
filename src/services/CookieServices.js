@@ -69,7 +69,7 @@ class CookieService {
         });
     }
 
-    verifyAccessToken(token) {
+    verifyAccessToken(token) {        
         return jwt.verify(token, this.ACCESS_SECRET);
     }
 

@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -7,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import API from "@/lib/axiosConfig";
 
 export default function LoginPage() {
+    const router = useRouter();
     const [formData, setFormData] = useState({
         username: "",
         password: "",
@@ -23,9 +25,8 @@ export default function LoginPage() {
         setIsLoading(true);
         try {
             const res = await API.post("/login", formData);
-            console.log(res);
-
             toast.success("Login successful ✅");
+            router.push("/admin/dashboard");
         } catch (error) {
             console.error(error);
             toast.error(
