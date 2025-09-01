@@ -9,6 +9,7 @@ import {
 import { toast } from "sonner";
 import API from "@/lib/axiosConfig";
 import applicationService from "@/services/ApplicationServices";
+import jobServices from "@/services/JobServices";
 
 const DashboardContext = createContext(null);
 
@@ -32,15 +33,43 @@ export const DashboardProvider = ({ children }) => {
                 setIsLoading(false);
             }
         };
-
+        fetchjobs();
         fetchApplications();
     }, []);
+    const fetchjobs = async () => {
+        try {
+            const response = await jobServices.getJobs();
+            setJobs(response?.data ?? []);
+        } catch (error) {
+            console.error("❌ Failed to fetch Job:", error);
+            toast.error("Failed to load job.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
 
     /** -----------------------------
      *  Optimistic Update Handler
      * ----------------------------- */
     const updateItem = useCallback(async (id, newData, serviceCall) => {
         setApplications((prev) =>
+            prev.map((item) =>
+                item._id === id ? { ...item, ...newData } : item
+            )
+        );
+
+        try {
+            await serviceCall();
+            toast.success("✅ Update successful!");
+        } catch (error) {
+            console.error("❌ Update failed:", error);
+            setApplications((prev) => prev);
+            toast.error("Update failed. Rolled back.");
+        }
+    }, []);
+
+    const updateJob = useCallback(async (id, newData, serviceCall) => {
+        setJobs((prev) =>
             prev.map((item) =>
                 item._id === id ? { ...item, ...newData } : item
             )
@@ -85,6 +114,7 @@ export const DashboardProvider = ({ children }) => {
         applications,
         setJobs,
         setApplications,
+        updateJob,
         updateItem,
         deleteItem,
     };

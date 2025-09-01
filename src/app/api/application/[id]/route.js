@@ -7,9 +7,9 @@ export async function PATCH(req, { params }) {
     try {
         await dbConnect();
         const body = await req.json();
-
+        const {id} =  await params;
         const application = await Application.findByIdAndUpdate(
-            params.id,
+            id,
             { status: body.status },
             { new: true }
         );

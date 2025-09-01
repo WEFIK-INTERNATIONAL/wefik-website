@@ -16,7 +16,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
+import JobsDropdown from "./JobsDropdown";
 import { Badge } from "@/components/ui/badge";
 import { EllipsisVertical, PencilLine, Trash2 } from "lucide-react";
 
@@ -82,22 +82,7 @@ const JobsTable = ({ isLoading, currentItems }) => {
 
                 {/* Sticky Action Column */}
                 <TableCell className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger className="hover:cursor-pointer">
-                      <EllipsisVertical />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent>
-                      <DropdownMenuItem>
-                        <PencilLine />
-                        Edit
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>Status</DropdownMenuItem>
-                      <DropdownMenuItem className="hover:bg-red-500 text-red-600">
-                        <Trash2 />
-                        Delete
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                 <JobsDropdown id={job._id} />
                 </TableCell>
               </TableRow>
             ))}
