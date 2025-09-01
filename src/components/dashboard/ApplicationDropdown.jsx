@@ -10,7 +10,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import { EllipsisVertical, PencilLine, Trash2, BookOpen } from "lucide-react";
 import {
     AlertDialog,
     AlertDialogTrigger,
@@ -22,10 +21,10 @@ import {
     AlertDialogCancel,
     AlertDialogAction,
 } from "@/components/ui/alert-dialog";
+import { EllipsisVertical, PencilLine, Trash2, BookOpen } from "lucide-react";
+
 import EditStatus from "./EditStatus";
-
 import { useDashboardContext } from "@/contexts";
-
 import applicationService from "@/services/ApplicationServices";
 
 const ApplicationDropdown = ({ id }) => {
@@ -41,7 +40,7 @@ const ApplicationDropdown = ({ id }) => {
                 <EllipsisVertical />
             </DropdownMenuTrigger>
 
-            <DropdownMenuContent className="mr-6">
+            <DropdownMenuContent className="mr-6 px-4 py-2">
                 <DropdownMenuLabel>Application Action</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
@@ -59,7 +58,7 @@ const ApplicationDropdown = ({ id }) => {
                     <AlertDialogTrigger asChild>
                         <DropdownMenuItem
                             onSelect={(e) => e.preventDefault()}
-                            className="text-red-600 hover:bg-red-100 focus:bg-red-100 cursor-pointer"
+                            className="text-red-600 cursor-pointer focus:text-red-600"
                         >
                             <Trash2 className="mr-2 h-4 w-4 text-red-600" />
                             Delete
@@ -71,7 +70,7 @@ const ApplicationDropdown = ({ id }) => {
                             <AlertDialogTitle>
                                 Are you absolutely sure?
                             </AlertDialogTitle>
-                            <AlertDialogDescription>
+                            <AlertDialogDescription className="text-red-300">
                                 This action cannot be undone. This will
                                 permanently delete this application.
                             </AlertDialogDescription>
@@ -79,9 +78,6 @@ const ApplicationDropdown = ({ id }) => {
                         <AlertDialogFooter>
                             <AlertDialogCancel
                                 className="hover:cursor-pointer"
-                                onClick={() => {
-                                    handleOnDelete();
-                                }}
                             >
                                 Cancel
                             </AlertDialogCancel>

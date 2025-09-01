@@ -1,4 +1,5 @@
 import jwt from "jsonwebtoken";
+import { jwtVerify } from "jose";
 
 class CookieService {
     constructor() {
@@ -69,12 +70,19 @@ class CookieService {
         });
     }
 
-    verifyAccessToken(token) {        
+    verifyAccessToken(token) {
         return jwt.verify(token, this.ACCESS_SECRET);
     }
 
     verifyRefreshToken(token) {
         return jwt.verify(token, this.REFRESH_SECRET);
+    }
+
+    // ✅ Edge-safe version for middleware
+    async verifyAccessTokenEdge(token) {
+        const secret = new TextEncoder().encode(this.ACCESS_SECRET);
+        const { payload } = await jwtVerify(token, secret);
+        return payload;
     }
 }
 

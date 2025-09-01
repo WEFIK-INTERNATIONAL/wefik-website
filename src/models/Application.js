@@ -69,7 +69,7 @@ const SkillSchema = new mongoose.Schema({
 
 const ApplicationSchema = new mongoose.Schema(
 	{
-		jobId: {
+		jobCode: {
 			type: mongoose.Schema.Types.ObjectId,
 			ref: "Job",
 			required: true,
@@ -91,7 +91,6 @@ const ApplicationSchema = new mongoose.Schema(
 	{ timestamps: true }
 );
 
-ApplicationSchema.index({ jobId: 1 });
 ApplicationSchema.index({ status: 1 });
 ApplicationSchema.index({ appliedAt: -1 });
 ApplicationSchema.index(
