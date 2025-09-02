@@ -10,7 +10,6 @@ import { DashboardProvider } from "@/contexts/DashboardContext";
 import DashboardLinks from "@/components/dashboard/DashboardLinks";
 
 import { LogOut } from "lucide-react";
-import wefikLogo from "@/assets/icons/wefikLogo.svg";
 
 import { ThemeProvider } from "next-themes";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -38,21 +37,11 @@ const Layout = ({ children }) => {
                 <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
                     <aside className="hidden md:block border-r">
                         <div className="flex flex-col max-h-screen h-full gap-2">
-                            <Link
-                                href="/"
-                                className="h-18 flex items-center gap-4 border-b px-4"
-                            >
-                                <Image
-                                    src={wefikLogo}
-                                    height={500}
-                                    width={500}
-                                    alt="Wefik Logo"
-                                    className="h-10 w-10"
-                                />
+                            <div className="h-18 flex items-center border-b px-4">
                                 <h1 className="text-2xl font-extrabold">
                                     WEFIK
                                 </h1>
-                            </Link>
+                            </div>
                             <DashboardLinks />
                         </div>
                     </aside>

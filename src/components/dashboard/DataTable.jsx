@@ -29,12 +29,7 @@ const DataTable = ({ isLoading, columns, data }) => {
                 <TableBody>
                     {isLoading ? (
                         <TableRow>
-                            <TableCell
-                                colSpan={columns.length}
-                                className="text-center text-xl font-bold py-6 text-gray-500"
-                            >
-                                Loading...
-                            </TableCell>
+                            <TableHead>Loading...</TableHead>
                         </TableRow>
                     ) : data.length > 0 ? (
                         data.map((row, rowIndex) => (
