@@ -3,8 +3,8 @@ export default function JobPostForm() {
     <div className="h-[80vh] overflow-y-scroll">
       <div className="w-full max-w-7xl bg-white shadow-lg rounded-2xl p-8">
         <h2 className="text-2xl font-bold mb-6 text-gray-800">Post a Job</h2>
-        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
+        <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Company Name */}
           <div className="space-y-2">
             <label className="font-medium">Company Name</label>
@@ -52,12 +52,10 @@ export default function JobPostForm() {
             <label className="font-medium">Stipend</label>
             <div className="flex gap-6">
               <label className="flex items-center gap-2">
-                <input type="radio" name="compensation" value="paid" />
-                Paid
+                <input type="radio" name="compensation" value="paid" /> Paid
               </label>
               <label className="flex items-center gap-2">
-                <input type="radio" name="compensation" value="unpaid" />
-                Unpaid
+                <input type="radio" name="compensation" value="unpaid" /> Unpaid
               </label>
             </div>
           </div>
@@ -174,7 +172,6 @@ export default function JobPostForm() {
               Post Job
             </button>
           </div>
-
         </form>
       </div>
     </div>

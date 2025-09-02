@@ -67,7 +67,9 @@ export const DashboardProvider = ({ children }) => {
             toast.error("Update failed. Rolled back.");
         }
     }, []);
-
+     /** -----------------------------
+     *  Optimistic Update Handler
+     * ----------------------------- */
     const updateJob = useCallback(async (id, newData, serviceCall) => {
         setJobs((prev) =>
             prev.map((item) =>

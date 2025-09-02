@@ -98,6 +98,13 @@ const JobsDropdown = ({ id }) => {
                         View Details
                     </Link>
                 </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                    <Link href={`/admin/dashboard/jobs/edit/${id}`} className="flex items-center">
+                        <PencilLine className="mr-2 h-4 w-4" />
+                        Edit
+                    </Link>
+                </DropdownMenuItem>
+
             </DropdownMenuContent>
         </DropdownMenu>
     );
