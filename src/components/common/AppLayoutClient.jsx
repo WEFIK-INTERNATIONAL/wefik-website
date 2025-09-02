@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { usePathname } from "next/navigation";
 import LenisProvider from "@/components/common/LenisProvider";
 import BackgroundNoise from "@/components/common/BackgroundNoise";
-import Footer from "./Footer";
-import Navbar from "./navbar/Navbar";
+import Footer from "@/components/common/Footer";
+import Navbar from "@/components/common/navbar/Navbar";
 
 export default function AppLayoutClient({ children }) {
     const pathname = usePathname();
