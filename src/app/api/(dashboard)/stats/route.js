@@ -1,6 +1,5 @@
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
-import Application from "@/models/Application";
 import { successResponse, errorResponse } from "@/utils/apiResponse";
 
 export async function GET(req) {
