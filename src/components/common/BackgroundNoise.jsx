@@ -4,7 +4,7 @@ import backgroundNoise from "@/assets/images/backgroundnoise.gif";
 export default function BackgroundNoise() {
     return (
         <div
-            className="fixed inset-0 pointer-events-none opacity-[0.04] z-[2147483647]"
+            className="fixed inset-0 pointer-events-none opacity-[0.02] z-[2147483647]"
             style={{
                 backgroundImage: `url(${backgroundNoise.src})`,
                 backgroundSize: "480px 480px",

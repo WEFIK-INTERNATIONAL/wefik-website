@@ -35,24 +35,6 @@ const faqs = [
         category: "Branding",
         icon: "✨",
     },
-    {
-        question: "Do you provide creative content and campaigns?",
-        answer: "Yes, we produce engaging digital content and marketing campaigns designed to connect with your audience and amplify your reach.",
-        category: "Marketing",
-        icon: "📢",
-    },
-    {
-        question: "What industries does WEFIK serve?",
-        answer: "We work with startups, SMEs, and enterprises across industries including eCommerce, technology, fashion, education, and more.",
-        category: "General",
-        icon: "🏢",
-    },
-    {
-        question: "Does WEFIK provide ongoing support?",
-        answer: "Yes. Beyond project delivery, we offer maintenance, updates, and long-term support to ensure your digital presence keeps evolving.",
-        category: "Support",
-        icon: "🛠️",
-    },
 ];
 
 // Parent animation for stagger

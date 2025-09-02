@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import StartProjectButton from "@/components/ui/homePage/StartProjectBtn";
 import Link from "next/link";
 import LogoTicker from "./LogoTicker";
+import SphereAnimation from "@/components/ui/homePage/SphereAnimation";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -26,7 +27,7 @@ function HeroSection() {
         <section className="relative pt-32 font-neue text-white w-full overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
             <div className="absolute top-0 left-1/2 w-[500px] h-[500px] -translate-x-1/2 bg-pink-500/20 rounded-full filter blur-3xl animate-blob"></div>
             <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-lime-400/20 rounded-full filter blur-3xl animate-blob animation-delay-2000"></div>
-
+            <SphereAnimation />
             <div className="container relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
