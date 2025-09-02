@@ -7,7 +7,6 @@ import {
     useCallback,
 } from "react";
 import { toast } from "sonner";
-import API from "@/lib/axiosConfig";
 import applicationService from "@/services/ApplicationServices";
 
 const DashboardContext = createContext(null);
@@ -18,63 +17,60 @@ export const DashboardProvider = ({ children }) => {
     const [isLoading, setIsLoading] = useState(true);
 
     /** -----------------------------
-     *  Fetch Data
+     *  Fetch Data_
      * ----------------------------- */
-    useEffect(() => {
-        const fetchApplications = async () => {
-            try {
-                const response = await applicationService.getApplications();
-                setApplications(response?.data ?? []);
-            } catch (error) {
-                console.error("❌ Failed to fetch applications:", error);
-                toast.error("Failed to load applications.");
-            } finally {
-                setIsLoading(false);
-            }
-        };
+    const fetchApplications = async () => {
+        try {
+            const response = await applicationService.getApplications();
 
+            setApplications(response?.data ?? []);
+        } catch (error) {
+            console.error("❌ Failed to fetch applications:", error);
+            toast.error("Failed to load applications.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
         fetchApplications();
     }, []);
 
     /** -----------------------------
      *  Optimistic Update Handler
      * ----------------------------- */
-    const updateItem = useCallback(async (id, newData, serviceCall) => {
-        setApplications((prev) =>
-            prev.map((item) =>
-                item._id === id ? { ...item, ...newData } : item
-            )
-        );
-
+    const updateApplicationSatatus = async (id, data) => {
         try {
-            await serviceCall();
-            toast.success("✅ Update successful!");
+            const response = await applicationService.updateApplication(
+                id,
+                data
+            );
+
+            const updatedApp = response?.data ?? response;
+
+            setApplications((prev) =>
+                prev.map((app) => (app._id === id ? updatedApp : app))
+            );
+            toast.success("✅ Update status successful!");
         } catch (error) {
-            console.error("❌ Update failed:", error);
-            setApplications((prev) => prev);
-            toast.error("Update failed. Rolled back.");
+            console.error("❌ Update status failed:", error);
+            toast.error("Update status failed. Please try again.");
         }
-    }, []);
+    };
 
     /** -----------------------------
      *  Optimistic Delete Handler
      * ----------------------------- */
-    const deleteItem = useCallback(
-        async (id, serviceCall) => {
-            const prevItems = [...applications];
-            setApplications((prev) => prev.filter((item) => item._id !== id));
-
-            try {
-                await serviceCall();
-                toast.success("🗑️ Application deleted successfully!");
-            } catch (error) {
-                console.error("❌ Delete failed:", error);
-                setApplications(prevItems);
-                toast.error("Delete failed. Rolled back.");
-            }
-        },
-        [applications]
-    );
+    const deleteApplication = async (id) => {
+        try {
+            await applicationService.deleteApplication(id);
+            setApplications((prev) => prev.filter((app) => app._id !== id));
+            toast.success("🗑️ Application deleted successfully!");
+        } catch (error) {
+            console.error("❌ Delete application failed:", error);
+            toast.error("Delete application failed. Rolled back.");
+        }
+    };
 
     /** -----------------------------
      *  Context Value
@@ -83,10 +79,8 @@ export const DashboardProvider = ({ children }) => {
         isLoading,
         jobs,
         applications,
-        setJobs,
-        setApplications,
-        updateItem,
-        deleteItem,
+        updateApplicationSatatus,
+        deleteApplication,
     };
 
     return (

@@ -7,11 +7,11 @@ export async function PATCH(req, { params }) {
     try {
         await dbConnect();
         const body = await req.json();
-        const { id } = await params;
+        const { id } = await params;        
 
         const application = await Application.findByIdAndUpdate(
             id,
-            { status: body.status },
+            { status: body },
             { new: true }
         );
 
@@ -29,8 +29,9 @@ export async function PATCH(req, { params }) {
 export async function DELETE(req, { params }) {
     try {
         await dbConnect();
+        const { id } = await params;  
 
-        const application = await Application.findByIdAndDelete(params.id);
+        const application = await Application.findByIdAndDelete(id);
 
         if (!application) {
             return errorResponse("Application not found", 404);

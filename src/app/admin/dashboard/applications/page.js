@@ -5,7 +5,8 @@ import Link from "next/link";
 import TableHeader from "@/components/dashboard/TableHeader";
 import DataTable from "@/components/dashboard/DataTable";
 import TableFooter from "@/components/dashboard/TableFooter";
-import ApplicationDropdown from "@/components/dashboard/ApplicationDropdown";
+import ActionDropdown from "@/components/dashboard/ActionDropdown";
+import EditStatus from "@/components/dashboard/EditStatus"; // ✅ Import added
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/formatDate";
@@ -29,57 +30,9 @@ const getStatusBadge = (status) => {
     }
 };
 
-const columns = [
-    { header: "Job ID", accessor: "jobId" },
-    { header: "Job Title", accessor: "jobTitle" },
-    {
-        header: "Candidate Name",
-        accessor: "candidateInfo.fullName",
-        cell: (row) => row.candidateInfo.fullName,
-    },
-    {
-        header: "Email",
-        accessor: "candidateInfo.email",
-        cell: (row) => row.candidateInfo.email,
-    },
-    {
-        header: "Resume",
-        accessor: "resume.url",
-        cell: (row) => (
-            <Link href={`/${row.resume.url}`} className="text-blue-500">
-                View Resume
-            </Link>
-        ),
-    },
-    {
-        header: "Applied At",
-        accessor: "appliedAt",
-        cell: (row) => formatDate(row.appliedAt),
-    },
-    {
-        header: "Status",
-        accessor: "status",
-        cell: (row) => (
-            <Badge
-                className={`px-2 py-1 rounded-full ${getStatusBadge(row.status)}`}
-            >
-                {row.status}
-            </Badge>
-        ),
-    },
-    {
-        header: "Actions",
-        accessor: "_id",
-        cell: (row) => (
-            <div className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
-                <ApplicationDropdown id={row._id} />
-            </div>
-        ),
-    },
-];
-
 export default function ApplicationsPage() {
-    const { isLoading, applications } = useDashboardContext();    
+    const { isLoading, applications, deleteApplication } =
+        useDashboardContext();
 
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("");
@@ -101,6 +54,61 @@ export default function ApplicationsPage() {
         data: filteredApplications,
         itemsPerPage: 10,
     });
+
+    const columns = [
+        { header: "Job ID", accessor: "jobId" },
+        { header: "Job Title", accessor: "jobTitle" },
+        {
+            header: "Candidate Name",
+            accessor: "candidateInfo.fullName",
+            cell: (row) => row.candidateInfo?.fullName,
+        },
+        {
+            header: "Email",
+            accessor: "candidateInfo.email",
+            cell: (row) => row.candidateInfo?.email,
+        },
+        {
+            header: "Resume",
+            accessor: "resume.url",
+            cell: (row) => (
+                <Link href={`/${row.resume?.url}`} className="text-blue-500">
+                    View Resume
+                </Link>
+            ),
+        },
+        {
+            header: "Applied At",
+            accessor: "appliedAt",
+            cell: (row) => formatDate(row.appliedAt),
+        },
+        {
+            header: "Status",
+            accessor: "status",
+            cell: (row) => (
+                <Badge
+                    className={`px-2 py-1 rounded-full ${getStatusBadge(row.status)}`}
+                >
+                    {row.status}
+                </Badge>
+            ),
+        },
+        {
+            header: "Actions",
+            accessor: "_id",
+            cell: (row) => (
+                <div className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
+                    <ActionDropdown
+                        id={row._id}
+                        label="Application Actions"
+                        viewDetailsPath="/admin/dashboard/applications/"
+                        onEdit={(id) => <EditStatus id={id} />}
+                        onDelete={deleteApplication}
+                    />
+                </div>
+            ),
+        },
+    ];
 
     return (
         <div>

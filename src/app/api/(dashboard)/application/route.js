@@ -15,7 +15,7 @@ export async function POST(req) {
             "Application created successfully",
             201
         );
-    } catch (error) {
+    } catch (error) {        
         if (error.code === 11000) {
             return errorResponse("You already applied for this job", 400);
         }

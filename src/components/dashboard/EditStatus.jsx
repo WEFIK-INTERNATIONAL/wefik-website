@@ -15,10 +15,9 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { useDashboardContext } from "@/contexts";
-import applicationService from "@/services/ApplicationServices";
 
 const EditStatus = ({ id, currentStatus = "Pending" }) => {
-    const { updateItem } = useDashboardContext();
+    const { updateApplicationSatatus } = useDashboardContext();
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
     const [open, setOpen] = useState(false);
     const [isUpdating, setIsUpdating] = useState(false);
@@ -57,11 +56,7 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
     const updateStatus = async () => {
         setIsUpdating(true);
         try {
-            await updateItem(id, { status: selectedStatus }, () =>
-                applicationService.updateApplication(id, {
-                    status: selectedStatus,
-                })
-            );
+            updateApplicationSatatus(id, selectedStatus);
             setOpen(false);
         } catch (error) {
             console.log(error);
