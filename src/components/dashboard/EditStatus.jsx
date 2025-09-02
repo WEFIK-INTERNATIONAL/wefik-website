@@ -15,12 +15,12 @@ import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { useDashboardContext } from "@/contexts";
-import applicationService from "@/services/ApplicationServices";
 
 const EditStatus = ({ id, currentStatus = "Pending" }) => {
-    const { updateItem } = useDashboardContext();
+    const { updateApplicationSatatus } = useDashboardContext();
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
     const [open, setOpen] = useState(false);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         if (open) {
@@ -54,17 +54,20 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
     };
 
     const updateStatus = async () => {
-        await updateItem(id, { status: selectedStatus }, () =>
-            applicationService.updateApplication(id, { status: selectedStatus })
-        );
-        setOpen(false);
+        setIsUpdating(true);
+        try {
+            updateApplicationSatatus(id, selectedStatus);
+            setOpen(false);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="outline">Edit Status</Button>
-            </DialogTrigger>
+            <DialogTrigger>Edit Status</DialogTrigger>
 
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
@@ -98,8 +101,12 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button type="button" onClick={updateStatus}>
-                        Save changes
+                    <Button
+                        disabled={isUpdating}
+                        type="button"
+                        onClick={updateStatus}
+                    >
+                        {isUpdating ? "Updating..." : "Save changes"}
                     </Button>
                 </DialogFooter>
             </DialogContent>
