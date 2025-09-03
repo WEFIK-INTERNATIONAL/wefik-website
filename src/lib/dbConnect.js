@@ -1,28 +1,33 @@
 import mongoose from "mongoose";
 
-let isConnected = false;
+const MONGODB_URI = process.env.MONGODB_URI;
 
-export default async function dbConnect() {
-	if (isConnected) {
-		console.log("✅ Already connected");
-		return;
-	}
-
-	if (!process.env.MONGODB_URI) {
-		throw new Error("Please add your MongoDB URI to .env.local");
-	}
-
-	try {
-		const db = await mongoose.connect(process.env.MONGODB_URI, {
-			dbName: "wefik_db",
-			useNewUrlParser: true,
-			useUnifiedTopology: true,
-		});
-
-		isConnected = db.connections[0].readyState === 1;
-		console.log("✅ MongoDB connected");
-	} catch (error) {
-		console.error("❌ MongoDB connection error:", error);
-		throw new Error("Failed to connect to MongoDB");
-	}
+if (!MONGODB_URI) {
+    throw new Error("❌ Please define the MONGODB_URI environment variable");
 }
+
+let cached = global.mongoose;
+
+if (!cached) {
+    cached = global.mongoose = { conn: null, promise: null };
+}
+
+async function connectDB() {
+    if (cached.conn) {
+        return cached.conn;
+    }
+
+    if (!cached.promise) {
+        cached.promise = mongoose
+            .connect(MONGODB_URI, { dbName: "wefik_db" })
+            .then((mongoose) => {
+                console.log("✅ MongoDB connected");
+                return mongoose;
+            });
+    }
+
+    cached.conn = await cached.promise;
+    return cached.conn;
+}
+
+export default connectDB;

@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
-import { useEffect, useRef } from "react";
+
+import { motion, useAnimation } from "framer-motion";
 import { twMerge } from "tailwind-merge";
-import gsap from "gsap";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function RoundedButton({
     children,
@@ -12,64 +12,58 @@ export default function RoundedButton({
     href = "#",
     ...attributes
 }) {
-    const container = useRef(null);
-    const circle = useRef(null);
-    let timeline = useRef(null);
-    let timeoutId = null;
+    const controls = useAnimation();
+    const [isHovered, setIsHovered] = useState(false);
 
-    useEffect(() => {
-        timeline.current = gsap.timeline({ paused: true });
-        timeline.current
-            .to(
-                circle.current,
-                {
-                    top: "-25%",
-                    width: "150%",
-                    duration: 0.4,
-                    ease: "power3.in",
-                },
-                "enter"
-            )
-            .to(
-                circle.current,
-                { top: "-150%", width: "125%", duration: 0.25 },
-                "exit"
-            );
-    }, []);
-
-    const manageMouseEnter = () => {
-        if (timeoutId) clearTimeout(timeoutId);
-        timeline.current.tweenFromTo("enter", "exit");
+    const handleMouseEnter = async () => {
+        setIsHovered(true);
+        await controls.start("enter"); // run enter
+        await controls.start("exit"); // run exit
     };
 
-    const manageMouseLeave = () => {
-        timeoutId = setTimeout(() => {
-            timeline.current.play();
-        }, 300);
+    const handleMouseLeave = () => {
+        setIsHovered(false);
+        controls.start("reset");
+    };
+
+    const circleVariants = {
+        reset: { top: "100%", width: "100%" },
+        enter: {
+            top: "-25%",
+            width: "150%",
+            transition: { duration: 0.4, ease: "easeInOut" },
+        },
+        exit: {
+            top: "-150%",
+            width: "125%",
+            transition: { duration: 0.25, ease: "easeInOut" },
+        },
     };
 
     return (
         <div
-            ref={container}
             className={twMerge(
-                "relative w-fit flex items-center justify-center overflow-hidden cursor-pointer",
+                "relative flex w-fit cursor-pointer items-center justify-center overflow-hidden",
                 className
             )}
-            onMouseEnter={manageMouseEnter}
-            onMouseLeave={manageMouseLeave}
+            onMouseEnter={handleMouseEnter}
+            onMouseLeave={handleMouseLeave}
             {...attributes}
         >
             <Link
                 href={href}
-                className="relative z-10 transition-[color] duration-400 ease-linear hover:text-white"
+                className="relative z-10 transition-colors duration-300 ease-linear hover:text-white"
             >
                 {children}
             </Link>
-            <div
-                ref={circle}
+
+            <motion.div
+                className="absolute h-[150%] w-full rounded-full"
                 style={{ backgroundColor }}
-                className="absolute w-full h-[150%] rounded-full top-[100%]"
-            ></div>
+                variants={circleVariants}
+                initial="reset"
+                animate={controls}
+            />
         </div>
     );
 }

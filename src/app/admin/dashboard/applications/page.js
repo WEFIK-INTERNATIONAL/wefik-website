@@ -1,67 +1,133 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
+import Link from "next/link";
 
-import ApplicationTable from "@/components/dashboard/ApplicationTable";
-import ApplicationTableHeader from "@/components/dashboard/ApplicationTableHeader";
-import ApllicationTableFooter from "@/components/dashboard/ApllicationTableFooter";
+import TableHeader from "@/components/dashboard/TableHeader";
+import DataTable from "@/components/dashboard/DataTable";
+import TableFooter from "@/components/dashboard/TableFooter";
+import ActionDropdown from "@/components/dashboard/ActionDropdown";
+import EditStatus from "@/components/dashboard/EditStatus"; // ✅ Import added
 
+import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/utils/formatDate";
 import { useDashboardContext } from "@/contexts";
+import { usePagination, useSearchAndSort } from "@/app/hooks";
+
+const getStatusBadge = (status) => {
+    switch (status) {
+        case "Pending":
+            return "bg-yellow-500 text-white";
+        case "Reviewed":
+            return "bg-blue-500 text-white";
+        case "Shortlisted":
+            return "bg-slate-900 dark:bg-slate-500 text-white";
+        case "Accepted":
+            return "bg-green-500 text-white";
+        case "Rejected":
+            return "bg-red-500 text-white";
+        default:
+            return "bg-gray-500 text-white";
+    }
+};
 
 export default function ApplicationsPage() {
-	const { isLoading, applications } = useDashboardContext();
+    const { isLoading, applications, deleteApplication } =
+        useDashboardContext();
 
-	const [searchTerm, setSearchTerm] = useState("");
-	const [sortOrder, setSortOrder] = useState("");
-	const [currentPage, setCurrentPage] = useState(1);
-	const itemsPerPage = 10;
+    const [searchTerm, setSearchTerm] = useState("");
+    const [sortOrder, setSortOrder] = useState("");
 
-	// ✅ Filtering + Sorting Logic
-	const filteredApps = useMemo(() => {
-		let result = [...applications];
+    const filteredApplications = useSearchAndSort({
+        data: applications,
+        searchTerm,
+        sortOrder,
+        searchFields: [
+            "jobId",
+            "jobTitle",
+            "candidateInfo.fullName",
+            "candidateInfo.email",
+        ],
+        sortField: "appliedAt",
+    });
 
-		// 🔍 Filtering
-		if (searchTerm.trim() !== "") {
-			const term = searchTerm.toLowerCase();
+    const pagination = usePagination({
+        data: filteredApplications,
+        itemsPerPage: 10,
+    });
 
-			result = result.filter(
-				(app) =>
-					app.jobId.toString().includes(term) ||
-					app.jobTitle.toLowerCase().includes(term) ||
-					app.candidateInfo.fullName.toLowerCase().includes(term) ||
-					app.candidateInfo.email.toLowerCase().includes(term)
-			);
-		}
+    const columns = [
+        { header: "Job ID", accessor: "jobId" },
+        { header: "Job Title", accessor: "jobTitle" },
+        {
+            header: "Candidate Name",
+            accessor: "candidateInfo.fullName",
+            cell: (row) => row.candidateInfo?.fullName,
+        },
+        {
+            header: "Email",
+            accessor: "candidateInfo.email",
+            cell: (row) => row.candidateInfo?.email,
+        },
+        {
+            header: "Resume",
+            accessor: "resume.url",
+            cell: (row) => (
+                <Link href={`/${row.resume?.url}`} className="text-blue-500">
+                    View Resume
+                </Link>
+            ),
+        },
+        {
+            header: "Applied At",
+            accessor: "appliedAt",
+            cell: (row) => formatDate(row.appliedAt),
+        },
+        {
+            header: "Status",
+            accessor: "status",
+            cell: (row) => (
+                <Badge
+                    className={`px-2 py-1 rounded-full ${getStatusBadge(row.status)}`}
+                >
+                    {row.status}
+                </Badge>
+            ),
+        },
+        {
+            header: "Actions",
+            accessor: "_id",
+            cell: (row) => (
+                <div className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
+                    <ActionDropdown
+                        id={row._id}
+                        label="Application Actions"
+                        viewDetailsPath="/admin/dashboard/applications/"
+                        onEdit={(id) => <EditStatus id={id} />}
+                        onDelete={deleteApplication}
+                    />
+                </div>
+            ),
+        },
+    ];
 
-		// ⏱️ Sorting
-		if (sortOrder === "newest") {
-			result.sort((a, b) => new Date(b.appliedAt) - new Date(a.appliedAt));
-		} else if (sortOrder === "oldest") {
-			result.sort((a, b) => new Date(a.appliedAt) - new Date(b.appliedAt));
-		}
-
-		return result;
-	}, [applications, searchTerm, sortOrder]);
-
-	// ✅ Pagination
-	const totalItems = filteredApps.length;
-	const totalPages = Math.ceil(totalItems / itemsPerPage);
-	const indexOfLast = currentPage * itemsPerPage;
-	const indexOfFirst = indexOfLast - itemsPerPage;
-	const currentItems = filteredApps.slice(indexOfFirst, indexOfLast);
-
-	return (
-		<div>
-			<ApplicationTableHeader onSearch={setSearchTerm} onSort={setSortOrder} />
-			<ApplicationTable isLoading={isLoading} currentItems={currentItems} />
-			<ApllicationTableFooter
-				isLoading={isLoading}
-				currentPage={currentPage}
-				setCurrentPage={setCurrentPage}
-				totalPages={totalPages}
-				totalItems={totalItems}
-				indexOfFirst={indexOfFirst}
-				indexOfLast={Math.min(indexOfLast, totalItems)}
-			/>
-		</div>
-	);
+    return (
+        <div>
+            <TableHeader
+                title="Application Table"
+                subtitle="Manage all the applications"
+                onSearch={setSearchTerm}
+                onSort={setSortOrder}
+                sortOptions={[
+                    { label: "Newest", value: "newest" },
+                    { label: "Oldest", value: "oldest" },
+                ]}
+            />
+            <DataTable
+                isLoading={isLoading}
+                columns={columns}
+                data={pagination.currentItems}
+            />
+            <TableFooter isLoading={isLoading} pagination={pagination} />
+        </div>
+    );
 }

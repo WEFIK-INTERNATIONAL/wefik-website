@@ -1,8 +1,10 @@
 "use client";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { DashboardProvider } from "@/contexts/DashboardContext";
 import DashboardLinks from "@/components/dashboard/DashboardLinks";
@@ -12,8 +14,22 @@ import { LogOut } from "lucide-react";
 import { ThemeProvider } from "next-themes";
 import ThemeToggle from "@/components/ThemeToggle";
 
+import API from "@/lib/axiosConfig";
+
 const Layout = ({ children }) => {
+    const router = useRouter();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+
+    const handleOnLogout = async () => {
+        try {
+            await API.post("/logout");
+            toast.success("Logged out successfully");
+            router.push("/");
+        } catch (error) {
+            toast.error("Logout failed, please try again");
+            console.error("Logout Error:", error);
+        }
+    };
 
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
@@ -22,7 +38,9 @@ const Layout = ({ children }) => {
                     <aside className="hidden md:block border-r">
                         <div className="flex flex-col max-h-screen h-full gap-2">
                             <div className="h-18 flex items-center border-b px-4">
-                                <h1 className="text-2xl font-extrabold">WEFIK</h1>
+                                <h1 className="text-2xl font-extrabold">
+                                    WEFIK
+                                </h1>
                             </div>
                             <DashboardLinks />
                         </div>
@@ -46,6 +64,9 @@ const Layout = ({ children }) => {
                                 <ThemeToggle />
                                 <Button
                                     variant="outline"
+                                    onClick={() => {
+                                        handleOnLogout();
+                                    }}
                                     className="text-white bg-red-500/80 hover:text-white hover:bg-red-500/90 dark:text-red-500 hover:cursor-pointer"
                                 >
                                     Logout
