@@ -85,9 +85,9 @@ function Navbar() {
             />
 
             <motion.div
-                className="fixed top-0 right-0 h-full w-full max-w-lg 
+                className={`fixed top-0 right-0 h-full w-full max-w-lg 
              bg-gradient-to-b from-black via-black/95 to-black 
-             border-l border-lime-400/20 shadow-[0_0_60px_rgba(163,230,53,0.15)] z-40"
+             border-l border-lime-400/20 z-40 ${isMenuOpen ? "shadow-[0_0_60px_rgba(163,230,53,0.15)]" : ""}`}
                 variants={menuPanelVariants}
                 initial="closed"
                 animate={isMenuOpen ? "open" : "closed"}

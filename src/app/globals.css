@@ -58,6 +58,34 @@ body {
     --breakpoint-lg: 1200px;
 }
 
+/* Styling for the custom-scrollbar class */
+.custom-scrollbar {
+    /* For Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: rgba(163, 230, 53, 0.3) rgba(31, 41, 55, 0.5); /* thumb track */
+}
+
+/* For Chrome, Safari, and Edge */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+    background-color: rgba(31, 41, 55, 0.5); /* Equivalent to gray-800/50 */
+    border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: rgba(163, 230, 53, 0.3); /* Equivalent to lime-400/30 */
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(163, 230, 53, 0.5); /* Equivalent to lime-400/50 */
+}
+
 .container {
     width: 100%;
     margin-left: auto;

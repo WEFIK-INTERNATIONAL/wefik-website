@@ -5,6 +5,7 @@ import LenisProvider from "@/components/common/LenisProvider";
 import BackgroundNoise from "@/components/common/BackgroundNoise";
 import Footer from "@/components/common/Footer";
 import Navbar from "@/components/common/navbar/NavBar";
+import AIBot from "../chat/AIBot";
 
 export default function AppLayoutClient({ children }) {
     const pathname = usePathname();
@@ -22,6 +23,7 @@ export default function AppLayoutClient({ children }) {
                 <div>{children}</div>
                 <Footer />
             </LenisProvider>
+            <AIBot />
         </div>
     );
 }
