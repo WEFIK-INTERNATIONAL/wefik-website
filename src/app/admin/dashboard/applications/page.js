@@ -102,7 +102,9 @@ export default function ApplicationsPage() {
                         id={row._id}
                         label="Application Actions"
                         viewDetailsPath="/admin/dashboard/applications/"
-                        onEdit={(id) => <EditStatus id={id} />}
+                        onEdit={(id) => (
+                            <EditStatus id={id} currentStatus={row.status} />
+                        )}
                         onDelete={deleteApplication}
                     />
                 </div>

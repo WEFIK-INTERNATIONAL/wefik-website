@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
 import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { DashboardProvider } from "@/contexts/DashboardContext";
 import DashboardLinks from "@/components/dashboard/DashboardLinks";
 
 import { LogOut } from "lucide-react";
+import wefikLogo from "@/assets/icons/wefikLogo.svg";
 
 import { ThemeProvider } from "next-themes";
 import ThemeToggle from "@/components/ThemeToggle";
@@ -38,9 +39,19 @@ const Layout = ({ children }) => {
                     <aside className="hidden md:block border-r">
                         <div className="flex flex-col max-h-screen h-full gap-2">
                             <div className="h-18 flex items-center border-b px-4">
-                                <h1 className="text-2xl font-extrabold">
+                                <Link
+                                    href="/"
+                                    className="text-2xl font-extrabold flex justify-center items-center gap-4"
+                                >
+                                    <Image
+                                        src={wefikLogo}
+                                        width={500}
+                                        height={500}
+                                        alt="Wefik Logo"
+                                        className="w-10 h-10"
+                                    />
                                     WEFIK
-                                </h1>
+                                </Link>
                             </div>
                             <DashboardLinks />
                         </div>

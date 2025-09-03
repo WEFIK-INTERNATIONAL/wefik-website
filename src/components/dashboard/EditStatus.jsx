@@ -79,32 +79,52 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
                     onValueChange={setSelectedStatus}
                     className="space-y-3 grid grid-cols-2 mt-5"
                 >
-                    {statuses.map((status, idx) => (
-                        <div key={idx} className="flex items-center gap-3">
-                            <RadioGroupItem
-                                value={status}
-                                id={`status-${idx}`}
-                                className="hover:cursor-pointer"
-                            />
-                            <Badge
-                                className={`px-4 rounded-full cursor-pointer ${getStatusBadge(
-                                    status
-                                )}`}
+                    {statuses.map((status, idx) => {
+                        const isDisabled = status === currentStatus;
+                        return (
+                            <label
+                                key={idx}
+                                htmlFor={`status-${idx}`}
+                                className={`flex items-center gap-3 cursor-pointer ${
+                                    isDisabled
+                                        ? "opacity-50 cursor-not-allowed"
+                                        : ""
+                                }`}
                             >
-                                {status}
-                            </Badge>
-                        </div>
-                    ))}
+                                <RadioGroupItem
+                                    value={status}
+                                    id={`status-${idx}`}
+                                    disabled={isDisabled}
+                                    className="hover:cursor-pointer"
+                                />
+                                <Badge
+                                    className={`px-4 rounded-full ${getStatusBadge(
+                                        status
+                                    )} ${isDisabled ? "opacity-50" : "cursor-pointer"}`}
+                                >
+                                    {status}
+                                </Badge>
+                            </label>
+                        );
+                    })}
                 </RadioGroup>
 
                 <DialogFooter className="mt-4">
                     <DialogClose asChild>
-                        <Button variant="outline">Cancel</Button>
+                        <Button
+                            variant="outline"
+                            className="hover:cursor-pointer"
+                        >
+                            Cancel
+                        </Button>
                     </DialogClose>
                     <Button
-                        disabled={isUpdating}
+                        disabled={
+                            isUpdating || selectedStatus === currentStatus
+                        }
                         type="button"
                         onClick={updateStatus}
+                        className="hover:cursor-pointer"
                     >
                         {isUpdating ? "Updating..." : "Save changes"}
                     </Button>

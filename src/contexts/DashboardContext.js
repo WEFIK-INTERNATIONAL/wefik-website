@@ -8,16 +8,18 @@ import {
 } from "react";
 import { toast } from "sonner";
 import applicationService from "@/services/ApplicationServices";
+import API from "@/lib/axiosConfig";
 
 const DashboardContext = createContext(null);
 
 export const DashboardProvider = ({ children }) => {
     const [jobs, setJobs] = useState([]);
+    const [stats, setStats] = useState([]);
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
 
     /** -----------------------------
-     *  Fetch Data_
+     *  Fetch Data
      * ----------------------------- */
     const fetchApplications = async () => {
         try {
@@ -32,7 +34,20 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+    const fetchStats = async () => {
+        try {
+            const response = await API.get("/stats");
+            setStats(response?.data?.data[0] ?? []);
+        } catch (error) {
+            console.error("❌ Failed to fetch stats:", error);
+            toast.error("Failed to load stats.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     useEffect(() => {
+        fetchStats();
         fetchApplications();
     }, []);
 
@@ -51,6 +66,7 @@ export const DashboardProvider = ({ children }) => {
             setApplications((prev) =>
                 prev.map((app) => (app._id === id ? updatedApp : app))
             );
+            fetchStats();
             toast.success("✅ Update status successful!");
         } catch (error) {
             console.error("❌ Update status failed:", error);
@@ -65,6 +81,7 @@ export const DashboardProvider = ({ children }) => {
         try {
             await applicationService.deleteApplication(id);
             setApplications((prev) => prev.filter((app) => app._id !== id));
+            fetchStats();
             toast.success("🗑️ Application deleted successfully!");
         } catch (error) {
             console.error("❌ Delete application failed:", error);
@@ -78,6 +95,7 @@ export const DashboardProvider = ({ children }) => {
     const contextValue = {
         isLoading,
         jobs,
+        stats,
         applications,
         updateApplicationSatatus,
         deleteApplication,

@@ -17,7 +17,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
     return (
         <html lang="en" className={ppNeueMontreal.variable}>
-            <body className="antialiased min-h-screen bg-black text-white">
+            <body className="antialiased min-h-screen">
                 <AppLayoutClient>{children}</AppLayoutClient>
                 <Toaster position="top-right" richColors />
             </body>
