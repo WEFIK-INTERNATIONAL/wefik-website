@@ -17,8 +17,8 @@ export default function RoundedButton({
 
     const handleMouseEnter = async () => {
         setIsHovered(true);
-        await controls.start("enter"); // run enter
-        await controls.start("exit"); // run exit
+        await controls.start("enter");
+        await controls.start("exit");
     };
 
     const handleMouseLeave = () => {
