@@ -5,6 +5,7 @@ import StartProjectButton from "@/components/ui/homePage/StartProjectBtn";
 import Link from "next/link";
 import LogoTicker from "./LogoTicker";
 import SphereAnimation from "@/components/ui/homePage/SphereAnimation";
+import { useTransition } from "@/contexts/TransitionContext";
 
 const containerVariants = {
     hidden: { opacity: 0 },
@@ -23,15 +24,30 @@ const itemVariants = {
 };
 
 function HeroSection() {
+    const { transitionDone } = useTransition();
+
     return (
         <section className="relative pt-32 font-neue text-white w-full overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-900">
             <div className="absolute top-0 left-1/2 w-[500px] h-[500px] -translate-x-1/2 bg-pink-500/20 rounded-full filter blur-3xl animate-blob"></div>
             <div className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] bg-lime-400/20 rounded-full filter blur-3xl animate-blob animation-delay-2000"></div>
-            <SphereAnimation />
+            <motion.div
+                initial={{ scale: 0, opacity: 0 }}
+                animate={
+                    transitionDone
+                        ? { scale: 1, opacity: 1 }
+                        : { scale: 0, opacity: 0 }
+                }
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="absolute left-1/2 top-1/3 -translate-y-1/3 md:top-2/5 -translate-x-1/2 md:-translate-y-2/5 origin-center z-0"
+            >
+                <div className="w-[95vw] md:w-[80vw] flex items-center justify-center">
+                    <SphereAnimation />
+                </div>
+            </motion.div>
             <div className="container relative z-10">
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    animate={transitionDone ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.3, duration: 0.6 }}
                     className="flex justify-center"
                 >
@@ -43,11 +59,10 @@ function HeroSection() {
                         Available for work
                     </div>
                 </motion.div>
-
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.3, duration: 0.6 }}
+                    animate={transitionDone ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: 0.5, duration: 0.6 }}
                 >
                     <h1 className="text-6xl md:text-7xl lg:text-8xl font-medium text-center mt-6">
                         Turning Your Ideas into <br />
@@ -56,23 +71,21 @@ function HeroSection() {
                         </span>
                     </h1>
                 </motion.div>
-
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.6 }}
+                    animate={transitionDone ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: 0.7, duration: 0.6 }}
                 >
                     <p className="text-center text-xl text-white/50 mt-8 max-w-2xl mx-auto">
                         From websites and apps to design, branding, and digital
                         campaigns, we turn your ideas into reality.
                     </p>
                 </motion.div>
-
                 <motion.div
-                    className="flex justify-center items-center gap-6 mt-6"
                     variants={containerVariants}
                     initial="hidden"
-                    animate="show"
+                    animate={transitionDone ? "show" : "hidden"}
+                    className="flex justify-center items-center gap-6 mt-6"
                 >
                     <motion.div variants={itemVariants}>
                         <StartProjectButton className="bg-lime-400 border-lime-800 text-black font-medium" />
@@ -101,17 +114,21 @@ function HeroSection() {
                         </Link>
                     </motion.div>
                 </motion.div>
-
                 <motion.div
                     initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    animate={transitionDone ? { opacity: 1 } : {}}
                     transition={{ delay: 1.2 }}
                     className="flex justify-center text-gray-400 text-sm animate-bounce mt-20 md:mt-28"
                 >
                     ↓ Scroll to Explore
                 </motion.div>
-
-                <LogoTicker />
+                <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={transitionDone ? { opacity: 1 } : {}}
+                    transition={{ delay: 1.5 }}
+                >
+                    <LogoTicker />
+                </motion.div>
             </div>
         </section>
     );

@@ -84,12 +84,12 @@ const ourProjects = [
 
 function Works() {
     return (
-        <section className="pb-16 lg:py-24">
+        <section className="pb-16 py-24 lg:py-48 overflow-x-clip">
             <div className="container">
                 <div className="flex justify-center gap-4">
-                    <Tag>Selected Work 2022-2025</Tag>
+                    <Tag>Selected Works</Tag>
                 </div>
-                <h2 className="text-6xl font-medium text-center mt-6 max-w-6xl mx-auto">
+                <h2 className="text-5xl md:text-6xl font-medium text-center mt-6 max-w-6xl mx-auto">
                     Transforming Concepts into Digital{" "}
                     <span className="text-lime-400">Masterpieces</span>
                 </h2>

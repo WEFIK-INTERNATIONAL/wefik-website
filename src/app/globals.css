@@ -58,6 +58,21 @@ body {
     --breakpoint-lg: 1200px;
 }
 
+::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+    scrollbar-width: none;
+}
+
+/* Ensure scroll still works */
+body {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
 /* Styling for the custom-scrollbar class */
 .custom-scrollbar {
     /* For Firefox */

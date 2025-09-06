@@ -120,7 +120,7 @@ function ExpertiseSection() {
                 <div className="flex justify-center gap-4">
                     <Tag>Our Services</Tag>
                 </div>
-                <h2 className="text-6xl font-medium text-center mt-6 max-w-6xl mx-auto">
+                <h2 className="text-5xl md:text-6xl font-medium text-center mt-6 max-w-6xl mx-auto">
                     Our Services, Your{" "}
                     <span className="text-lime-400">Growth</span>
                 </h2>

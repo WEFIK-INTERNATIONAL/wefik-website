@@ -5,7 +5,7 @@ function Tag({ className, children, ...otherProps }) {
     return (
         <div
             className={twMerge(
-                "inline-flex border border-lime-400 uppercase gap-2 text-lime-400 py-1 px-2 rounded-full items-center",
+                "inline-flex outline-2 outline-lime-400 uppercase gap-2 text-lime-400 py-1 px-2 rounded-full items-center",
                 className
             )}
             {...otherProps}

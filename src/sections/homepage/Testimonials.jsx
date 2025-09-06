@@ -249,41 +249,6 @@ function Testimonials() {
                     partnerships. Here&apos;s what our clients share about
                     working with WEFIK.
                 </motion.p>
-
-                {/* Stats section */}
-                {/* <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.6, delay: 0.3 }}
-                    className="flex justify-center gap-8 mt-12 mb-16"
-                >
-                    <div className="text-center">
-                        <div className="text-2xl lg:text-3xl font-bold text-lime-400">
-                            150+
-                        </div>
-                        <div className="text-white/50 text-sm">
-                            Happy Clients
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-2xl lg:text-3xl font-bold text-lime-400">
-                            4.9/5
-                        </div>
-                        <div className="text-white/50 text-sm">
-                            Average Rating
-                        </div>
-                    </div>
-                    <div className="text-center">
-                        <div className="text-2xl lg:text-3xl font-bold text-lime-400">
-                            98%
-                        </div>
-                        <div className="text-white/50 text-sm">
-                            Project Success
-                        </div>
-                    </div>
-                </motion.div> */}
-
                 <div className="h-[500px] lg:h-[650px] overflow-hidden flex justify-center gap-6 max-w-6xl mx-auto [mask-image:linear-gradient(to_bottom,transparent,black_20%,black_80%,transparent)] mt-20 p-2">
                     <TestimonialsColumn
                         testimonials={firstColumn}

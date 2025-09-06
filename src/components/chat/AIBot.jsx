@@ -174,7 +174,7 @@ function AIBot() {
 
     return (
         <>
-            <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end">
+            <div className="fixed bottom-5 right-5 z-48 flex flex-col items-end">
                 <ChatToolTip
                     showTooltip={showTooltip && !isOpen}
                     onOpen={() => setIsOpen(true)}
