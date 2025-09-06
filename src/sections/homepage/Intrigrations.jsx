@@ -52,7 +52,7 @@ export default function Integrations() {
                         <div>
                             <Tag>Tools We Use</Tag>
                         </div>
-                        <h2 className="text-6xl font-medium mt-6">
+                        <h2 className="text-5xl md:text-6xl font-medium mt-6">
                             Plays well with{" "}
                             <span className="text-lime-400">others</span>
                         </h2>
@@ -63,7 +63,7 @@ export default function Integrations() {
                         </p>
                     </div>
                     <div>
-                        <div className="h-[400px] lg:h-[800px] mt-8 lg:mt-0 overflow-hidden grid md:grid-cols-2 gap-4 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
+                        <div className="h-[400px] lg:h-[800px] mt-16 lg:mt-0 overflow-hidden grid md:grid-cols-2 gap-4 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
                             <IntegrationColumn integrations={integrations} />
                             <IntegrationColumn
                                 integrations={integrations.slice().reverse()}

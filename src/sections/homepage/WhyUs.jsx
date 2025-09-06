@@ -71,7 +71,7 @@ function Chooseus() {
                 <div className="flex justify-center">
                     <Tag>Why Choose Us</Tag>
                 </div>
-                <h2 className="text-6xl font-medium text-center mt-6 max-w-3xl mx-auto">
+                <h2 className="text-5xl md:text-6xl font-medium text-center mt-6 max-w-3xl mx-auto">
                     Creative. Strategic. Always{" "}
                     <span className="text-lime-400">Unique.</span>
                 </h2>
