@@ -9,15 +9,10 @@ const SalarySchema = new mongoose.Schema({
         },
         min: [0, "Salary must be a positive number"],
     },
-    currency: { type: String, default: "USD", trim: true },
+    currency: { type: String, default: "INR", trim: true },
 });
 
-// Requirement schema
-const RequirementSchema = new mongoose.Schema({
-    text: { type: String, required: true, trim: true },
-});
-
-// Skill schema (same style as Application)
+// Skill schema
 const SkillSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
     level: {
@@ -30,13 +25,14 @@ const SkillSchema = new mongoose.Schema({
 // Main Job schema
 const JobSchema = new mongoose.Schema(
     {
-        jobID: {
+        jobId: {
             type: String,
             unique: true,
             index: true,
             default: () => "JOB-" + Math.floor(1000 + Math.random() * 9000),
         },
-        title: { type: String, required: true, trim: true, index: true },
+        companyName: { type: String, required: true, trim: true },
+        jobProfile: { type: String, required: true, trim: true, index: true },
         description: { type: String, required: true, trim: true },
         location: { type: String, required: true, trim: true, index: true },
         type: {
@@ -45,11 +41,22 @@ const JobSchema = new mongoose.Schema(
             required: true,
             index: true,
         },
-        paid: { type: Boolean, default: true },
+        compensationType: {
+            type: String,
+            enum: ["paid", "unpaid"],
+            default: "paid",
+        },
         salary: SalarySchema,
-        requirements: [RequirementSchema],
+        experienceLevel: {
+            type: String,
+            enum: ["0–1 years", "1–3 years", "3–5 years", "5+ years"],
+            default: "0–1 years",
+        },
+        education: { type: String, default: "Any Graduate" },
+        openings: { type: Number, default: 1 },
         skills: [SkillSchema],
-        postedAt: { type: Date, default: Date.now },
+        contactEmail: { type: String, required: true },
+        applicationDeadline: { type: Date },
         status: {
             type: String,
             enum: ["Open", "Closed"],
@@ -60,14 +67,14 @@ const JobSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-// 🔎 Text index (title, description, skills.name)
+// 🔎 Index for text search
 JobSchema.index({
-    title: "text",
+    jobProfile: "text",
     description: "text",
     "skills.name": "text",
 });
 
-// Compound index (for open jobs in a location)
+// Compound index
 JobSchema.index({ location: 1, status: 1 });
 
 export default mongoose.models.Job || mongoose.model("Job", JobSchema);

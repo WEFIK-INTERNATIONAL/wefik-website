@@ -2,170 +2,165 @@
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import Link from "next/link";
 
-const JobsDetails = ({ job }) => {
-    if (!job) {
-        return <p className="text-center text-gray-500">No job found.</p>;
-    }
+const JobDetails = ({ job }) => {
+  if (!job) {
+    return <p className="text-center text-gray-400 dark:text-gray-500">No job found.</p>;
+  }
 
-    const {
-        companyName,
-        companyWebsite,
-        jobProfile,
-        jobCategory,
-        stipendType, // "Paid" or "Unpaid"
-        salary,
-        jobType,
-        experienceLevel,
-        location,
-        applicationDeadline,
-        openings,
-        requiredSkills,
-        educationQualification,
-        contactEmail,
-        jobDescription,
-        postedAt,
-        status,
-    } = job;
+  const {
+    companyName,
+    jobProfile,
+    compensationType,
+    salary,
+    jobType,
+    experienceLevel,
+    location,
+    applicationDeadline,
+    openings,
+    requiredSkills,
+    education,
+    contactEmail,
+    jobDescription,
+    postedAt,
+    status = "Open",
+  } = job;
 
-    return (
-        <div className="space-y-3 overflow-y-scroll h-[78vh]">
-            {/* Job Info */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold">
-                        Job Information
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="grid md:grid-cols-2 md:gap-4">
-                    <div>
-                        <p className="font-semibold">Company Name</p>
-                        <p className="text-gray-500">{companyName}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Company Website / LinkedIn</p>
-                        {companyWebsite ? (
-                            <Link
-                                href={companyWebsite}
-                                target="_blank"
-                                className="text-blue-600 hover:underline"
-                            >
-                                {companyWebsite}
-                            </Link>
-                        ) : (
-                            <p className="text-gray-500">N/A</p>
-                        )}
-                    </div>
-                    <div>
-                        <p className="font-semibold">Job Profile</p>
-                        <p className="text-gray-500">{jobProfile}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Job Category</p>
-                        <p className="text-gray-500">{jobCategory}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Stipend</p>
-                        <p className="text-gray-500">{stipendType}</p>
-                    </div>
-                    {stipendType === "Paid" && (
-                        <div>
-                            <p className="font-semibold">Salary / Stipend</p>
-                            <p className="text-gray-500">{salary}</p>
-                        </div>
-                    )}
-                    <div>
-                        <p className="font-semibold">Job Type</p>
-                        <p className="text-gray-500">{jobType}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Experience Level</p>
-                        <p className="text-gray-500">{experienceLevel}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Location</p>
-                        <p className="text-gray-500">{location}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Application Deadline</p>
-                        <p className="text-gray-500">
-                            {applicationDeadline
-                                ? new Date(applicationDeadline).toLocaleDateString()
-                                : "N/A"}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Number of Openings</p>
-                        <p className="text-gray-500">{openings}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Education Qualification</p>
-                        <p className="text-gray-500">{educationQualification}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Contact Email</p>
-                        <p className="text-gray-500">{contactEmail}</p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Posted On</p>
-                        <p className="text-gray-500">
-                            {postedAt ? new Date(postedAt).toLocaleDateString() : "N/A"}
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
+  // Convert skills string to array if needed
+  const skillsArray = Array.isArray(requiredSkills)
+    ? requiredSkills
+    : requiredSkills
+    ? requiredSkills.split(",").map((skill) => skill.trim())
+    : [];
 
-            {/* Skills */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Required Skills</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-2">
-                    {requiredSkills && requiredSkills.length > 0 ? (
-                        requiredSkills.map((skill, idx) => (
-                            <Badge key={idx} variant="outline">
-                                {skill}
-                            </Badge>
-                        ))
-                    ) : (
-                        <p className="text-gray-500">No skills specified.</p>
-                    )}
-                </CardContent>
-            </Card>
+  return (
+    <div className="space-y-4 overflow-y-scroll h-[78vh] p-2">
+      {/* Job Info */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 shadow-md">
+        <CardHeader>
+          <CardTitle className="text-lg font-bold text-gray-900 dark:text-white">
+            Job Information
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="grid md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Company Name</p>
+            <p>{companyName || "N/A"}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Job Profile</p>
+            <p>{jobProfile || "N/A"}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Job Type</p>
+            <p>{jobType || "N/A"}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Compensation</p>
+            <p>{compensationType || "N/A"}</p>
+          </div>
+          {compensationType === "paid" && salary && (
+            <div>
+              <p className="font-semibold text-gray-800 dark:text-gray-200">Salary</p>
+              <p>{salary}</p>
+            </div>
+          )}
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Location</p>
+            <p>{location || "N/A"}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Experience Level</p>
+            <p>{experienceLevel || "N/A"}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Openings</p>
+            <p>{openings || 1}</p>
+          </div>
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Application Deadline</p>
+            <p>{applicationDeadline || "N/A"}</p>
+          </div>
+        </CardContent>
+      </Card>
 
-            {/* Description */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Job Description</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <p className="text-gray-600 whitespace-pre-line">
-                        {jobDescription || "No description provided."}
-                    </p>
-                </CardContent>
-            </Card>
+      {/* Education */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
+        <CardHeader>
+          <CardTitle className="text-gray-900 dark:text-white">Education</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300">{education || "Any Graduate"}</p>
+        </CardContent>
+      </Card>
 
-            {/* Status */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Status</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Badge
-                        className={`${
-                            status === "Open"
-                                ? "bg-green-600 text-white"
-                                : "bg-red-500 text-white"
-                        }`}
-                    >
-                        {status}
-                    </Badge>
-                </CardContent>
-            </Card>
-        </div>
-    );
+      {/* Skills */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
+        <CardHeader>
+          <CardTitle className="text-gray-900 dark:text-white">Skills</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-2">
+          {skillsArray.length > 0 ? (
+            skillsArray.map((skill, idx) => (
+              <Badge
+                key={idx}
+                className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 border border-gray-300 dark:border-gray-700"
+              >
+                {skill}
+              </Badge>
+            ))
+          ) : (
+            <p className="text-gray-500 dark:text-gray-400">No skills specified.</p>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Job Description */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
+        <CardHeader>
+          <CardTitle className="text-gray-900 dark:text-white">Job Description</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
+            {jobDescription || "No description provided."}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Contact */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
+        <CardHeader>
+          <CardTitle className="text-gray-900 dark:text-white">Contact</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300">
+            <strong>Email:</strong> {contactEmail || "N/A"}
+          </p>
+        </CardContent>
+      </Card>
+
+      {/* Status */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
+        <CardHeader>
+          <CardTitle className="text-gray-900 dark:text-white">Status</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Badge
+            className={`px-3 py-1 ${
+              status === "Open" ? "bg-green-600 text-white" : "bg-red-500 text-white"
+            }`}
+          >
+            {status}
+          </Badge>
+        </CardContent>
+      </Card>
+
+      {/* Posted Date */}
+      <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
+        Posted At: {postedAt ? new Date(postedAt).toLocaleDateString() : "N/A"}
+      </p>
+    </div>
+  );
 };
 
-export default JobsDetails;
+export default JobDetails;

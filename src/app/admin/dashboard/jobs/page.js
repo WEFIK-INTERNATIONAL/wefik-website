@@ -1,65 +1,118 @@
 "use client";
-import React, { useState, useMemo } from "react";
-import JobsTableHeader from "@/components/dashboard/JobsTableHeader";
-import JobsTable from "@/components/dashboard/JobsTable";
-import JobsTableFooter from "@/components/dashboard/JobsTableFooter";
+import React, { useState } from "react";
+import Link from "next/link";
 
+import TableHeader from "@/components/dashboard/TableHeader";
+import DataTable from "@/components/dashboard/DataTable";
+import TableFooter from "@/components/dashboard/TableFooter";
+import ActionDropdown from "@/components/dashboard/ActionDropdown";
+
+import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/utils/formatDate";
 import { useDashboardContext } from "@/contexts";
+import { usePagination, useSearchAndSort } from "@/app/hooks";
+import JobStatus from "@/components/dashboard/JobStatus";
+
+// ✅ Status Badge for Jobs
+const getJobStatusBadge = (status) => {
+  switch (status) {
+    case "Open":
+      return "bg-green-500 text-white";
+    case "Closed":
+      return "bg-red-500 text-white";
+    case "Draft":
+      return "bg-yellow-500 text-white";
+    default:
+      return "bg-slate-400 text-white";
+  }
+};
 
 export default function JobsPage() {
-  const { isLoading, jobs } = useDashboardContext();
+  const { isLoading, jobs, deleteJob } = useDashboardContext();
+
   const [searchTerm, setSearchTerm] = useState("");
   const [sortOrder, setSortOrder] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
 
-  // 🔍 Filtering + Sorting
-  const filteredJobs = useMemo(() => {
-    let result = [...jobs];
-
-    if (searchTerm) {
-      result = result.filter(
-        (job) =>
-          job.id.toString().includes(searchTerm.toString()) ||
-          job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.employmentType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          job.location.toLowerCase().includes(searchTerm.toLowerCase())
-      );
-    }
-
-    if (sortOrder === "newest") {
-      result = [...result].sort(
-        (a, b) => new Date(b.postedDate) - new Date(a.postedDate)
-      );
-    } else if (sortOrder === "oldest") {
-      result = [...result].sort(
-        (a, b) => new Date(a.postedDate) - new Date(b.postedDate)
-      );
-    }
-
-    return result;
-  }, [jobs, searchTerm, sortOrder]);
+  // 🔍 Search + Sort
+  const filteredJobs = useSearchAndSort({
+    data: jobs,
+    searchTerm,
+    sortOrder,
+    searchFields: ["id", "title", "employmentType", "location", "status"],
+    sortField: "postedDate",
+  });
 
   // 📄 Pagination
-  const totalItems = filteredJobs.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const indexOfLast = currentPage * itemsPerPage;
-  const indexOfFirst = indexOfLast - itemsPerPage;
-  const currentItems = filteredJobs.slice(indexOfFirst, indexOfLast);
+  const pagination = usePagination({
+    data: filteredJobs,
+    itemsPerPage: 10,
+  });
+
+  // 📝 Columns for Jobs Table
+  const columns = [
+    { header: "Job ID", accessor: "jobId" },
+    { header: "Job Title", accessor: "title" },
+    { header: "Employment Type", accessor: "type" },
+    { header: "Location", accessor: "location" },
+    {
+      header: "Posted Date",
+      accessor: "postedDate",
+      cell: (row) => formatDate(row.postedAt),
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      cell: (row) => (
+        <Badge
+          className={`px-2 py-1 rounded-full ${getJobStatusBadge(row.status)}`}
+        >
+          {row.status}
+        </Badge>
+      ),
+    },
+    {
+      header: "Actions",
+      accessor: "_id",
+      cell: (row) => (
+        <div className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
+          <ActionDropdown
+            id={row._id}
+            label="Job Actions"
+            viewDetailsPath="/admin/dashboard/jobs/"
+            onEdit={(id) =>(<JobStatus id={id} currentStatus ={row.status}/>)}
+            onDelete={deleteJob}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="">
-      <JobsTableHeader onSearch={setSearchTerm} onSort={setSortOrder} />
-      <JobsTable isLoading={isLoading} currentItems={currentItems} />
-      <JobsTableFooter
+    <div>
+      <TableHeader
+        title="Jobs Table"
+        subtitle="Manage all job postings"
+        onSearch={setSearchTerm}
+        onSort={setSortOrder}
+        sortOptions={[
+          { label: "Newest", value: "newest" },
+          { label: "Oldest", value: "oldest" },
+        ]}>
+        <Link
+          href="/admin/dashboard/jobs/create-job"
+          className="px-4 py-2 bg-[#9AE600]/80 text-white rounded hover:bg-[#9AE600]/70 transition"
+        >
+          Create Job
+        </Link>
+      </TableHeader>
+
+      <DataTable
         isLoading={isLoading}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        totalPages={totalPages}
-        totalItems={totalItems}
-        indexOfFirst={indexOfFirst}
-        indexOfLast={indexOfLast}
+        columns={columns}
+        data={pagination.currentItems}
       />
+
+      <TableFooter isLoading={isLoading} pagination={pagination} />
     </div>
   );
 }

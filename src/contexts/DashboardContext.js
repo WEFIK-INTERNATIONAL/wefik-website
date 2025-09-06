@@ -5,6 +5,7 @@ import {
     useState,
     useEffect,
     useCallback,
+    use,
 } from "react";
 import { toast } from "sonner";
 import applicationService from "@/services/ApplicationServices";
@@ -33,9 +34,6 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
-    useEffect(() => {
-        fetchApplications();
-    }, []);
     const fetchjobs = async () => {
         try {
             const response = await jobServices.getJobs();
@@ -47,6 +45,10 @@ export const DashboardProvider = ({ children }) => {
             setIsLoading(false);
         }
     };
+    useEffect(() => {
+        fetchApplications();
+        fetchjobs();
+    }, []);
 
     /** -----------------------------
      *  Optimistic Update Handler
@@ -70,6 +72,24 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+    const updatejobSatatus = async (id, data) => {
+        try {
+            const response = await jobServices.updateJob(
+                id,
+                data
+            );
+
+            const updatedApp = response?.data ?? response;
+
+            setJobs((prev) =>
+                prev.map((app) => (app._id === id ? updatedApp : app))
+            );
+            toast.success("✅ Update status successful!");
+        } catch (error) {
+            console.error("❌ Update status failed:", error);
+            toast.error("Update status failed. Please try again.");
+        }
+    };
     /** -----------------------------
      *  Optimistic Delete Handler
      * ----------------------------- */
@@ -84,6 +104,16 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+    const deleteJob = async (id) => {
+        try {
+            await jobServices.deleteJob(id);
+            setJobs((prev) => prev.filter((app) => app._id !== id));
+            toast.success("🗑️ Job deleted successfully!");
+        } catch (error) {
+            console.error("❌ Delete Job failed:", error);
+            toast.error("Delete Job failed. Rolled back.");
+        }
+    };
     /** -----------------------------
      *  Context Value
      * ----------------------------- */
@@ -92,7 +122,9 @@ export const DashboardProvider = ({ children }) => {
         jobs,
         applications,
         updateApplicationSatatus,
+        updatejobSatatus,
         deleteApplication,
+        deleteJob
     };
 
     return (

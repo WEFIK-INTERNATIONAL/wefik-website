@@ -19,35 +19,41 @@ import applicationService from "@/services/ApplicationServices";
 import jobServices from "@/services/JobServices";
 
 const JobStatus = ({ id, currentStatus = "Open" }) => {
-    const { updateJob } = useDashboardContext();
+    const { updatejobSatatus } = useDashboardContext();
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
     const [open, setOpen] = useState(false);
-
+    const [isUpdating, setIsUpdating] = useState(false);
     useEffect(() => {
         if (open) {
             setSelectedStatus(currentStatus);
         }
     }, [open, currentStatus]);
 
-    // ✅ Only two statuses
-    const statuses = ["Open", "Closed"];
+    const statuses = ["Open", "Closed", "Draft"];
 
-    const getStatusBadge = (status) => {
+    const getJobStatusBadge = (status) => {
         switch (status) {
             case "Open":
                 return "bg-green-500 text-white";
             case "Closed":
                 return "bg-red-500 text-white";
+            case "Draft":
+                return "bg-yellow-500 text-white";
             default:
-                return "bg-gray-500 text-white";
+                return "bg-slate-400 text-white";
         }
     };
 
     const updateStatus = async () => {
-        await updateJob(id, { status: selectedStatus }, () =>
-            jobServices.updateJob(id, { status: selectedStatus })
-        );
-        setOpen(false);
+        setIsUpdating(true);
+        try {
+            updatejobSatatus(id, selectedStatus);
+            setOpen(false);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsUpdating(false);
+        }
     };
 
     return (
@@ -74,7 +80,7 @@ const JobStatus = ({ id, currentStatus = "Open" }) => {
                                 className="hover:cursor-pointer"
                             />
                             <Badge
-                                className={`px-4 rounded-full cursor-pointer ${getStatusBadge(
+                                className={`px-4 rounded-full cursor-pointer ${getJobStatusBadge(
                                     status
                                 )}`}
                             >
