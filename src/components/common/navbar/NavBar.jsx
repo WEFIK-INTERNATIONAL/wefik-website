@@ -1,19 +1,28 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { NavLogo } from "./NavLogo";
 import MenuBtn from "./MenuBtn";
 import Link from "next/link";
-import { usePathname } from "next/navigation"; // 🔹 import hook
+import { usePathname } from "next/navigation";
 
 function Navbar() {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const pathname = usePathname(); // 🔹 get current path
+    const [isScrolled, setIsScrolled] = useState(false);
+    const pathname = usePathname();
 
     const handleToggle = () => setIsMenuOpen((prev) => !prev);
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.innerWidth < 768) {
+                setIsScrolled(window.scrollY > 10);
+            }
+        };
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
-    // Variants
     const menuPanelVariants = {
         closed: {
             x: "100%",
@@ -68,8 +77,14 @@ function Navbar() {
 
     return (
         <div className="z-49 w-full relative overflow-x-hidden">
-            <div className="fixed top-5 left-0 z-50">
-                <div className="flex justify-between w-screen px-4 md:px-10">
+            <div
+                className={`fixed top-0 py-3 md:top-5 md:py-0 left-0 z-50 w-full transition-all duration-500 ${
+                    isScrolled
+                        ? "bg-black/40 backdrop-blur-md"
+                        : "bg-transparent"
+                }`}
+            >
+                <div className="flex justify-between w-screen pl-4 pr-3 md:px-10">
                     <NavLogo isMenuOpen={isMenuOpen} />
                     <MenuBtn isMenuOpen={isMenuOpen} onToggle={handleToggle} />
                 </div>
@@ -85,25 +100,27 @@ function Navbar() {
             />
 
             <motion.div
-                className="fixed top-0 right-0 h-full w-full max-w-lg 
+                className={`fixed top-0 right-0 h-full w-full max-w-lg 
              bg-gradient-to-b from-black via-black/95 to-black 
-             border-l border-lime-400/20 shadow-[0_0_60px_rgba(163,230,53,0.15)] z-40"
+             border-l border-lime-400/20 z-40 ${
+                 isMenuOpen ? "shadow-[0_0_60px_rgba(163,230,53,0.15)]" : ""
+             }`}
                 variants={menuPanelVariants}
                 initial="closed"
                 animate={isMenuOpen ? "open" : "closed"}
             >
                 <div className="absolute inset-0 bg-gradient-radial from-lime-400/10 via-transparent to-transparent pointer-events-none" />
 
-                <div className="relative flex flex-col justify-center items-start h-full px-10 pt-25 pb-10">
+                <div className="relative flex flex-col justify-center items-start h-full pt-25 px-10 pb-10 gap-5">
                     <motion.nav
                         className="flex-shrink-0"
                         variants={menuItemsContainer}
                         initial="closed"
                         animate={isMenuOpen ? "open" : "closed"}
                     >
-                        <ul className="space-y-5 md:space-y-10">
+                        <ul className="space-y-5 md:space-y-7">
                             {menuItems.map((item) => {
-                                const isActive = pathname === item.href; // 🔹 check active
+                                const isActive = pathname === item.href;
                                 return (
                                     <motion.li
                                         key={item.name}
