@@ -82,7 +82,7 @@ const DropDownLinks = (props) => {
                         onClick={() => handleClick(index)}
                         className="cursor-pointer flex items-center justify-between"
                     >
-                        <h3 className="bg-gradient-to-r from-lime-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
+                        <h3 className="bg-gradient-to-r from-lime-400 to-lime-200 bg-clip-text text-transparent font-semibold">
                             {link.title}
                         </h3>
                         <svg
@@ -144,20 +144,27 @@ function Footer() {
             <div>
                 <div className="mx-6">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-12">
-                        <Link
-                            href="/"
-                            className="flex-shrink-0 md:hidden lg:flex"
-                        >
-                            <p className="text-2xl md:text-4xl font-medium">
-                                WEFIK
+                        <div className="flex flex-col gap-2">
+                            <Link
+                                href="/"
+                                className="flex-shrink-0 md:hidden lg:flex"
+                            >
+                                <p className="text-2xl md:text-4xl font-medium">
+                                    WEFIK
+                                </p>
+                            </Link>
+                            <p className="text-white/50 max-w-lg">
+                                From websites and apps to design, branding, and
+                                digital campaigns, we turn your ideas into
+                                reality.
                             </p>
-                        </Link>
+                        </div>
                         <div className="flex-1">
                             <DropDownLinks allLinks={allLinks} />
                             <div className="hidden md:flex md:justify-center lg:justify-end gap-20 w-full">
                                 {allLinks.map((link, index) => (
                                     <div key={index} className="flex flex-col">
-                                        <h3 className="bg-gradient-to-r from-lime-400 via-purple-400 to-pink-400 bg-clip-text text-transparent font-semibold">
+                                        <h3 className="bg-gradient-to-r from-lime-400 to-lime-100 bg-clip-text text-transparent font-semibold">
                                             {link.title}
                                         </h3>
                                         <ul className="mt-4 flex flex-col gap-2">
@@ -180,15 +187,31 @@ function Footer() {
                         </div>
                     </div>
 
-                    <div className="mt-20">
+                    <div className="mt-20 flex flex-col md:flex-row md:justify-between mb-5">
                         <p className="text-white/40">
                             All rights reserved 2025 ©{" "}
                             <span className="text-lime-400">WEFIK</span>
                         </p>
+                        <div className="flex gap-5">
+                            <Link
+                                href="/legal/data-protection"
+                                className="text-white/50 hover:text-white transition"
+                            >
+                                Data Protection
+                            </Link>
+                            <Link
+                                href="/legal/imprint"
+                                className="text-white/50 hover:text-white transition"
+                            >
+                                Imprint
+                            </Link>
+                        </div>
                     </div>
                 </div>
             </div>
-            <CallToActionCom />
+            <div className="pt-5">
+                <CallToActionCom />
+            </div>
         </section>
     );
 }
