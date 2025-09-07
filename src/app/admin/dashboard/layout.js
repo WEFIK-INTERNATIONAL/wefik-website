@@ -9,7 +9,7 @@ import { Button } from "@/components/ui/button";
 import { DashboardProvider } from "@/contexts/DashboardContext";
 import DashboardLinks from "@/components/dashboard/DashboardLinks";
 
-import { LogOut } from "lucide-react";
+import { LogOut, Menu, X } from "lucide-react";
 import wefikLogo from "@/assets/icons/wefikLogo.svg";
 
 import { ThemeProvider } from "next-themes";
@@ -35,8 +35,8 @@ const Layout = ({ children }) => {
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <DashboardProvider>
-                <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
-                    <aside className="hidden md:block border-r">
+                <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-y-hidden">
+                    <aside className="hidden border-r md:block">
                         <div className="flex flex-col max-h-screen h-full gap-2">
                             <div className="h-18 flex items-center border-b px-4">
                                 <Link
@@ -57,19 +57,67 @@ const Layout = ({ children }) => {
                         </div>
                     </aside>
 
-                    <div className="flex flex-col">
-                        <header className="h-18 mb-2 px-4 flex items-center justify-between border-b">
-                            <div className="flex items-center justify-center gap-3">
+                    <div
+                        className={`fixed inset-0 z-40 bg-black/40 transition-opacity ${
+                            sidebarOpen
+                                ? "opacity-100"
+                                : "opacity-0 pointer-events-none"
+                        } md:hidden`}
+                        onClick={() => setSidebarOpen(false)}
+                    />
+                    <aside
+                        className={`fixed inset-y-0 left-0 z-50 w-screen bg-gray-100 dark:bg-slate-950 shadow-lg transform transition-transform md:hidden ${
+                            sidebarOpen ? "translate-x-0" : "-translate-x-full"
+                        }`}
+                    >
+                        <div className="flex items-center justify-between px-4 h-16 border-b">
+                            <Link
+                                href="/"
+                                className="text-xl font-bold flex items-center gap-2"
+                                onClick={() => setSidebarOpen(false)}
+                            >
                                 <Image
-                                    src="/icons/groundhog.png"
+                                    src={wefikLogo}
+                                    width={32}
+                                    height={32}
                                     alt="Wefik Logo"
-                                    width={50}
-                                    height={50}
-                                    className="object-contain h-10 w-10"
+                                    className="w-8 h-8"
                                 />
-                                <h1 className="text-2xl font-semibold">
-                                    Admin
-                                </h1>
+                                WEFIK
+                            </Link>
+                            <button
+                                className="p-2 rounded-md hover:bg-gray-200 dark:hover:bg-gray-700"
+                                onClick={() => setSidebarOpen(false)}
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <div className="p-4">
+                            <DashboardLinks
+                                onClick={() => setSidebarOpen(false)}
+                            />
+                        </div>
+                    </aside>
+
+                    <div className="flex flex-col w-screen md:w-full">
+                        <header className="h-18 mb-2 px-4 flex items-center justify-between border-b">
+                            <div className="flex items-center justify-center gap-4">
+                                <Menu
+                                    className="md:hidden"
+                                    onClick={() => setSidebarOpen(true)}
+                                />
+                                <div className="flex items-center justify-center gap-3">
+                                    <Image
+                                        src="/icons/groundhog.png"
+                                        alt="Wefik Logo"
+                                        width={50}
+                                        height={50}
+                                        className="object-contain h-10 w-10"
+                                    />
+                                    <h1 className="text-xl md:text-2xl font-semibold">
+                                        Admin
+                                    </h1>
+                                </div>
                             </div>
                             <div className="flex items-center justify-center gap-3">
                                 <ThemeToggle />
@@ -85,7 +133,7 @@ const Layout = ({ children }) => {
                                 </Button>
                             </div>
                         </header>
-                        <div className="px-6 py-4">{children}</div>
+                        <div className="px-4 py-2 md:px-6 md:py-4">{children}</div>
                     </div>
                 </div>
             </DashboardProvider>

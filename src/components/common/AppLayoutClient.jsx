@@ -19,7 +19,7 @@ export default function AppLayoutClient({ children }) {
             <BackgroundNoise />
             <LenisProvider>
                 <Navbar />
-                <div>{children}</div>
+                <main>{children}</main>
                 <Footer />
             </LenisProvider>
         </div>

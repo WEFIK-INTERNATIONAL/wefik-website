@@ -5,7 +5,7 @@ import StatsCard from "@/components/dashboard/StatsCard";
 import { useDashboardContext } from "@/contexts";
 
 const Dashboard = () => {
-    const { isLoading,stats } = useDashboardContext();
+    const { isLoading, stats } = useDashboardContext();
 
     const totalJobs = stats.totalJobs?.[0]?.count || 0;
     const activeJobs =
@@ -15,14 +15,14 @@ const Dashboard = () => {
 
     const totalApplications = stats.totalApplications?.[0]?.count || 0;
     const pending =
-        stats.applicationsByStatus?.find((s) => s._id === "Pending")
-            ?.count || 0;
+        stats.applicationsByStatus?.find((s) => s._id === "Pending")?.count ||
+        0;
     const shortlisted =
         stats.applicationsByStatus?.find((s) => s._id === "Shortlisted")
             ?.count || 0;
 
     return (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-6 p-6 overflow-y-scroll">
             <StatsCard
                 title="Total Jobs Posted"
                 isLoading={isLoading}

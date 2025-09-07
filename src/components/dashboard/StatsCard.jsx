@@ -24,12 +24,12 @@ const StatsCard = ({
     glowColor = "bg-purple-600/20",
 }) => {
     return (
-        <Card className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
+        <Card className="relative overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 shadow-lg hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 gap-1">
             <div
                 className={`absolute -top-8 -right-8 w-32 h-32 ${glowColor} rounded-full blur-2xl`}
             />
 
-            <CardHeader>
+            <CardHeader className="">
                 <CardTitle className="flex justify-between items-center text-gray-200 text-lg font-semibold">
                     {title}
                     {Icon && (
@@ -64,7 +64,7 @@ const StatsCard = ({
                 )}
             </CardContent>
 
-            <CardFooter className="flex justify-between items-center">
+            <CardFooter className="flex justify-between items-center mt-3">
                 {badgeText && (
                     <Badge className="bg-purple-600/20 text-purple-300 border border-purple-500/30">
                         {isLoading ? "Loading..." : badgeText}

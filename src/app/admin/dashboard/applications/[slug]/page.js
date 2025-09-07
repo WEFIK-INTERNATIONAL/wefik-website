@@ -17,7 +17,7 @@ const Page = ({ params }) => {
 	const application = applications.find((app) => app._id == slug);
 
 	return (
-		<div className="max-w-6xl mx-auto space-y-3 p-2">
+		<div className="max-w-6xl mx-auto space-y-3 md:p-2">
 			{/* Back Button */}
 			<div className="w-20">
 				<Button

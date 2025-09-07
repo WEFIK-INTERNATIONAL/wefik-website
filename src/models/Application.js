@@ -63,11 +63,6 @@ const EducationInfoSchema = new mongoose.Schema({
 
 const SkillSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
-    level: {
-        type: String,
-        enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
-        default: "Beginner",
-    },
 });
 
 const ApplicationSchema = new mongoose.Schema(
@@ -103,7 +98,7 @@ ApplicationSchema.index({ status: 1 });
 ApplicationSchema.index({ appliedAt: -1 });
 ApplicationSchema.index(
     { jobId: 1, "candidateInfo.email": 1 },
-    { unique: true } // unique per job
+    { unique: true }
 );
 
 export default mongoose.models.Application ||
