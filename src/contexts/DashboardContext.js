@@ -5,10 +5,13 @@ import {
     useState,
     useEffect,
     useCallback,
+    use,
 } from "react";
 import { toast } from "sonner";
 import applicationService from "@/services/ApplicationServices";
+import jobServices from "@/services/JobServices";
 import API from "@/lib/axiosConfig";
+
 
 const DashboardContext = createContext(null);
 
@@ -34,6 +37,19 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+
+    const fetchjobs = async () => {
+        try {
+            const response = await jobServices.getJobs();
+            setJobs(response?.data ?? []);
+        } catch (error) {
+            console.error("❌ Failed to fetch Job:", error);
+            toast.error("Failed to load job.");
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
     const fetchStats = async () => {
         try {
             const response = await API.get("/stats");
@@ -41,6 +57,7 @@ export const DashboardProvider = ({ children }) => {
         } catch (error) {
             console.error("❌ Failed to fetch stats:", error);
             toast.error("Failed to load stats.");
+
         } finally {
             setIsLoading(false);
         }
@@ -49,6 +66,7 @@ export const DashboardProvider = ({ children }) => {
     useEffect(() => {
         fetchStats();
         fetchApplications();
+        fetchjobs();
     }, []);
 
     /** -----------------------------
@@ -74,6 +92,24 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+    const updatejobSatatus = async (id, data) => {
+        try {
+            const response = await jobServices.updateJob(
+                id,
+                data
+            );
+
+            const updatedApp = response?.data ?? response;
+
+            setJobs((prev) =>
+                prev.map((app) => (app._id === id ? updatedApp : app))
+            );
+            toast.success("✅ Update status successful!");
+        } catch (error) {
+            console.error("❌ Update status failed:", error);
+            toast.error("Update status failed. Please try again.");
+        }
+    };
     /** -----------------------------
      *  Optimistic Delete Handler
      * ----------------------------- */
@@ -89,6 +125,16 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+    const deleteJob = async (id) => {
+        try {
+            await jobServices.deleteJob(id);
+            setJobs((prev) => prev.filter((app) => app._id !== id));
+            toast.success("🗑️ Job deleted successfully!");
+        } catch (error) {
+            console.error("❌ Delete Job failed:", error);
+            toast.error("Delete Job failed. Rolled back.");
+        }
+    };
     /** -----------------------------
      *  Context Value
      * ----------------------------- */
@@ -98,7 +144,9 @@ export const DashboardProvider = ({ children }) => {
         stats,
         applications,
         updateApplicationSatatus,
+        updatejobSatatus,
         deleteApplication,
+        deleteJob
     };
 
     return (
