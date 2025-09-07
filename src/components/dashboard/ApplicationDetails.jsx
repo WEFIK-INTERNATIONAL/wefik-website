@@ -43,12 +43,10 @@ const ApplicationDetails = ({ application }) => {
         },
     ];
 
-    console.log(socialLinks);
-
     return (
         <div className="space-y-3 overflow-y-scroll h-[78vh]">
             {/* Candidate Info */}
-            <Card>
+            <Card className="dark:text-white">
                 <CardHeader>
                     <CardTitle className="text-lg font-bold">
                         Candidate Information
@@ -57,21 +55,25 @@ const ApplicationDetails = ({ application }) => {
                 <CardContent className="grid md:grid-cols-2 md:gap-4">
                     <div>
                         <p className="font-semibold">Full Name</p>
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 dark:text-gray-300">
                             {candidateInfo?.fullName}
                         </p>
                     </div>
                     <div>
                         <p className="font-semibold">Email</p>
-                        <p className="text-gray-500">{candidateInfo?.email}</p>
+                        <p className="text-gray-500 dark:text-gray-300">
+                            {candidateInfo?.email}
+                        </p>
                     </div>
                     <div>
                         <p className="font-semibold">Phone</p>
-                        <p className="text-gray-500">{candidateInfo?.phone}</p>
+                        <p className="text-gray-500 dark:text-gray-300">
+                            {candidateInfo?.phone}
+                        </p>
                     </div>
                     <div>
                         <p className="font-semibold">Address</p>
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 dark:text-gray-300">
                             {candidateInfo?.address}, {candidateInfo?.city},{" "}
                             {candidateInfo?.state}, {candidateInfo?.country} -{" "}
                             {candidateInfo?.pinCode}
@@ -82,7 +84,7 @@ const ApplicationDetails = ({ application }) => {
 
             {/* Resume */}
             {resume?.url && (
-                <Card>
+                <Card className="dark:text-white">
                     <CardHeader>
                         <CardTitle>Resume</CardTitle>
                     </CardHeader>
@@ -101,7 +103,7 @@ const ApplicationDetails = ({ application }) => {
 
             {/* Resume */}
             {socialLinks && (
-                <Card>
+                <Card className="dark:text-white">
                     <CardHeader>
                         <CardTitle>Social Links</CardTitle>
                     </CardHeader>
@@ -129,7 +131,7 @@ const ApplicationDetails = ({ application }) => {
             {/* Education */}
             <Card>
                 <CardHeader>
-                    <CardTitle className="text-lg font-bold">
+                    <CardTitle className="text-lg font-bold dark:text-white">
                         Education
                     </CardTitle>
                 </CardHeader>
@@ -138,46 +140,62 @@ const ApplicationDetails = ({ application }) => {
                         educationInfo.map((edu, index) => (
                             <div key={index} className="mb-4">
                                 <p className="font-semibold">
-                                    <span className="font-bold">Degree:</span>{" "}
-                                    {edu?.degree}
+                                    <span className="font-bold dark:text-white">
+                                        Degree:
+                                    </span>{" "}
+                                    <span className="text-gray-600 dark:text-gray-300">
+                                        {edu?.degree}
+                                    </span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">
+                                    <span className="font-bold dark:text-white">
                                         Institution:
                                     </span>{" "}
-                                    {edu?.institution}
+                                    <span className="text-gray-600 dark:text-gray-300">
+                                        {edu?.institution}
+                                    </span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">
+                                    <span className="font-bold dark:text-white">
                                         Field Of Study:
                                     </span>{" "}
-                                    {edu?.fieldOfStudy}
+                                    <span className="text-gray-600 dark:text-gray-300">
+                                        {edu?.fieldOfStudy}
+                                    </span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Date: </span>
-                                    {edu?.startDate
-                                        ? new Date(
-                                              edu?.startDate
-                                          ).toLocaleDateString()
-                                        : "N/A"}{" "}
-                                    -{" "}
-                                    {edu?.endDate
-                                        ? new Date(
-                                              edu?.endDate
-                                          ).toLocaleDateString()
-                                        : "Present"}
+                                    <span className="font-bold dark:text-white">
+                                        Date:
+                                    </span>{" "}
+                                    <span className="text-gray-600 dark:text-gray-300">
+                                        {edu?.startDate
+                                            ? new Date(
+                                                  edu?.startDate
+                                              ).toLocaleDateString()
+                                            : "N/A"}{" "}
+                                        -{" "}
+                                        {edu?.endDate
+                                            ? new Date(
+                                                  edu?.endDate
+                                              ).toLocaleDateString()
+                                            : "Present"}
+                                    </span>
                                 </p>
                                 <p>
-                                    <span className="font-bold">Grade:</span>{" "}
-                                    {edu?.grade || "N/A"}
+                                    <span className="font-bold dark:text-white">
+                                        Grade:
+                                    </span>{" "}
+                                    <span className="text-gray-600 dark:text-gray-300">
+                                        {edu?.grade || "N/A"}
+                                    </span>
                                 </p>
                                 {index !== educationInfo.length - 1 && (
-                                    <Separator className="my-2" />
+                                    <Separator className="my-2 dark:bg-gray-700" />
                                 )}
                             </div>
                         ))
                     ) : (
-                        <p className="text-gray-500">
+                        <p className="text-gray-500 dark:text-gray-400">
                             No education info available.
                         </p>
                     )}
@@ -185,7 +203,7 @@ const ApplicationDetails = ({ application }) => {
             </Card>
 
             {/* Skills */}
-            <Card>
+            <Card className="dark:text-white">
                 <CardHeader>
                     <CardTitle className="text-lg font-bold">Skills</CardTitle>
                 </CardHeader>
@@ -203,7 +221,7 @@ const ApplicationDetails = ({ application }) => {
             </Card>
 
             {/* Status */}
-            <Card>
+            <Card className="dark:text-white">
                 <CardHeader>
                     <CardTitle className="text-lg font-bold">
                         Application Status
@@ -225,7 +243,7 @@ const ApplicationDetails = ({ application }) => {
                     >
                         {status}
                     </Badge>
-                    <p className="text-sm text-gray-500 mt-2">
+                    <p className="text-sm text-gray-500 mt-2 dark:text-white">
                         Applied on {new Date(appliedAt).toLocaleDateString()}
                     </p>
                 </CardContent>

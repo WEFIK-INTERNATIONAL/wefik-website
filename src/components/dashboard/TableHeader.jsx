@@ -54,7 +54,7 @@ const TableHeader = ({
                 {onSearch && (
                     <div className="relative flex items-center w-full sm:w-72">
                         <input
-                            className="bg-gray-200/30 w-full py-2 pl-4 pr-10 rounded-md text-sm md:text-sm"
+                            className="bg-gray-200/30 w-full py-2 pl-4 pr-10 rounded-md text-sm md:text-sm focus:outline-none focus:ring-1 focus:ring-[#9AE600]"
                             type="text"
                             placeholder="Search..."
                             value={searchTerm}

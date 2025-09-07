@@ -97,12 +97,14 @@ export default function ApplicationsPage() {
             header: "Actions",
             accessor: "_id",
             cell: (row) => (
-                <div className="text-center sticky right-0 bg-white shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
+                <div className="text-center sticky right-0 shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
                     <ActionDropdown
                         id={row._id}
                         label="Application Actions"
                         viewDetailsPath="/admin/dashboard/applications/"
-                        onEdit={(id) => <EditStatus id={id} />}
+                        onEdit={(id) => (
+                            <EditStatus id={id} currentStatus={row.status} />
+                        )}
                         onDelete={deleteApplication}
                     />
                 </div>
