@@ -7,7 +7,6 @@ export async function POST(req) {
     try {
         await dbConnect();
         const body = await req.json();
-
         const job = await Job.create(body);
 
         return successResponse(

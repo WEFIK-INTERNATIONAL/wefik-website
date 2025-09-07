@@ -38,8 +38,8 @@ export default function JobsPage() {
     data: jobs,
     searchTerm,
     sortOrder,
-    searchFields: ["id", "title", "employmentType", "location", "status"],
-    sortField: "postedDate",
+    searchFields: ["id", "jobProfile", "employmentType", "location", "status"],
+    sortField: "applicationDeadline",
   });
 
   // 📄 Pagination
@@ -51,13 +51,13 @@ export default function JobsPage() {
   // 📝 Columns for Jobs Table
   const columns = [
     { header: "Job ID", accessor: "jobId" },
-    { header: "Job Title", accessor: "title" },
+    { header: "Job Title", accessor: "jobProfile" },
     { header: "Employment Type", accessor: "type" },
     { header: "Location", accessor: "location" },
     {
-      header: "Posted Date",
-      accessor: "postedDate",
-      cell: (row) => formatDate(row.postedAt),
+      header: "Last Date",
+      accessor: "applicationDeadline",
+      cell: (row) => formatDate(row.applicationDeadline),
     },
     {
       header: "Status",

@@ -9,28 +9,25 @@ const JobDetails = ({ job }) => {
   }
 
   const {
-    companyName,
     jobProfile,
     compensationType,
     salary,
-    jobType,
+    type,
     experienceLevel,
     location,
     applicationDeadline,
     openings,
-    requiredSkills,
+    skills,
     education,
     contactEmail,
-    jobDescription,
-    postedAt,
+    description,
+    createdAt,
     status = "Open",
   } = job;
 
-  // Convert skills string to array if needed
-  const skillsArray = Array.isArray(requiredSkills)
-    ? requiredSkills
-    : requiredSkills
-    ? requiredSkills.split(",").map((skill) => skill.trim())
+  // Normalize skills
+  const skillsArray = Array.isArray(skills)
+    ? skills.map((s) => (typeof s === "string" ? s : s.name))
     : [];
 
   return (
@@ -44,16 +41,12 @@ const JobDetails = ({ job }) => {
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
           <div>
-            <p className="font-semibold text-gray-800 dark:text-gray-200">Company Name</p>
-            <p>{companyName || "N/A"}</p>
-          </div>
-          <div>
             <p className="font-semibold text-gray-800 dark:text-gray-200">Job Profile</p>
             <p>{jobProfile || "N/A"}</p>
           </div>
           <div>
             <p className="font-semibold text-gray-800 dark:text-gray-200">Job Type</p>
-            <p>{jobType || "N/A"}</p>
+            <p>{type || "N/A"}</p>
           </div>
           <div>
             <p className="font-semibold text-gray-800 dark:text-gray-200">Compensation</p>
@@ -62,7 +55,7 @@ const JobDetails = ({ job }) => {
           {compensationType === "paid" && salary && (
             <div>
               <p className="font-semibold text-gray-800 dark:text-gray-200">Salary</p>
-              <p>{salary}</p>
+              <p>{salary.amount} {salary.currency}</p>
             </div>
           )}
           <div>
@@ -122,7 +115,7 @@ const JobDetails = ({ job }) => {
         </CardHeader>
         <CardContent>
           <p className="text-gray-700 dark:text-gray-300 whitespace-pre-line">
-            {jobDescription || "No description provided."}
+            {description || "No description provided."}
           </p>
         </CardContent>
       </Card>
@@ -139,6 +132,18 @@ const JobDetails = ({ job }) => {
         </CardContent>
       </Card>
 
+      {/* Posted Date */}
+      <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
+        <CardHeader>
+          <CardTitle className="text-gray-900 dark:text-white">Posted At</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 dark:text-gray-300">
+            {createdAt ? new Date(createdAt).toLocaleDateString() : "N/A"}
+          </p>
+        </CardContent>
+      </Card>
+
       {/* Status */}
       <Card className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 mt-2">
         <CardHeader>
@@ -146,19 +151,13 @@ const JobDetails = ({ job }) => {
         </CardHeader>
         <CardContent>
           <Badge
-            className={`px-3 py-1 ${
-              status === "Open" ? "bg-green-600 text-white" : "bg-red-500 text-white"
-            }`}
+            className={`px-3 py-1 ${status === "Open" ? "bg-green-600 text-white" : "bg-red-500 text-white"
+              }`}
           >
             {status}
           </Badge>
         </CardContent>
       </Card>
-
-      {/* Posted Date */}
-      <p className="text-gray-500 dark:text-gray-400 text-sm mt-2">
-        Posted At: {postedAt ? new Date(postedAt).toLocaleDateString() : "N/A"}
-      </p>
     </div>
   );
 };

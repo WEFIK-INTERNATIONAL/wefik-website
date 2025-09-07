@@ -15,11 +15,6 @@ const SalarySchema = new mongoose.Schema({
 // Skill schema
 const SkillSchema = new mongoose.Schema({
     name: { type: String, required: true, trim: true },
-    level: {
-        type: String,
-        enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
-        default: "Beginner",
-    },
 });
 
 // Main Job schema
@@ -31,13 +26,12 @@ const JobSchema = new mongoose.Schema(
             index: true,
             default: () => "JOB-" + Math.floor(1000 + Math.random() * 9000),
         },
-        companyName: { type: String, required: true, trim: true },
         jobProfile: { type: String, required: true, trim: true, index: true },
-        description: { type: String, required: true, trim: true },
+        description:{ type: String, required: true, trim: true },
         location: { type: String, required: true, trim: true, index: true },
         type: {
             type: String,
-            enum: ["Full-time", "Part-time", "Internship", "Contract"],
+            enum: ["Full-time", "Part-time", "Internship"],
             required: true,
             index: true,
         },

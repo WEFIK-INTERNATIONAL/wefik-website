@@ -1,45 +1,99 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CircleArrowLeft } from "lucide-react";
+import jobServices from "@/services/JobServices";
+import { toast } from "sonner";
 
 export default function JobPostForm() {
   const [formData, setFormData] = useState({
-    companyName: '',
-    jobId: '',
-    jobProfile: '',
-    compensationType: 'paid',
-    salary: '',
-    jobType: 'Internship',
-    experienceLevel: '0–1 years',
-    location: 'On-site',
-    applicationDeadline: '',
-    openings: 1,
-    requiredSkills: '',
-    education: 'Any Graduate',
-    contactEmail: '',
-    jobDescription: '',
+    jobProfile: "",
+    description: "",
+    location: "",
+    type: "",
+    compensationType: "",
+    salary: {
+      amount: "",
+      currency: "",
+    },
+    experienceLevel: "",
+    education: "",
+    openings: "",
+    skills: "",
+    contactEmail: "",
+    applicationDeadline: "",
+    status: "Open", // backend default
   });
 
+  // Change handler
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: type === 'radio' ? value : value,
-    }));
+    const { name, value } = e.target;
+
+    if (name === "amount" || name === "currency") {
+      setFormData((prev) => ({
+        ...prev,
+        salary: { ...prev.salary, [name]: value },
+      }));
+    } else {
+      setFormData((prev) => ({ ...prev, [name]: value }));
+    }
   };
 
-  const handleSubmit = (e) => {
+  // Submit
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the formData to an API
-    console.log('Form Submitted!', formData);
-    alert('Job post submitted successfully! Check the console for the data.');
+
+    if (!formData.jobProfile || !formData.contactEmail) {
+      toast.error("Job Profile and Contact Email are required.");
+      return;
+    }
+
+    const payload = {
+      ...formData,
+      salary: {
+        amount:
+          formData.compensationType === "paid"
+            ? Number(formData.salary.amount)
+            : 0,
+        currency: formData.salary.currency || "INR", // default only if empty
+      },
+      skills: formData.skills
+        .split(",")
+        .map((s) => ({ name: s.trim() }))
+        .filter((s) => s.name),
+      applicationDeadline: formData.applicationDeadline
+        ? new Date(formData.applicationDeadline)
+        : null,
+    };
+
+    try {
+      console.log("Submitting job:", payload);
+      await jobServices.createJob(payload);
+      toast.success("Job created successfully!");
+      setFormData({
+        jobProfile: "",
+        description: "",
+        location: "",
+        type: "",
+        compensationType: "",
+        salary: { amount: "", currency: "" },
+        experienceLevel: "",
+        education: "",
+        openings: "",
+        skills: "",
+        contactEmail: "",
+        applicationDeadline: "",
+        status: "Open",
+      });
+    } catch (err) {
+      toast.error("Failed to create job.");
+    }
   };
 
   return (
-
     <div className="h-[80vh] overflow-y-scroll">
+      {/* Back Button */}
       <div className="w-20">
         <Button
           asChild
@@ -52,218 +106,156 @@ export default function JobPostForm() {
           </Link>
         </Button>
       </div>
+
+      {/* Job Post Form */}
       <div className="w-full max-w-7xl shadow-lg rounded-2xl p-8">
         <h2 className="text-2xl font-bold mb-6 text-white-800">Post a Job</h2>
 
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Company Name */}
-          <div className="space-y-2">
-            <label htmlFor="companyName" className="font-medium">Company Name</label>
-            <input
-              type="text"
-              id="companyName"
-              name="companyName"
-              placeholder="Enter company name"
-              value={formData.companyName}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
-
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+        >
           {/* Job Profile */}
-          <div className="space-y-2">
-            <label htmlFor="jobProfile" className="font-medium">Job Profile</label>
-            <input
-              type="text"
-              id="jobProfile"
-              name="jobProfile"
-              placeholder="e.g. Software Engineer"
-              value={formData.jobProfile}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
-
+          <InputField
+            label="Job Profile"
+            id="jobProfile"
+            name="jobProfile"
+            value={formData.jobProfile}
+            onChange={handleChange}
+            placeholder="e.g. Software Engineer"
+          />
 
           {/* Compensation Type */}
           <div className="space-y-2 md:col-span-2">
             <label className="font-medium">Stipend</label>
             <div className="flex gap-6">
-              <label htmlFor="paid" className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="paid"
-                  name="compensationType"
-                  value="paid"
-                  checked={formData.compensationType === 'paid'}
-                  onChange={handleChange}
-                /> Paid
-              </label>
-              <label htmlFor="unpaid" className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  id="unpaid"
-                  name="compensationType"
-                  value="unpaid"
-                  checked={formData.compensationType === 'unpaid'}
-                  onChange={handleChange}
-                /> Unpaid
-              </label>
+              {["paid", "unpaid"].map((type) => (
+                <label key={type} className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="compensationType"
+                    value={type}
+                    checked={formData.compensationType === type}
+                    onChange={handleChange}
+                  />
+                  {type.charAt(0).toUpperCase() + type.slice(1)}
+                </label>
+              ))}
             </div>
           </div>
 
           {/* Salary */}
-          <div className="space-y-2">
-            <label htmlFor="salary" className="font-medium">Salary / Stipend (if Paid)</label>
-            <input
-              type="text"
-              id="salary"
-              name="salary"
-              placeholder="e.g. ₹10,000 per month or 5–7 LPA"
-              value={formData.salary}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
+          <InputField
+            label="Salary / Stipend (if Paid)"
+            id="amount"
+            name="amount"
+            value={formData.salary.amount}
+            onChange={handleChange}
+            placeholder="e.g. ₹10,000 per month"
+            disabled={formData.compensationType === "unpaid"}
+          />
 
           {/* Job Type */}
-          <div className="space-y-2">
-            <label htmlFor="jobType" className="font-medium">Job Type</label>
-            <select
-              id="jobType"
-              name="jobType"
-              value={formData.jobType}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            >
-              <option>Internship</option>
-              <option>Full-time</option>
-              <option>Part-time</option>
-            </select>
-          </div>
+          <SelectField
+            label="Job Type"
+            id="type"
+            name="type"
+            value={formData.type}
+            onChange={handleChange}
+            options={["Internship", "Full-time", "Part-time"]}
+          />
 
           {/* Experience Level */}
-          <div className="space-y-2">
-            <label htmlFor="experienceLevel" className="font-medium">Experience Level</label>
-            <select
-              id="experienceLevel"
-              name="experienceLevel"
-              value={formData.experienceLevel}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            >
-              <option>0–1 years</option>
-              <option>1–3 years</option>
-              <option>3–5 years</option>
-              <option>5+ years</option>
-            </select>
-          </div>
+          <SelectField
+            label="Experience Level"
+            id="experienceLevel"
+            name="experienceLevel"
+            value={formData.experienceLevel}
+            onChange={handleChange}
+            options={["0–1 years", "1–3 years", "3–5 years", "5+ years"]}
+          />
 
           {/* Location */}
-          <div className="space-y-2">
-            <label htmlFor="location" className="font-medium">Location</label>
-            <select
-              id="location"
-              name="location"
-              value={formData.location}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            >
-              <option>On-site</option>
-              <option>Remote</option>
-              <option>Hybrid</option>
-            </select>
-          </div>
+          <SelectField
+            label="Location"
+            id="location"
+            name="location"
+            value={formData.location}
+            onChange={handleChange}
+            options={["On-site", "Remote", "Hybrid"]}
+          />
 
           {/* Application Deadline */}
-          <div className="space-y-2">
-            <label htmlFor="applicationDeadline" className="font-medium">Application Deadline</label>
-            <input
-              type="date"
-              id="applicationDeadline"
-              name="applicationDeadline"
-              value={formData.applicationDeadline}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
+          <InputField
+            label="Application Deadline"
+            type="date"
+            id="applicationDeadline"
+            name="applicationDeadline"
+            value={formData.applicationDeadline}
+            onChange={handleChange}
+          />
 
-          {/* Number of Openings */}
-          <div className="space-y-2">
-            <label htmlFor="openings" className="font-medium">Number of Openings</label>
-            <input
-              type="number"
-              id="openings"
-              name="openings"
-              min="1"
-              placeholder="e.g. 3"
-              value={formData.openings}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
+          {/* Openings */}
+          <InputField
+            label="Number of Openings"
+            type="number"
+            id="openings"
+            name="openings"
+            min="1"
+            value={formData.openings}
+            onChange={handleChange}
+            placeholder="e.g. 3"
+          />
 
-          {/* Required Skills */}
-          <div className="md:col-span-2 space-y-2">
-            <label htmlFor="requiredSkills" className="font-medium">Required Skills</label>
-            <input
-              type="text"
-              id="requiredSkills"
-              name="requiredSkills"
-              placeholder="e.g. React, Node.js, SQL"
-              value={formData.requiredSkills}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
+          {/* Skills */}
+          <InputField
+            label="Required Skills"
+            id="skills"
+            name="skills"
+            value={formData.skills}
+            onChange={handleChange}
+            placeholder="e.g. React, Node.js, SQL"
+            className="md:col-span-2"
+          />
 
           {/* Education */}
-          <div className="space-y-2">
-            <label htmlFor="education" className="font-medium">Education Qualification</label>
-            <select
-              id="education"
-              name="education"
-              value={formData.education}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            >
-              <option>Any Graduate</option>
-              <option>B.Tech / BE</option>
-              <option>MBA</option>
-              <option>MCA</option>
-              <option>Other</option>
-            </select>
-          </div>
+          <SelectField
+            label="Education Qualification"
+            id="education"
+            name="education"
+            value={formData.education}
+            onChange={handleChange}
+            options={["Any Graduate", "B.Tech / BE", "MBA", "MCA", "BCA", "Other"]}
+          />
 
           {/* Contact Email */}
-          <div className="md:col-span-2 space-y-2">
-            <label htmlFor="contactEmail" className="font-medium">Contact Email</label>
-            <input
-              type="text"
-              id="contactEmail"
-              name="contactEmail"
-              placeholder="Enter application link or email"
-              value={formData.contactEmail}
-              onChange={handleChange}
-              className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
-            />
-          </div>
+          <InputField
+            label="Contact Email"
+            id="contactEmail"
+            name="contactEmail"
+            value={formData.contactEmail}
+            onChange={handleChange}
+            placeholder="Enter application link or email"
+            className="md:col-span-2"
+          />
 
           {/* Job Description */}
           <div className="md:col-span-2 space-y-2">
-            <label htmlFor="jobDescription" className="font-medium">Job Description</label>
+            <label htmlFor="description" className="font-medium">
+              Job Description
+            </label>
             <textarea
-              id="jobDescription"
-              name="jobDescription"
+              id="description"
+              name="description"
               rows="4"
-              placeholder="Describe the role, responsibilities, and expectations..."
-              value={formData.jobDescription}
+              value={formData.description}
               onChange={handleChange}
+              placeholder="Describe the role, responsibilities, and expectations..."
               className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
             />
           </div>
 
-          {/* Submit Button */}
+          {/* Submit */}
           <div className="md:col-span-2 flex justify-end">
             <button
               type="submit"
@@ -274,6 +266,42 @@ export default function JobPostForm() {
           </div>
         </form>
       </div>
+    </div>
+  );
+}
+
+// 🔹 Helper Components
+function InputField({ label, className = "", ...props }) {
+  return (
+    <div className={`space-y-2 ${className}`}>
+      <label htmlFor={props.id} className="font-medium">
+        {label}
+      </label>
+      <input
+        {...props}
+        className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
+      />
+    </div>
+  );
+}
+
+function SelectField({ label, options, className = "", ...props }) {
+  return (
+    <div className={`space-y-2 ${className}`}>
+      <label htmlFor={props.id} className="font-medium">
+        {label}
+      </label>
+      <select
+        {...props}
+        className="w-full border rounded-lg px-4 py-2 bg-white-100 dark:bg-gray-950 focus:ring-2 focus:ring-amber-500 outline-none"
+      >
+        <option value="">-- Select --</option>
+        {options.map((opt) => (
+          <option key={opt} value={opt}>
+            {opt}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }
