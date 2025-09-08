@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { jwtVerify } from "jose";
 
 class CookieService {
     constructor() {
@@ -7,12 +6,13 @@ class CookieService {
             process.env.ACCESS_TOKEN_NAME || "access_token";
         this.REFRESH_TOKEN_NAME =
             process.env.REFRESH_TOKEN_NAME || "refresh_token";
+
         this.ACCESS_EXPIRES = parseInt(
-            process.env.ACCESS_TOKEN_EXPIRES || "900",
+            process.env.ACCESS_TOKEN_EXPIRES || "900", // 15m default
             10
         );
         this.REFRESH_EXPIRES = parseInt(
-            process.env.REFRESH_TOKEN_EXPIRES || "604800",
+            process.env.REFRESH_TOKEN_EXPIRES || "604800", // 7d default
             10
         );
 
@@ -27,63 +27,52 @@ class CookieService {
         };
     }
 
-    // ================== COOKIE METHODS ==================
-    setAuthCookies(cookieStore, accessToken, refreshToken) {
+    // ========== SIGN TOKENS ==========
+    signAccessToken = (payload) => {
+        return jwt.sign(payload, this.ACCESS_SECRET, { expiresIn: "15m" });
+    };
+
+    signRefreshToken = (payload) => {
+        return jwt.sign(payload, this.REFRESH_SECRET, { expiresIn: "7d" });
+    };
+
+    // ========== SET COOKIES ==========
+    setAuthCookies = (cookieStore, accessToken, refreshToken) => {
         cookieStore.set(this.ACCESS_TOKEN_NAME, accessToken, {
             ...this.baseOpts,
-            maxAge: this.ACCESS_EXPIRES,
+            sameSite: "strict",
+            maxAge: 60 * 15, // 15 minutes
         });
+
         cookieStore.set(this.REFRESH_TOKEN_NAME, refreshToken, {
             ...this.baseOpts,
-            maxAge: this.REFRESH_EXPIRES,
+            sameSite: "strict",
+            maxAge: 60 * 60 * 24 * 7, // 7 days
         });
-    }
+    };
 
-    clearAuthCookies(cookieStore) {
-        cookieStore.set(this.ACCESS_TOKEN_NAME, "", {
-            ...this.baseOpts,
-            maxAge: 0,
-        });
-        cookieStore.set(this.REFRESH_TOKEN_NAME, "", {
-            ...this.baseOpts,
-            maxAge: 0,
-        });
-    }
+    // ========== VERIFY TOKENS ==========
+    verifyAccessToken = (token) => {
+        try {
+            return jwt.verify(token, this.ACCESS_SECRET);
+        } catch (err) {
+            return null;
+        }
+    };
 
-    getCookieNames() {
-        return {
-            ACCESS_TOKEN_NAME: this.ACCESS_TOKEN_NAME,
-            REFRESH_TOKEN_NAME: this.REFRESH_TOKEN_NAME,
-        };
-    }
+    verifyRefreshToken = (token) => {
+        try {
+            return jwt.verify(token, this.REFRESH_SECRET);
+        } catch (err) {
+            return null;
+        }
+    };
 
-    // ================== JWT METHODS ==================
-    signAccessToken(payload) {
-        return jwt.sign(payload, this.ACCESS_SECRET, {
-            expiresIn: this.ACCESS_EXPIRES,
-        });
-    }
-
-    signRefreshToken(payload) {
-        return jwt.sign(payload, this.REFRESH_SECRET, {
-            expiresIn: this.REFRESH_EXPIRES,
-        });
-    }
-
-    verifyAccessToken(token) {
-        return jwt.verify(token, this.ACCESS_SECRET);
-    }
-
-    verifyRefreshToken(token) {
-        return jwt.verify(token, this.REFRESH_SECRET);
-    }
-
-    // ✅ Edge-safe version for middleware
-    async verifyAccessTokenEdge(token) {
-        const secret = new TextEncoder().encode(this.ACCESS_SECRET);
-        const { payload } = await jwtVerify(token, secret);
-        return payload;
-    }
+    // ========== CLEAR COOKIES ==========
+    clearAuthCookies = (cookieStore) => {
+        cookieStore.delete(this.ACCESS_TOKEN_NAME);
+        cookieStore.delete(this.REFRESH_TOKEN_NAME);
+    };
 }
 
 const cookieService = new CookieService();

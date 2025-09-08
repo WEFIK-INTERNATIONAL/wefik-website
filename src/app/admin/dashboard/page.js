@@ -7,9 +7,12 @@ import { useDashboardContext } from "@/contexts";
 const Dashboard = () => {
     const { isLoading, stats } = useDashboardContext();
 
+    console.log(stats);
+    
+
     const totalJobs = stats.totalJobs?.[0]?.count || 0;
     const activeJobs =
-        stats.jobStatus?.find((s) => s._id === "Active")?.count || 0;
+        stats.jobStatus?.find((s) => s._id === "Open")?.count || 0;
     const closedJobs =
         stats.jobStatus?.find((s) => s._id === "Closed")?.count || 0;
 
