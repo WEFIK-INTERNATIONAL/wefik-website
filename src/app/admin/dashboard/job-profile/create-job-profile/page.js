@@ -13,8 +13,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
+import axios from "axios";
+import { useDashboardContext } from "@/contexts";
+
 export default function JobProfileForm() {
-    const [departments, setDepartments] = useState([]); // fetched from DB
+    const { jobProfiles } = useDashboardContext();
+
     const [selectedDept, setSelectedDept] = useState(null);
     const [department, setDepartment] = useState("");
     const [departmentCode, setDepartmentCode] = useState("");
@@ -22,14 +26,11 @@ export default function JobProfileForm() {
 
     // When department selected from dropdown
     const handleDeptSelect = (code) => {
-        const dept = departments.find((d) => d.code === code);
+        const dept = jobProfiles.find((d) => d.code === code);
         if (dept) {
             setSelectedDept(dept);
             setDepartment(dept.department);
             setDepartmentCode(dept.code);
-            setRoles(
-                dept.roles?.length ? dept.roles : [{ name: "", code: "" }]
-            );
         }
     };
 
@@ -51,7 +52,8 @@ export default function JobProfileForm() {
         };
 
         try {
-            console.log(payload);
+            const res = await axios.post("/api/job-profile", payload);
+            console.log("log:", res);
         } catch (err) {
             console.error(err);
             alert("Error while saving job profile");
@@ -78,8 +80,8 @@ export default function JobProfileForm() {
                                 <SelectValue placeholder="Choose a department" />
                             </SelectTrigger>
                             <SelectContent>
-                                {departments.length > 0 ? (
-                                    departments.map((dept) => (
+                                {jobProfiles.length > 0 ? (
+                                    jobProfiles.map((dept) => (
                                         <SelectItem
                                             key={dept.code}
                                             value={dept.code}
@@ -96,6 +98,32 @@ export default function JobProfileForm() {
                             </SelectContent>
                         </Select>
                     </div>
+
+                    {selectedDept && (
+                        <div className="mt-6">
+                            <h2 className="text-base font-medium mb-2">
+                                Existing Roles
+                            </h2>
+                            {selectedDept.roles?.length > 0 ? (
+                                <ul className="list-disc list-inside space-y-1">
+                                    {selectedDept.roles.map((role) => (
+                                        <li key={role.code}>
+                                            <span className="text-base font-medium">
+                                                {role.name}
+                                            </span>{" "}
+                                            <span className="text-gray-500">
+                                                ({role.code})
+                                            </span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className="text-sm text-gray-500">
+                                    No roles found in this department.
+                                </p>
+                            )}
+                        </div>
+                    )}
 
                     {/* Department & Code Row */}
                     <div className="flex gap-4">

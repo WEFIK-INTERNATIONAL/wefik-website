@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server";
 
 export function successResponse(
-    data = null,
     message = "Success",
-    status = 200
+    status = 200,
+    data = null
 ) {
     return NextResponse.json(
         { success: true, message, data },

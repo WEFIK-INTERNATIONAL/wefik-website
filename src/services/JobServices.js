@@ -25,12 +25,34 @@ class JobService {
     }
 
     // ✅ Create new job
+    async getJobProfiles() {
+        try {
+            const res = await API.get("/job-profile");            
+            return res.data;
+        } catch (err) {
+            console.error("Error to fetch job-profiles:", err);
+            throw err;
+        }
+    }
+
+    // ✅ Create new job
     async createJob(data) {
         try {
             const res = await API.post("/job", data);
             return res.data;
         } catch (err) {
             console.error("Error creating job:", err);
+            throw err;
+        }
+    }
+
+    // ✅ Create new job profile
+    async createJobProfile(data) {
+        try {
+            const res = await API.post("/job-profile", data);
+            return res.data;
+        } catch (err) {
+            console.error("Error creating job-profile:", err);
             throw err;
         }
     }

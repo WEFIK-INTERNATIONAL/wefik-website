@@ -17,6 +17,7 @@ const DashboardContext = createContext(null);
 
 export const DashboardProvider = ({ children }) => {
     const [jobs, setJobs] = useState([]);
+    const [jobProfiles, setJobProfiles] = useState([]);
     const [stats, setStats] = useState([]);
     const [applications, setApplications] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -63,10 +64,25 @@ export const DashboardProvider = ({ children }) => {
         }
     };
 
+    const fetchJobProfiles = async()=>{
+        try {
+            const response = await jobServices.getJobProfiles();
+            setJobProfiles(response.data)
+            
+        } catch (error) {
+            console.error("❌ Failed to fetch stats:", error);
+            toast.error("Failed to load stats.");
+
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     useEffect(() => {
         fetchStats();
         fetchApplications();
         fetchjobs();
+        fetchJobProfiles();
     }, []);
 
     /** -----------------------------
@@ -142,6 +158,7 @@ export const DashboardProvider = ({ children }) => {
         isLoading,
         jobs,
         stats,
+        jobProfiles,
         applications,
         updateApplicationSatatus,
         updatejobSatatus,
