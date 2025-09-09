@@ -3,26 +3,27 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import {
-    Home,
-    Briefcase,
-    Users,
-    Settings,
-} from "lucide-react";
+import { Home, Briefcase, Users, Settings } from "lucide-react";
 
 const DashboardLinks = () => {
     const pathname = usePathname();
 
     const navItems = [
         { id: 0, name: "Dashboard", href: "/admin/dashboard", icon: Home },
-        { id: 1, name: "Jobs", href: "/admin/dashboard/jobs", icon: Briefcase },
         {
-            id: 2,
+            id: 1,
+            name: "Job Profile",
+            href: "/admin/dashboard/job-profile",
+            icon: Home,
+        },
+        { id: 2, name: "Jobs", href: "/admin/dashboard/jobs", icon: Briefcase },
+        {
+            id: 3,
             name: "Application",
             href: "/admin/dashboard/applications",
             icon: Users,
         },
-        { id: 3, name: "Settings", href: "/admin/settings", icon: Settings },
+        { id: 4, name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
     return (

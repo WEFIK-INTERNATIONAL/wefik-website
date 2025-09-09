@@ -133,7 +133,9 @@ const Layout = ({ children }) => {
                                 </Button>
                             </div>
                         </header>
-                        <div className="px-4 py-2 md:px-6 md:py-4">{children}</div>
+                        <div className="px-4 py-2 md:px-4 md:py-2">
+                            {children}
+                        </div>
                     </div>
                 </div>
             </DashboardProvider>
