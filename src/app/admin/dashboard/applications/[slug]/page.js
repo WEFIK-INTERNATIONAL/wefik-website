@@ -6,13 +6,12 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { CircleArrowLeft } from "lucide-react";
 
-import { useDashboardContext } from "@/contexts";
 
 const Page = ({ params }) => {
 	const resolvedParams = React.use(params);
 	const slug = resolvedParams.slug;
 
-	const { applications } = useDashboardContext();
+	const { applications } = [];
 
 	const application = applications.find((app) => app._id == slug);
 

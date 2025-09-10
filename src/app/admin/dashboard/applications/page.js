@@ -10,7 +10,6 @@ import EditStatus from "@/components/dashboard/EditStatus"; // ✅ Import added
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/formatDate";
-import { useDashboardContext } from "@/contexts";
 import { usePagination, useSearchAndSort } from "@/app/hooks";
 
 const getStatusBadge = (status) => {
@@ -31,8 +30,7 @@ const getStatusBadge = (status) => {
 };
 
 export default function ApplicationsPage() {
-    const { isLoading, applications, deleteApplication } =
-        useDashboardContext();
+    const { isLoading, applications, deleteApplication } = [];
 
     const [searchTerm, setSearchTerm] = useState("");
     const [sortOrder, setSortOrder] = useState("");

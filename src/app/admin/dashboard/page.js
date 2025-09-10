@@ -2,13 +2,9 @@
 import React from "react";
 import { Briefcase, FileText, CheckCircle } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
-import { useDashboardContext } from "@/contexts";
 
 const Dashboard = () => {
-    const { isLoading, stats } = useDashboardContext();
-
-    console.log(stats);
-    
+    const { isLoading, stats } = [];    
 
     const totalJobs = stats.totalJobs?.[0]?.count || 0;
     const activeJobs =

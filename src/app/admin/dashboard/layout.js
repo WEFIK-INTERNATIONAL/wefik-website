@@ -6,14 +6,13 @@ import { useRouter } from "next/navigation";
 
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { DashboardProvider } from "@/contexts/DashboardContext";
-import DashboardLinks from "@/components/dashboard/DashboardLinks";
 
 import { LogOut, Menu, X } from "lucide-react";
 import wefikLogo from "@/assets/icons/wefikLogo.svg";
 
 import { ThemeProvider } from "next-themes";
 import ThemeToggle from "@/components/ThemeToggle";
+import DashboardLinks from "@/components/dashboard/DashboardLinks";
 
 import API from "@/lib/axiosConfig";
 
@@ -34,7 +33,6 @@ const Layout = ({ children }) => {
 
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <DashboardProvider>
                 <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-y-hidden">
                     <aside className="hidden border-r md:block">
                         <div className="flex flex-col max-h-screen h-full gap-2">
@@ -138,7 +136,6 @@ const Layout = ({ children }) => {
                         </div>
                     </div>
                 </div>
-            </DashboardProvider>
         </ThemeProvider>
     );
 };

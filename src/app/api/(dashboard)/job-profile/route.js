@@ -67,8 +67,9 @@ export async function GET(req) {
     try {
         await dbConnect();
         const jobProfiles = await JobProfile.find();
+        
         return successResponse(
-            "Successfully fetched JobProfiles",
+            "Successfully fetched Job-Profiles",
             200,
             jobProfiles
         );

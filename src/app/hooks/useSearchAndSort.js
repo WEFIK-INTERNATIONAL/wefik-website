@@ -19,7 +19,8 @@ export function useSearchAndSort({
     sortField = null,
 }) {
     return useMemo(() => {
-        let result = [...data];
+        // let result = [...data];
+        let result = []
 
         // 🔍 Filtering
         if (searchTerm.trim() !== "") {

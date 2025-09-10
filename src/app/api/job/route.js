@@ -9,11 +9,7 @@ export async function POST(req) {
         const body = await req.json();
         const job = await Job.create(body);
 
-        return successResponse(
-            job,
-            "Job created successfully",
-            201
-        );
+        return successResponse(job, "Job created successfully", 201);
     } catch (error) {
         if (error.code === 11000) {
             return errorResponse("This job already exists", 400);
@@ -23,17 +19,17 @@ export async function POST(req) {
 }
 
 // GET -- Fetch all jobs
-export async function GET(req) {
+export async function GET() {
     try {
         await dbConnect();
 
         const jobs = await Job.find();
-         
-        return successResponse(
-            jobs,
-            "Jobs fetched successfully",
-            200
-        );
+
+        if (!jobs || jobs.length === 0) {            
+            return successResponse([], "No jobs found", 201);
+        }
+
+        return successResponse(jobs, "Jobs fetched successfully", 200);
     } catch (error) {
         return errorResponse(error.message || "Internal Server Error", 500);
     }

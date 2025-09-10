@@ -5,8 +5,8 @@ class JobService {
     // ✅ Get all job
     async getJobs() {
         try {
-            const res = await API.get("/job");
-            return res.data;
+            const res = await API.get("/job");            
+            return res;
         } catch (err) {
             console.error("Error fetching job:", err);
             throw err;
