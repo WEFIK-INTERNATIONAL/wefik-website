@@ -39,9 +39,9 @@ export async function POST(req) {
             await existingDept.save();
 
             return successResponse(
+                existingDept,
                 "JobProfile updated successfully (roles added)",
-                200,
-                existingDept
+                200
             );
         } else {
             // Create new department
@@ -52,9 +52,9 @@ export async function POST(req) {
             });
 
             return successResponse(
+                newDept,
                 "JobProfile created successfully",
-                201,
-                newDept
+                201
             );
         }
     } catch (error) {
@@ -67,11 +67,11 @@ export async function GET(req) {
     try {
         await dbConnect();
         const jobProfiles = await JobProfile.find();
-        
+
         return successResponse(
+            jobProfiles,
             "Successfully fetched Job-Profiles",
-            200,
-            jobProfiles
+            200
         );
     } catch (error) {
         console.error("❌ Error in JobProfile API:", error);

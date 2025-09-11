@@ -3,10 +3,12 @@ import API from "@/lib/axiosConfig";
 
 class JobService {
     // ✅ Get all job
-    async getJobs() {
+    async getJobs({ page = 1, limit = 10, search, sort }) {
         try {
-            const res = await API.get("/job");            
-            return res;
+            const res = await API.get("/job", {
+                params: { page, limit, search, sort },
+            });
+            return res.data.data;
         } catch (err) {
             console.error("Error fetching job:", err);
             throw err;
@@ -17,7 +19,7 @@ class JobService {
     async getJobById(id) {
         try {
             const res = await API.get(`/job/${id}`);
-            return res.data;
+            return res.data.data;
         } catch (err) {
             console.error(`Error fetching job ${id}:`, err);
             throw err;
@@ -27,7 +29,7 @@ class JobService {
     // ✅ Create new job
     async getJobProfiles() {
         try {
-            const res = await API.get("/job-profile");            
+            const res = await API.get("/job-profile");
             return res.data;
         } catch (err) {
             console.error("Error to fetch job-profiles:", err);
@@ -59,7 +61,18 @@ class JobService {
 
     // ✅ Update job
     async updateJob(id, data) {
-        try {            
+        try {
+            const res = await API.patch(`/job/${id}`, data);
+            return res.data;
+        } catch (err) {
+            console.error(`Error updating job ${id}:`, err);
+            throw err;
+        }
+    }
+
+    // ✅ Update job Status
+    async updateJobStatus(id, data) {
+        try {
             const res = await API.patch(`/job/${id}`, data);
             return res.data;
         } catch (err) {
@@ -75,6 +88,17 @@ class JobService {
             return res.data;
         } catch (err) {
             console.error(`Error deleting job ${id}:`, err);
+            throw err;
+        }
+    }
+
+    // Check JobId is Uniq or Not
+    async checkJobId(jobId) {
+        try {
+            const res = await API.get(`/job/check-id?jobId=${jobId}`);
+            return res.data.exists;
+        } catch (err) {
+            console.error(`Error checking jobId ${jobId}:`, err);
             throw err;
         }
     }

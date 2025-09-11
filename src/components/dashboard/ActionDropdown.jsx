@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import {
     DropdownMenu,
@@ -11,32 +11,39 @@ import {
     DropdownMenuSeparator,
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
-import {
-    AlertDialog,
-    AlertDialogTrigger,
-    AlertDialogContent,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogCancel,
-    AlertDialogAction,
-} from "@/components/ui/alert-dialog";
 
-import warningGif from "@/assets/gif/warning-gif.gif";
-import { EllipsisVertical, PencilLine, Trash2, BookOpen } from "lucide-react";
+
+import EditStatusDialog from "./EditStatusDialog";
+import DeleteConfirmDialog from "./DeleteConfirmDialog";
+
+import {
+    EllipsisVertical,
+    BookOpen,
+    Trash2,
+    SquarePen,
+    CircleCheck,
+} from "lucide-react";
 
 /**
- * Generic Action Dropdown for Applications, Jobs, etc.
- *
- * @param {string} id - Unique identifier of the item
- * @param {string} label - Dropdown label (e.g. "Application Actions")
- * @param {string} viewDetailsPath - Path to details page (e.g. `/admin/dashboard/applications/`)
- * @param {function} onEdit - Function to render/edit component (optional)
- * @param {function} onDelete - Function to delete the entity
+ * ActionDropdown
+ * @param {string} viewDetailsPath - Path for details page
+ * @param {object} editAction - { id, callback, triggerLabel, statuses, isUpdating, entityName, trigger }
+ * @param {object} deleteAction - { id, callback, isDeleting, triggerLabel }
  */
+const ActionDropdown = ({
+    viewDetailsPath,
+    editAction,
+    statusAction,
+    deleteAction,
+}) => {
+    const router = useRouter();
 
-const ActionDropdown = ({ id, label, viewDetailsPath, onEdit, onDelete }) => {
+    const handleEditClick = () => {
+        if (editAction?.jobId) {
+            router.push(`/admin/dashboard/jobs/edit-job/${editAction.jobId}`);
+        }
+    };
+    
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="hover:cursor-pointer">
@@ -44,72 +51,67 @@ const ActionDropdown = ({ id, label, viewDetailsPath, onEdit, onDelete }) => {
             </DropdownMenuTrigger>
 
             <DropdownMenuContent className="mr-6 px-4 py-2">
-                <DropdownMenuLabel>{label}</DropdownMenuLabel>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
                 <DropdownMenuSeparator />
 
-                {/* Edit (if provided) */}
-                {onEdit && (
-                    <DropdownMenuItem
-                        className="hover:cursor-pointer"
-                        onSelect={(e) => e.preventDefault()}
-                    >
-                        <PencilLine className="mr-2 h-4 w-4" />
-                        {onEdit(id)}
+                {editAction && (
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <button
+                            onClick={handleEditClick}
+                            className="flex justify-center items-center gap-2 text-green-500 md:text-[16px] font-bold hover:cursor-pointer"
+                        >
+                            <SquarePen className="text-green-500" />
+                            {editAction.triggerLabel || "Edit Status"}
+                        </button>
                     </DropdownMenuItem>
                 )}
 
-                {/* Delete with AlertDialog */}
-                {onDelete && (
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <DropdownMenuItem
-                                onSelect={(e) => e.preventDefault()}
-                                className="text-red-600 cursor-pointer focus:text-red-600"
-                            >
-                                <Trash2 className="mr-2 h-4 w-4 text-red-600" />
-                                Delete
-                            </DropdownMenuItem>
-                        </AlertDialogTrigger>
+                {/* Edit Action */}
+                {statusAction && (
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <EditStatusDialog
+                            id={statusAction.id}
+                            entityName={statusAction.entityName}
+                            currentStatus={statusAction.currentStatus}
+                            statuses={statusAction.statuses}
+                            onUpdate={statusAction.callback}
+                            trigger={
+                                <button className="flex justify-center items-center gap-2 text-blue-500 md:text-[16px] font-bold hover:cursor-pointer">
+                                    <CircleCheck className="text-blue-500" />
+                                    {statusAction.triggerLabel || "Edit Status"}
+                                </button>
+                            }
+                            isUpdating={statusAction.isUpdating}
+                        />
+                    </DropdownMenuItem>
+                )}
 
-                        <AlertDialogContent>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                    Are you absolutely sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription className="text-red-500">
-                                    This action cannot be undone. This will
-                                    permanently delete this item.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <Image
-                                src={warningGif}
-                                width={500}
-                                height={500}
-                                alt="Warning Gif"
-                            />
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className="hover:cursor-pointer">
-                                    Cancel
-                                </AlertDialogCancel>
-                                <AlertDialogAction
-                                    onClick={() => onDelete(id)}
-                                    className="hover:cursor-pointer"
-                                >
-                                    Continue
-                                </AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
+                {/* Delete Action */}
+                {deleteAction && (
+                    <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                        <DeleteConfirmDialog
+                            id={deleteAction.id}
+                            entityName={deleteAction.entityName}
+                            onDelete={deleteAction.callback}
+                            trigger={
+                                <button className="flex justify-center items-center gap-2 text-red-500 md:text-[16px] font-bold hover:cursor-pointer">
+                                    <Trash2 className="text-red-500" />
+                                    {deleteAction.triggerLabel || "Delete Job"}
+                                </button>
+                            }
+                            isPending={deleteAction.isDeleting}
+                        />
+                    </DropdownMenuItem>
                 )}
 
                 {/* View Details */}
-                {viewDetailsPath && (
+                {viewDetailsPath && editAction?.id && (
                     <DropdownMenuItem className="hover:cursor-pointer">
                         <Link
-                            href={`${viewDetailsPath}${id}`}
-                            className="flex items-center"
+                            href={`${viewDetailsPath}${editAction.id}`}
+                            className="flex justify-center items-center gap-2 text-gray-600 md:text-[16px] font-bold hover:cursor-pointer"
                         >
-                            <BookOpen className="mr-2 h-4 w-4" />
+                            <BookOpen className="" />
                             View Details
                         </Link>
                     </DropdownMenuItem>

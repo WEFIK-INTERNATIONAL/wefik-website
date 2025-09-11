@@ -9,7 +9,7 @@ export const useGetStats = () => {
         queryKey: [queryKeys.stats],
         queryFn: async () => {
             const res = await API.get("/stats");
-            return res.data;
+            return res.data.data;
         },
     });
 };

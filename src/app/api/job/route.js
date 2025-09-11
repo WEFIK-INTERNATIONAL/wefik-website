@@ -18,18 +18,54 @@ export async function POST(req) {
     }
 }
 
-// GET -- Fetch all jobs
-export async function GET() {
+// GET -- Fetch jobs by pagination
+export async function GET(req) {
     try {
         await dbConnect();
 
-        const jobs = await Job.find();
+        const { searchParams } = new URL(req.url);
+        const page = parseInt(searchParams.get("page")) || 1;
+        const limit = parseInt(searchParams.get("limit")) || 10;
+        const search = searchParams.get("search") || "";
+        const sort = searchParams.get("sort") || "newest";
 
-        if (!jobs || jobs.length === 0) {            
-            return successResponse([], "No jobs found", 201);
-        }
+        const skip = (page - 1) * limit;        
 
-        return successResponse(jobs, "Jobs fetched successfully", 200);
+        // 🔎 Search filter
+        const query = search
+            ? {
+                  $or: [
+                      { jobId: { $regex: search, $options: "i" } },
+                      { jobTitle: { $regex: search, $options: "i" } },
+                      { jobProfile: { $regex: search, $options: "i" } },
+                      { location: { $regex: search, $options: "i" } },
+                  ],
+              }
+            : {};
+
+        // 📌 Sorting
+        let sortBy = {};
+        if (sort === "newest") sortBy = { createdAt: -1 };
+        if (sort === "oldest") sortBy = { createdAt: 1 };
+
+        const [data, total] = await Promise.all([
+            Job.find(query).skip(skip).limit(limit).sort(sortBy),
+            Job.countDocuments(query),
+        ]);
+
+        return successResponse(
+            {
+                data,
+                pagination: {
+                    total,
+                    page,
+                    pages: Math.ceil(total / limit),
+                    limit,
+                },
+            },
+            "Job profiles fetched successfully",
+            200
+        );
     } catch (error) {
         return errorResponse(error.message || "Internal Server Error", 500);
     }

@@ -6,7 +6,7 @@ import TableHeader from "@/components/dashboard/TableHeader";
 import DataTable from "@/components/dashboard/DataTable";
 import TableFooter from "@/components/dashboard/TableFooter";
 import ActionDropdown from "@/components/dashboard/ActionDropdown";
-import EditStatus from "@/components/dashboard/EditStatus"; // ✅ Import added
+import EditStatusDialog from "@/components/dashboard/EditStatusDialog";
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/formatDate";

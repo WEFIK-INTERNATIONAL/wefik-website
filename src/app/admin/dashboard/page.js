@@ -2,22 +2,24 @@
 import React from "react";
 import { Briefcase, FileText, CheckCircle } from "lucide-react";
 import StatsCard from "@/components/dashboard/StatsCard";
+import { useGetStats } from "@/queries/stats";
 
 const Dashboard = () => {
-    const { isLoading, stats } = [];    
+    const { data: stats, isLoading } = useGetStats();
 
-    const totalJobs = stats.totalJobs?.[0]?.count || 0;
-    const activeJobs =
-        stats.jobStatus?.find((s) => s._id === "Open")?.count || 0;
-    const closedJobs =
-        stats.jobStatus?.find((s) => s._id === "Closed")?.count || 0;
+    // ✅ Extract directly from stats (flat numbers, not arrays)
+    const totalJobs = stats?.totalJobs || 0;
+    const activeJobs = stats?.totalOpenJobs || 0;
+    const closedJobs = stats?.totalClosedJobs || 0;
 
-    const totalApplications = stats.totalApplications?.[0]?.count || 0;
+    const totalApplications = stats?.totalApplications || 0;
+
+    // ✅ Find application statuses (stored as lowercase in backend)
     const pending =
-        stats.applicationsByStatus?.find((s) => s._id === "Pending")?.count ||
-        0;
+        stats?.applicationsByStatus?.find((s) => s.status === "pending")
+            ?.count || 0;
     const shortlisted =
-        stats.applicationsByStatus?.find((s) => s._id === "Shortlisted")
+        stats?.applicationsByStatus?.find((s) => s.status === "shortlisted")
             ?.count || 0;
 
     return (
