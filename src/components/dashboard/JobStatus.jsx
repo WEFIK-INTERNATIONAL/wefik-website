@@ -14,46 +14,33 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-import { useDashboardContext } from "@/contexts";
-import applicationService from "@/services/ApplicationServices";
-import jobServices from "@/services/JobServices";
+import { useUpdateJobStatus } from "@/queries/jobs";
 
 const JobStatus = ({ id, currentStatus = "Open" }) => {
-    const { updatejobSatatus } = useDashboardContext();
+    const { mutate: updateJobStatus, isPending } = useUpdateJobStatus();
+
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
     const [open, setOpen] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
+
     useEffect(() => {
         if (open) {
             setSelectedStatus(currentStatus);
         }
     }, [open, currentStatus]);
 
-    const statuses = ["Open", "Closed", "Draft"];
+    const statuses = [
+        { label: "Open", className: "bg-green-500 text-white" },
+        { label: "Closed", className: "bg-red-500 text-white" },
+        { label: "Draft", className: "bg-yellow-500 text-white" },
+    ];
 
-    const getJobStatusBadge = (status) => {
-        switch (status) {
-            case "Open":
-                return "bg-green-500 text-white";
-            case "Closed":
-                return "bg-red-500 text-white";
-            case "Draft":
-                return "bg-yellow-500 text-white";
-            default:
-                return "bg-slate-400 text-white";
-        }
-    };
-
-    const updateStatus = async () => {
-        setIsUpdating(true);
-        try {
-            updatejobSatatus(id, selectedStatus);
-            setOpen(false);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsUpdating(false);
-        }
+    const handleUpdateStatus = () => {
+        updateJobStatus(
+            { id, status: selectedStatus },
+            {
+                onSuccess: () => setOpen(false),
+            }
+        );
     };
 
     return (
@@ -75,16 +62,15 @@ const JobStatus = ({ id, currentStatus = "Open" }) => {
                     {statuses.map((status, idx) => (
                         <div key={idx} className="flex items-center gap-3">
                             <RadioGroupItem
-                                value={status}
+                                value={status.label}
                                 id={`status-${idx}`}
                                 className="hover:cursor-pointer"
                             />
                             <Badge
-                                className={`px-4 rounded-full cursor-pointer ${getJobStatusBadge(
-                                    status
-                                )}`}
+                                className={`px-4 rounded-full cursor-pointer ${status.className}`}
+                                onClick={() => setSelectedStatus(status.label)}
                             >
-                                {status}
+                                {status.label}
                             </Badge>
                         </div>
                     ))}
@@ -94,8 +80,12 @@ const JobStatus = ({ id, currentStatus = "Open" }) => {
                     <DialogClose asChild>
                         <Button variant="outline">Cancel</Button>
                     </DialogClose>
-                    <Button type="button" onClick={updateStatus}>
-                        Save changes
+                    <Button
+                        type="button"
+                        onClick={handleUpdateStatus}
+                        disabled={isPending}
+                    >
+                        {isPending ? "Saving..." : "Save changes"}
                     </Button>
                 </DialogFooter>
             </DialogContent>

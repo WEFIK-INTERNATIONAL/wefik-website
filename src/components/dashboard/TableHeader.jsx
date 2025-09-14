@@ -37,7 +37,7 @@ const TableHeader = ({
     }, [debouncedSearch]);
 
     return (
-        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+        <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6 px-2">
             {/* Title + Subtitle */}
             <div>
                 <h1 className="text-xl md:text-2xl font-extrabold">{title}</h1>

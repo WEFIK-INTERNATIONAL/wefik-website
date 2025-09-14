@@ -6,12 +6,25 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-import { Github, Linkedin, Globe, FileUser } from "lucide-react";
+import {
+    Github,
+    Linkedin,
+    Globe,
+    FileUser,
+    User,
+    GraduationCap,
+    Award,
+    ClipboardCheck,
+} from "lucide-react";
+
+import { getStatusBadgeClasses } from "@/utils/statusBadge";
 
 const ApplicationDetails = ({ application }) => {
     if (!application) {
         return (
-            <p className="text-center text-gray-500">No application found.</p>
+            <p className="text-center text-gray-500 dark:text-gray-400">
+                No application found.
+            </p>
         );
     }
 
@@ -29,227 +42,191 @@ const ApplicationDetails = ({ application }) => {
         {
             name: "GitHub",
             url: socialLinks?.github,
-            icon: <Github />,
+            icon: <Github className="w-4 h-4" />,
         },
         {
             name: "LinkedIn",
             url: socialLinks?.linkedin,
-            icon: <Linkedin />,
+            icon: <Linkedin className="w-4 h-4" />,
         },
         {
             name: "Portfolio",
             url: socialLinks?.portfolio,
-            icon: <Globe />,
+            icon: <Globe className="w-4 h-4" />,
         },
     ];
 
     return (
-        <div className="space-y-3 overflow-y-scroll h-[78vh]">
+        <div className="space-y-8 overflow-y-scroll h-[78vh] p-4 rounded-xl">
             {/* Candidate Info */}
-            <Card className="dark:text-white">
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold">
-                        Candidate Information
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="grid md:grid-cols-2 md:gap-4">
-                    <div>
-                        <p className="font-semibold">Full Name</p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                            {candidateInfo?.fullName}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Email</p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                            {candidateInfo?.email}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Phone</p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                            {candidateInfo?.phone}
-                        </p>
-                    </div>
-                    <div>
-                        <p className="font-semibold">Address</p>
-                        <p className="text-gray-500 dark:text-gray-300">
-                            {candidateInfo?.address}, {candidateInfo?.city},{" "}
-                            {candidateInfo?.state}, {candidateInfo?.country} -{" "}
-                            {candidateInfo?.pinCode}
-                        </p>
-                    </div>
-                </CardContent>
-            </Card>
+            <SectionCard
+                title="Candidate Information"
+                icon={<User className="w-5 h-5" />}
+            >
+                <Info label="Full Name" value={candidateInfo?.fullName} />
+                <Info label="Email" value={candidateInfo?.email} />
+                <Info label="Phone" value={candidateInfo?.phone} />
+                <Info
+                    label="Address"
+                    value={
+                        [
+                            candidateInfo?.address,
+                            candidateInfo?.city,
+                            candidateInfo?.state,
+                            candidateInfo?.country,
+                        ]
+                            .filter(Boolean)
+                            .join(", ") +
+                        (candidateInfo?.pinCode
+                            ? ` - ${candidateInfo.pinCode}`
+                            : "")
+                    }
+                />
+            </SectionCard>
 
             {/* Resume */}
             {resume?.url && (
-                <Card className="dark:text-white">
-                    <CardHeader>
-                        <CardTitle>Resume</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Link
-                            href={resume?.url}
-                            target="_blank"
-                            className="flex items-center gap-2 text-blue-600"
-                        >
-                            <FileUser />
-                            {resume?.filename || "Download Resume"}
-                        </Link>
-                    </CardContent>
-                </Card>
+                <SectionCard
+                    title="Resume"
+                    icon={<FileUser className="w-5 h-5" />}
+                >
+                    <Link
+                        href={resume?.url}
+                        target="_blank"
+                        className="flex items-center gap-2 text-sm text-blue-600 hover:underline dark:text-blue-400"
+                    >
+                        <FileUser className="w-4 h-4" />
+                        {resume?.filename || "Download Resume"}
+                    </Link>
+                </SectionCard>
             )}
 
-            {/* Resume */}
+            {/* Social Links */}
             {socialLinks && (
-                <Card className="dark:text-white">
-                    <CardHeader>
-                        <CardTitle>Social Links</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <div className="flex gap-6">
-                            {links
-                                .filter((link) => link.url)
-                                .map((link, idx) => (
-                                    <Link
-                                        key={idx}
-                                        href={link.url}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center gap-2 text-blue-600 hover:underline"
-                                    >
-                                        {link.icon}
-                                        {link.name}
-                                    </Link>
-                                ))}
-                        </div>
-                    </CardContent>
-                </Card>
+                <SectionCard title="Social Links" icon="🌐">
+                    <div className="flex flex-wrap gap-4">
+                        {links
+                            .filter((link) => link.url)
+                            .map((link, idx) => (
+                                <Link
+                                    key={idx}
+                                    href={link.url}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-2 px-3 py-2 text-sm rounded-md border border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-blue-600"
+                                >
+                                    {link.icon}
+                                    <span>{link.name}</span>
+                                </Link>
+                            ))}
+                    </div>
+                </SectionCard>
             )}
 
             {/* Education */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold dark:text-white">
-                        Education
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    {educationInfo && educationInfo.length > 0 ? (
-                        educationInfo.map((edu, index) => (
-                            <div key={index} className="mb-4">
-                                <p className="font-semibold">
-                                    <span className="font-bold dark:text-white">
-                                        Degree:
-                                    </span>{" "}
-                                    <span className="text-gray-600 dark:text-gray-300">
-                                        {edu?.degree}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span className="font-bold dark:text-white">
-                                        Institution:
-                                    </span>{" "}
-                                    <span className="text-gray-600 dark:text-gray-300">
-                                        {edu?.institution}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span className="font-bold dark:text-white">
-                                        Field Of Study:
-                                    </span>{" "}
-                                    <span className="text-gray-600 dark:text-gray-300">
-                                        {edu?.fieldOfStudy}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span className="font-bold dark:text-white">
-                                        Date:
-                                    </span>{" "}
-                                    <span className="text-gray-600 dark:text-gray-300">
-                                        {edu?.startDate
-                                            ? new Date(
-                                                  edu?.startDate
-                                              ).toLocaleDateString()
-                                            : "N/A"}{" "}
-                                        -{" "}
-                                        {edu?.endDate
-                                            ? new Date(
-                                                  edu?.endDate
-                                              ).toLocaleDateString()
-                                            : "Present"}
-                                    </span>
-                                </p>
-                                <p>
-                                    <span className="font-bold dark:text-white">
-                                        Grade:
-                                    </span>{" "}
-                                    <span className="text-gray-600 dark:text-gray-300">
-                                        {edu?.grade || "N/A"}
-                                    </span>
-                                </p>
-                                {index !== educationInfo.length - 1 && (
-                                    <Separator className="my-2 dark:bg-gray-700" />
-                                )}
-                            </div>
-                        ))
-                    ) : (
-                        <p className="text-gray-500 dark:text-gray-400">
-                            No education info available.
-                        </p>
-                    )}
-                </CardContent>
-            </Card>
+            <SectionCard
+                title="Education"
+                icon={<GraduationCap className="w-5 h-5" />}
+            >
+                {educationInfo && educationInfo.length > 0 ? (
+                    educationInfo.map((edu, index) => (
+                        <div key={index} className="mb-6">
+                            <Info label="Degree" value={edu?.degree} />
+                            <Info
+                                label="Institution"
+                                value={edu?.institution}
+                            />
+                            <Info
+                                label="Field of Study"
+                                value={edu?.fieldOfStudy}
+                            />
+                            <Info
+                                label="Date"
+                                value={`${edu?.startDate ? new Date(edu.startDate).toLocaleDateString() : "N/A"} - ${
+                                    edu?.endDate
+                                        ? new Date(
+                                              edu.endDate
+                                          ).toLocaleDateString("en-US", {
+                                              year: "numeric",
+                                              month: "short",
+                                              day: "numeric",
+                                          })
+                                        : "Present"
+                                }`}
+                            />
+                            <Info label="Grade" value={edu?.grade || "N/A"} />
+                            {index !== educationInfo.length - 1 && (
+                                <Separator className="my-4 dark:bg-gray-700" />
+                            )}
+                        </div>
+                    ))
+                ) : (
+                    <p className="text-gray-500 dark:text-gray-400">
+                        No education info available.
+                    </p>
+                )}
+            </SectionCard>
 
             {/* Skills */}
-            <Card className="dark:text-white">
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold">Skills</CardTitle>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-2">
-                    {skills && skills.length > 0 ? (
-                        skills.map((skill, index) => (
-                            <Badge key={index} variant="outline">
+            <SectionCard title="Skills" icon={<Award className="w-5 h-5" />}>
+                {skills && skills.length > 0 ? (
+                    <div className="flex flex-wrap gap-2">
+                        {skills.map((skill, index) => (
+                            <Badge
+                                key={index}
+                                className="px-3 py-1 rounded-md bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300"
+                            >
                                 {skill?.name} ({skill?.level})
                             </Badge>
-                        ))
-                    ) : (
-                        <p className="text-gray-500">No skills added.</p>
-                    )}
-                </CardContent>
-            </Card>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-gray-500 dark:text-gray-400">
+                        No skills added.
+                    </p>
+                )}
+            </SectionCard>
 
             {/* Status */}
-            <Card className="dark:text-white">
-                <CardHeader>
-                    <CardTitle className="text-lg font-bold">
-                        Application Status
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Badge
-                        className={`${
-                            status === "Pending"
-                                ? "bg-yellow-500 text-white"
-                                : status === "Reviewed"
-                                  ? "bg-blue-500 text-white"
-                                  : status === "Shortlisted"
-                                    ? "bg-purple-500 text-white"
-                                    : status === "Rejected"
-                                      ? "bg-red-500 text-white"
-                                      : "bg-green-600 text-white"
-                        }`}
-                    >
-                        {status}
-                    </Badge>
-                    <p className="text-sm text-gray-500 mt-2 dark:text-white">
-                        Applied on {new Date(appliedAt).toLocaleDateString()}
-                    </p>
-                </CardContent>
-            </Card>
+            <SectionCard
+                title="Application Status"
+                icon={<ClipboardCheck className="w-5 h-5" />}
+            >
+                <Badge
+                    className={`px-4 py-1 rounded-full text-sm font-medium ${getStatusBadgeClasses(status)}`}
+                >
+                    {status}
+                </Badge>
+                <p className="text-sm text-gray-600 mt-3 dark:text-gray-400">
+                    Applied on {new Date(appliedAt).toLocaleDateString()}
+                </p>
+            </SectionCard>
         </div>
     );
 };
+
+// ✅ Section wrapper with subtle neutral styling
+const SectionCard = ({ title, icon, children }) => (
+    <Card className="border border-gray-200 dark:border-gray-800 shadow-sm rounded-xl py-0">
+        <CardHeader className="bg-gray-50 dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800 rounded-t-lg !pb-0">
+            <CardTitle className="flex items-center text-base font-semibold text-gray-900 dark:text-gray-100 py-4">
+                {icon} {title}
+            </CardTitle>
+        </CardHeader>
+        <CardContent className="p-4 space-y-4">{children}</CardContent>
+    </Card>
+);
+
+// ✅ Label + value row
+const Info = ({ label, value }) => (
+    <p className="text-md">
+        <span className="font-medium text-gray-900 dark:text-gray-100">
+            {label}:{" "}
+        </span>
+        <span className="text-gray-600 dark:text-gray-400">
+            {value || "N/A"}
+        </span>
+    </p>
+);
 
 export default ApplicationDetails;

@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-
 import {
     Dialog,
     DialogTrigger,
@@ -14,13 +13,29 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
-import { useDashboardContext } from "@/contexts";
+import { getStatusBadgeClasses } from "@/utils/statusBadge";
 
-const EditStatus = ({ id, currentStatus = "Pending" }) => {
-    const { updateApplicationSatatus } = useDashboardContext();
+/**
+ * Reusable EditStatus Component
+ * @param {string} entityName - Name of entity (Job, Application, etc.)
+ * @param {string} currentStatus - Current status of the entity
+ * @param {Array<string>} statuses - Array of possible statuses
+ * @param {function} onUpdate - Callback to update status: ({ id, status }) => {}
+ * @param {ReactNode} trigger - Element to open dialog (button, menu item, etc.)
+ * @param {boolean} isUpdating - Loading state for update
+ * @param {string} id - Entity unique ID
+ */
+const EditStatusDialog = ({
+    id,
+    entityName = "Item",
+    currentStatus = "",
+    statuses = [],
+    onUpdate,
+    trigger,
+    isUpdating = false,
+}) => {
     const [selectedStatus, setSelectedStatus] = useState(currentStatus);
     const [open, setOpen] = useState(false);
-    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         if (open) {
@@ -28,50 +43,18 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
         }
     }, [open, currentStatus]);
 
-    const statuses = [
-        "Pending",
-        "Reviewed",
-        "Shortlisted",
-        "Accepted",
-        "Rejected",
-    ];
-
-    const getStatusBadge = (status) => {
-        switch (status) {
-            case "Pending":
-                return "bg-yellow-500 text-white";
-            case "Reviewed":
-                return "bg-blue-500 text-white";
-            case "Shortlisted":
-                return "bg-slate-900 dark:bg-slate-500 text-white";
-            case "Accepted":
-                return "bg-green-500 text-white";
-            case "Rejected":
-                return "bg-red-500 text-white";
-            default:
-                return "bg-gray-500 text-white";
-        }
-    };
-
-    const updateStatus = async () => {
-        setIsUpdating(true);
-        try {
-            updateApplicationSatatus(id, selectedStatus);
-            setOpen(false);
-        } catch (error) {
-            console.log(error);
-        } finally {
-            setIsUpdating(false);
-        }
+    const handleUpdate = async () => {
+        await onUpdate({ id, status: selectedStatus });
+        setOpen(false);
     };
 
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger>Edit Status</DialogTrigger>
+            <DialogTrigger asChild>{trigger}</DialogTrigger>
 
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="sm:max-w-md bg-gray-900">
                 <DialogHeader>
-                    <DialogTitle>Edit Status</DialogTitle>
+                    <DialogTitle>Edit {entityName} Status</DialogTitle>
                 </DialogHeader>
 
                 <RadioGroup
@@ -85,22 +68,21 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
                             <label
                                 key={idx}
                                 htmlFor={`status-${idx}`}
-                                className={`flex items-center gap-3 cursor-pointer ${
+                                className={`flex items-center gap-3 ${
                                     isDisabled
                                         ? "opacity-50 cursor-not-allowed"
-                                        : ""
+                                        : "cursor-pointer"
                                 }`}
                             >
                                 <RadioGroupItem
                                     value={status}
                                     id={`status-${idx}`}
                                     disabled={isDisabled}
-                                    className="hover:cursor-pointer"
                                 />
                                 <Badge
-                                    className={`px-4 rounded-full ${getStatusBadge(
+                                    className={`px-4 rounded-full ${getStatusBadgeClasses(
                                         status
-                                    )} ${isDisabled ? "opacity-50" : "cursor-pointer"}`}
+                                    )}`}
                                 >
                                     {status}
                                 </Badge>
@@ -109,22 +91,16 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
                     })}
                 </RadioGroup>
 
-                <DialogFooter className="mt-4">
+                <DialogFooter className="mt-4 flex justify-end gap-2">
                     <DialogClose asChild>
-                        <Button
-                            variant="outline"
-                            className="hover:cursor-pointer"
-                        >
-                            Cancel
-                        </Button>
+                        <Button variant="outline">Cancel</Button>
                     </DialogClose>
                     <Button
                         disabled={
                             isUpdating || selectedStatus === currentStatus
                         }
                         type="button"
-                        onClick={updateStatus}
-                        className="hover:cursor-pointer"
+                        onClick={handleUpdate}
                     >
                         {isUpdating ? "Updating..." : "Save changes"}
                     </Button>
@@ -134,4 +110,4 @@ const EditStatus = ({ id, currentStatus = "Pending" }) => {
     );
 };
 
-export default EditStatus;
+export default EditStatusDialog;

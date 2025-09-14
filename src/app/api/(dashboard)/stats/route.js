@@ -1,55 +1,52 @@
 import dbConnect from "@/lib/dbConnect";
 import Job from "@/models/Job";
+import Application from "@/models/Application"; // ✅ Import Application model
 import { successResponse, errorResponse } from "@/utils/apiResponse";
 
-export async function GET(req) {
+export async function GET() {
     try {
         await dbConnect();
 
-        const stats = await Job.aggregate([
-            // 1. Join applications to each job
+        // ✅ Total jobs
+        const totalJobs = await Job.countDocuments();
+
+        // ✅ Open / Closed jobs (case-insensitive just in case)
+        const totalOpenJobs = await Job.countDocuments({
+            status: { $regex: /^open$/i },
+        });
+        const totalClosedJobs = await Job.countDocuments({
+            status: { $regex: /^closed$/i },
+        });
+
+        // ✅ Total applications
+        const totalApplications = await Application.countDocuments();
+
+        // ✅ Applications by status
+        const applicationsByStatus = await Application.aggregate([
             {
-                $lookup: {
-                    from: "applications",
-                    localField: "jobId",
-                    foreignField: "jobId",
-                    as: "apps",
+                $group: {
+                    _id: { $toLower: "$status" }, // normalize casing
+                    count: { $sum: 1 },
                 },
             },
-
-            // 2. Run multiple stats in parallel
             {
-                $facet: {
-                    totalJobs: [{ $count: "count" }],
-
-                    jobStatus: [
-                        {
-                            $group: {
-                                _id: "$status",
-                                count: { $sum: 1 },
-                            },
-                        },
-                    ],
-
-                    totalApplications: [
-                        { $unwind: "$apps" },
-                        { $count: "count" },
-                    ],
-
-                    applicationsByStatus: [
-                        { $unwind: "$apps" },
-                        {
-                            $group: {
-                                _id: "$apps.status",
-                                count: { $sum: 1 },
-                            },
-                        },
-                    ],
+                $project: {
+                    status: "$_id",
+                    count: 1,
+                    _id: 0,
                 },
             },
         ]);
 
-        return successResponse(stats, "Stats genarate successfully", 200);
+        const stats = {
+            totalJobs,
+            totalOpenJobs,
+            totalClosedJobs,
+            totalApplications,
+            applicationsByStatus,
+        };
+
+        return successResponse(stats, "Stats generated successfully", 200);
     } catch (error) {
         return errorResponse(error.message || "Internal Server Error", 500);
     }
