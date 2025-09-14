@@ -15,7 +15,7 @@ export async function POST(req) {
             "Application created successfully",
             201
         );
-    } catch (error) {        
+    } catch (error) {
         if (error.code === 11000) {
             return errorResponse("You already applied for this job", 400);
         }
@@ -28,10 +28,52 @@ export async function GET(req) {
     try {
         await dbConnect();
 
-        const applications = await Application.find();
-         
+        const { searchParams } = new URL(req.url);
+        const pageParam = Number.parseInt(searchParams.get("page") ?? "", 10);
+        const limitParam = Number.parseInt(searchParams.get("limit") ?? "", 10);
+        const page =
+            Number.isFinite(pageParam) && pageParam > 0 ? pageParam : 1;
+        const limit =
+            Number.isFinite(limitParam) && limitParam > 0 && limitParam <= 100
+                ? limitParam
+                : 10;
+        const rawSearch = (searchParams.get("search") ?? "").trim();
+        const search = rawSearch.slice(0, 100); // cap length to avoid pathological regex
+        const sortInput = (searchParams.get("sort") ?? "newest").toLowerCase();
+        const sort = sortInput === "oldest" ? "oldest" : "newest";
+        const skip = (page - 1) * limit;
+
+        // 🔎 Search filter
+        const query = search
+            ? {
+                  $or: [
+                      { jobId: { $regex: search, $options: "i" } },
+                      { jobTitle: { $regex: search, $options: "i" } },
+                      { jobProfile: { $regex: search, $options: "i" } },
+                  ],
+              }
+            : {};
+
+        // 📌 Sorting
+        let sortBy = {};
+        if (sort === "newest") sortBy = { createdAt: -1 };
+        if (sort === "oldest") sortBy = { createdAt: 1 };
+
+        const [data, total] = await Promise.all([
+            Application.find(query).skip(skip).limit(limit).sort(sortBy),
+            Application.countDocuments(query),
+        ]);
+
         return successResponse(
-            applications,
+            {
+                data,
+                pagination: {
+                    total,
+                    page,
+                    pages: Math.ceil(total / limit),
+                    limit,
+                },
+            },
             "Applications fetched successfully",
             200
         );
@@ -39,35 +81,3 @@ export async function GET(req) {
         return errorResponse(error.message || "Internal Server Error", 500);
     }
 }
-
-// GET -- Fetch all applications (with pagination)
-// export async function GET(req) {
-//     try {
-//         await dbConnect();
-
-//         const { searchParams } = new URL(req.url);
-//         const page = parseInt(searchParams.get("page") || "1", 10);
-//         const limit = parseInt(searchParams.get("limit") || "10", 10);
-//         const skip = (page - 1) * limit;
-
-//         const [applications, total] = await Promise.all([
-//             Application.find({}).skip(skip).limit(limit),
-//             Application.countDocuments(),
-//         ]);
-
-//         return successResponse(
-//             {
-//                 applications,
-//                 pagination: {
-//                     total,
-//                     page,
-//                     pages: Math.ceil(total / limit),
-//                 },
-//             },
-//             "Applications fetched successfully",
-//             200
-//         );
-//     } catch (error) {
-//         return errorResponse(error.message || "Internal Server Error", 500);
-//     }
-// }

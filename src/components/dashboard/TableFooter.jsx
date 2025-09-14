@@ -8,7 +8,15 @@ import {
     PaginationPrevious,
 } from "@/components/ui/pagination";
 
-const TableFooter = ({ isLoading, pagination }) => {
+const TableFooter = ({ isLoading, pagination, onPageChange }) => {
+    if (!pagination) return null;
+
+    const { page, pages, total, limit } = pagination;
+
+    // Calculate range
+    const indexOfFirst = (page - 1) * limit + 1;
+    const indexOfLast = Math.min(page * limit, total);
+
     return (
         <div className="flex justify-between items-center py-6">
             {/* Left side - info text */}
@@ -17,8 +25,7 @@ const TableFooter = ({ isLoading, pagination }) => {
                     <p className="text-gray-500 text-sm">Loading...</p>
                 ) : (
                     <p className="text-gray-500 text-sm">
-                        Showing {pagination.indexOfFirst + 1} to{" "}
-                        {pagination.indexOfLast} of {pagination.totalItems}{" "}
+                        Showing {indexOfFirst} to {indexOfLast} of {total}{" "}
                         entries
                     </p>
                 )}
@@ -31,9 +38,9 @@ const TableFooter = ({ isLoading, pagination }) => {
                         {/* Prev button */}
                         <PaginationItem>
                             <PaginationPrevious
-                                onClick={pagination.goToPrevPage}
+                                onClick={() => onPageChange(page - 1)}
                                 className={`cursor-pointer ${
-                                    pagination.currentPage === 1
+                                    page === 1
                                         ? "pointer-events-none opacity-50"
                                         : ""
                                 }`}
@@ -41,31 +48,24 @@ const TableFooter = ({ isLoading, pagination }) => {
                         </PaginationItem>
 
                         {/* Page numbers */}
-                        {Array.from({ length: pagination.totalPages }).map(
-                            (_, i) => (
-                                <PaginationItem key={i}>
-                                    <PaginationLink
-                                        isActive={
-                                            pagination.currentPage === i + 1
-                                        }
-                                        onClick={() =>
-                                            pagination.goToPage(i + 1)
-                                        }
-                                        className="cursor-pointer"
-                                    >
-                                        {i + 1}
-                                    </PaginationLink>
-                                </PaginationItem>
-                            )
-                        )}
+                        {Array.from({ length: pages }).map((_, i) => (
+                            <PaginationItem key={i}>
+                                <PaginationLink
+                                    isActive={page === i + 1}
+                                    onClick={() => onPageChange(i + 1)}
+                                    className="cursor-pointer"
+                                >
+                                    {i + 1}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
 
                         {/* Next button */}
                         <PaginationItem>
                             <PaginationNext
-                                onClick={pagination.goToNextPage}
+                                onClick={() => onPageChange(page + 1)}
                                 className={`cursor-pointer ${
-                                    pagination.currentPage ===
-                                    pagination.totalPages
+                                    page === pages
                                         ? "pointer-events-none opacity-50"
                                         : ""
                                 }`}

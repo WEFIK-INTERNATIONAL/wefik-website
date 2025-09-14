@@ -1,5 +1,4 @@
 import React from "react";
-
 import {
     Table,
     TableBody,
@@ -11,14 +10,21 @@ import {
 
 const DataTable = ({ isLoading, columns, data }) => {
     return (
-        <div className="">
+        <div className="w-full overflow-x-auto rounded-xl border border-gray-300 shadow-sm">
             <Table>
+                {/* Table Header */}
                 <TableHeader>
                     <TableRow>
-                        {columns.map((col) => (
+                        {columns.map((col, index) => (
                             <TableHead
-                                key={col.accessor}
-                                className="text-gray-500"
+                                key={index}
+                                className={`px-4 py-3 text-left text-sm font-semibold text-gray-400 ${
+                                    col.align === "center"
+                                        ? "text-center"
+                                        : col.align === "right"
+                                          ? "text-right"
+                                          : "text-left"
+                                }`}
                             >
                                 {col.header}
                             </TableHead>
@@ -26,16 +32,34 @@ const DataTable = ({ isLoading, columns, data }) => {
                     </TableRow>
                 </TableHeader>
 
+                {/* Table Body */}
                 <TableBody>
                     {isLoading ? (
                         <TableRow>
-                            <TableHead>Loading...</TableHead>
+                            <TableCell
+                                colSpan={columns.length}
+                                className="px-4 py-6 text-center text-gray-500"
+                            >
+                                Loading...
+                            </TableCell>
                         </TableRow>
-                    ) : data.length > 0 ? (
+                    ) : data?.length > 0 ? (
                         data.map((row, rowIndex) => (
-                            <TableRow key={rowIndex}>
+                            <TableRow
+                                key={rowIndex}
+                                className="hover:bg-gray-50 transition-colors hover:text-black"
+                            >
                                 {columns.map((col) => (
-                                    <TableCell key={col.accessor}>
+                                    <TableCell
+                                        key={col.accessor}
+                                        className={`px-4 py-3 text-sm ${
+                                            col.align === "center"
+                                                ? "text-center"
+                                                : col.align === "right"
+                                                  ? "text-right"
+                                                  : "text-left"
+                                        }`}
+                                    >
                                         {col.cell
                                             ? col.cell(row)
                                             : row[col.accessor]}
@@ -47,7 +71,7 @@ const DataTable = ({ isLoading, columns, data }) => {
                         <TableRow>
                             <TableCell
                                 colSpan={columns.length}
-                                className="text-center py-6 text-gray-500"
+                                className="px-4 py-6 text-center text-gray-500"
                             >
                                 No data available
                             </TableCell>

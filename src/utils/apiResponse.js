@@ -8,6 +8,6 @@ export function successResponse(
     return NextResponse.json({ success: true, message, data }, { status });
 }
 
-export function errorResponse(message = "Something went wrong", status = 500) {
-    return NextResponse.json({ success: false, message }, { status });
+export function errorResponse(message = "Error", status = 500, details = null) {
+    return NextResponse.json({ success: false, message, details }, { status });
 }

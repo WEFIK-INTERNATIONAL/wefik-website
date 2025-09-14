@@ -6,54 +6,34 @@ import TableHeader from "@/components/dashboard/TableHeader";
 import DataTable from "@/components/dashboard/DataTable";
 import TableFooter from "@/components/dashboard/TableFooter";
 import ActionDropdown from "@/components/dashboard/ActionDropdown";
-import EditStatus from "@/components/dashboard/EditStatus"; // ✅ Import added
 
 import { Badge } from "@/components/ui/badge";
 import { formatDate } from "@/utils/formatDate";
-import { useDashboardContext } from "@/contexts";
-import { usePagination, useSearchAndSort } from "@/app/hooks";
 
-const getStatusBadge = (status) => {
-    switch (status) {
-        case "Pending":
-            return "bg-yellow-500 text-white";
-        case "Reviewed":
-            return "bg-blue-500 text-white";
-        case "Shortlisted":
-            return "bg-slate-900 dark:bg-slate-500 text-white";
-        case "Accepted":
-            return "bg-green-500 text-white";
-        case "Rejected":
-            return "bg-red-500 text-white";
-        default:
-            return "bg-gray-500 text-white";
-    }
-};
+import {
+    useGetApplications,
+    useUpdateApplicationStatus,
+    useDeleteApplication,
+} from "@/queries/applications";
+
+import { getStatusBadgeClasses } from "@/utils/statusBadge";
 
 export default function ApplicationsPage() {
-    const { isLoading, applications, deleteApplication } =
-        useDashboardContext();
+    const limit = 9;
+    const [page, setPage] = useState(1);
+    const [search, setSearch] = useState("");
+    const [sort, setSort] = useState("");
 
-    const [searchTerm, setSearchTerm] = useState("");
-    const [sortOrder, setSortOrder] = useState("");
-
-    const filteredApplications = useSearchAndSort({
-        data: applications,
-        searchTerm,
-        sortOrder,
-        searchFields: [
-            "jobId",
-            "jobTitle",
-            "candidateInfo.fullName",
-            "candidateInfo.email",
-        ],
-        sortField: "appliedAt",
-    });
-
-    const pagination = usePagination({
-        data: filteredApplications,
-        itemsPerPage: 10,
-    });
+    const { data: applications, isLoading } = useGetApplications(
+        page,
+        limit,
+        search,
+        sort
+    );
+    const { mutate: updateStatus, isPending: updateIsPending } =
+        useUpdateApplicationStatus();
+    const { mutate: deleteApplication, isPending: deleteIsPending } =
+        useDeleteApplication();
 
     const columns = [
         { header: "Job ID", accessor: "jobId" },
@@ -64,7 +44,7 @@ export default function ApplicationsPage() {
             cell: (row) => row.candidateInfo?.fullName,
         },
         {
-            header: "Email",
+            header: "Candidate Email",
             accessor: "candidateInfo.email",
             cell: (row) => row.candidateInfo?.email,
         },
@@ -87,7 +67,7 @@ export default function ApplicationsPage() {
             accessor: "status",
             cell: (row) => (
                 <Badge
-                    className={`px-2 py-1 rounded-full ${getStatusBadge(row.status)}`}
+                    className={`px-4 py-1 rounded-full ${getStatusBadgeClasses(row.status)}`}
                 >
                     {row.status}
                 </Badge>
@@ -97,15 +77,31 @@ export default function ApplicationsPage() {
             header: "Actions",
             accessor: "_id",
             cell: (row) => (
-                <div className="text-center sticky right-0 shadow-md lg:static lg:shadow-none lg:bg-transparent lg:text-right">
+                <div className="flex justify-center">
                     <ActionDropdown
-                        id={row._id}
-                        label="Application Actions"
-                        viewDetailsPath="/admin/dashboard/applications/"
-                        onEdit={(id) => (
-                            <EditStatus id={id} currentStatus={row.status} />
-                        )}
-                        onDelete={deleteApplication}
+                        viewDetailsPath={`/admin/dashboard/applications/${row._id}`}
+                        statusAction={{
+                            id: row._id,
+                            entityName: "Application",
+                            currentStatus: row.status,
+                            statuses: [
+                                "Pending",
+                                "Reviewed",
+                                "Shortlisted",
+                                "Accepted",
+                                "Rejected",
+                            ],
+                            callback: updateStatus,
+                            isUpdating: updateIsPending,
+                            triggerLabel: "Edit Status",
+                        }}
+                        deleteAction={{
+                            id: row._id,
+                            entityName: "Application",
+                            callback: deleteApplication,
+                            isDeleting: deleteIsPending,
+                            triggerLabel: "Delete Application",
+                        }}
                     />
                 </div>
             ),
@@ -117,8 +113,8 @@ export default function ApplicationsPage() {
             <TableHeader
                 title="Application Table"
                 subtitle="Manage all the applications"
-                onSearch={setSearchTerm}
-                onSort={setSortOrder}
+                onSearch={setSearch}
+                onSort={setSort}
                 sortOptions={[
                     { label: "Newest", value: "newest" },
                     { label: "Oldest", value: "oldest" },
@@ -127,9 +123,13 @@ export default function ApplicationsPage() {
             <DataTable
                 isLoading={isLoading}
                 columns={columns}
-                data={pagination.currentItems}
+                data={applications?.data}
             />
-            <TableFooter isLoading={isLoading} pagination={pagination} />
+            <TableFooter
+                isLoading={isLoading}
+                pagination={applications?.pagination}
+                onPageChange={setPage}
+            />
         </div>
     );
 }

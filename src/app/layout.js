@@ -1,7 +1,9 @@
 import "./globals.css";
 import { ppNeueMontreal } from "./fonts";
-import AppLayoutClient from "@/components/common/AppLayoutClient";
+
 import { Toaster } from "@/components/ui/sonner";
+import AppLayoutClient from "@/components/common/AppLayoutClient";
+import TanStackQueryProvider from "@/providers/TanStackQueryProvider";
 
 export const metadata = {
     title: "Wefik - Real Life Genie Of Your Ideas",
@@ -14,7 +16,9 @@ export default function RootLayout({ children }) {
     return (
         <html lang="en" className={ppNeueMontreal.variable}>
             <body className="antialiased">
-                <AppLayoutClient>{children}</AppLayoutClient>
+                <AppLayoutClient>
+                    <TanStackQueryProvider>{children}</TanStackQueryProvider>
+                </AppLayoutClient>
                 <Toaster position="top-right" richColors />
             </body>
         </html>
