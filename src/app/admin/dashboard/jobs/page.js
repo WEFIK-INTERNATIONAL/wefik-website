@@ -14,19 +14,7 @@ import { Plus } from "lucide-react";
 
 import { useGetJobs, useUpdateJobStatus, useDeleteJob } from "@/queries/jobs";
 
-// ✅ Status Badge for Jobs
-const getJobStatusBadge = (status) => {
-    switch (status) {
-        case "Open":
-            return "bg-green-500 text-white";
-        case "Closed":
-            return "bg-red-500 text-white";
-        case "Draft":
-            return "bg-yellow-500 text-white";
-        default:
-            return "bg-slate-400 text-white";
-    }
-};
+import { getStatusBadgeClasses } from "@/utils/statusBadge";
 
 export default function JobsPage() {
     const limit = 9;
@@ -57,7 +45,7 @@ export default function JobsPage() {
             align: "center",
             cell: (row) => (
                 <Badge
-                    className={`px-6 py-1 font-semibold rounded-full ${getJobStatusBadge(row.status)}`}
+                    className={`px-6 py-1 font-semibold rounded-full ${getStatusBadgeClasses(row.status)}`}
                 >
                     {row.status}
                 </Badge>
@@ -70,7 +58,7 @@ export default function JobsPage() {
             cell: (row) => (
                 <div className="flex justify-center">
                     <ActionDropdown
-                        viewDetailsPath="/admin/dashboard/jobs/"
+                        viewDetailsPath={`/admin/dashboard/jobs/${row.jobId}`}
                         editAction={{
                             jobId: row.jobId,
                             triggerLabel: "Edit Job",
@@ -111,9 +99,9 @@ export default function JobsPage() {
             >
                 <Link
                     href="/admin/dashboard/jobs/create-job"
-                    className="flex justify-center items-center gap-2 px-3 py-1 text-white font-medium bg-green-600 rounded transition"
+                    className="flex justify-center items-center gap-1 px-3 py-[5px] font-bold text-black bg-[#CDD2DA] rounded transition"
                 >
-                    <Plus /> Create Job
+                    <Plus size={18} /> Create Job
                 </Link>
             </TableHeader>
 

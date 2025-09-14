@@ -105,10 +105,10 @@ const ActionDropdown = ({
                 )}
 
                 {/* View Details */}
-                {viewDetailsPath && editAction?.id && (
+                {viewDetailsPath && (
                     <DropdownMenuItem className="hover:cursor-pointer">
                         <Link
-                            href={`${viewDetailsPath}${editAction.id}`}
+                            href={`${viewDetailsPath}`}
                             className="flex justify-center items-center gap-2 text-gray-600 md:text-[16px] font-bold hover:cursor-pointer"
                         >
                             <BookOpen className="" />

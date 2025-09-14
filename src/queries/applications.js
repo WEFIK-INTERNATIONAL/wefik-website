@@ -3,13 +3,30 @@ import { queryKeys } from "@/lib/queryKeys";
 import applicationService from "@/services/ApplicationServices";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-/* ----------------- Get All Applications ----------------- */
-export const useGetApplications = () => {
+/* ----------------- Get Applications ----------------- */
+export const useGetApplications = (page, limit, search, sort) => {
     return useQuery({
-        queryKey: [queryKeys.applications],
+        queryKey: [queryKeys.applications, page, limit, search, sort],
         queryFn: async () => {
-            const res = await applicationService.getApplications();
-            return res.data;
+            const res = await applicationService.getApplications({
+                page,
+                limit,
+                search,
+                sort,
+            });
+            return res;
+        },
+        keepPreviousData: true,
+    });
+};
+
+/* ----------------- Get Application By Id ----------------- */
+export const useGetApplicationById = (id) => {
+    return useQuery({
+        queryKey: [queryKeys.applications, id],
+        queryFn: async () => {
+            const res = await applicationService.getApplicationById(id);
+            return res;
         },
     });
 };
@@ -55,8 +72,10 @@ export const useUpdateApplicationStatus = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: ({ id, status }) =>
-            applicationService.updateApplicationStatus(id, status),
+        mutationFn: async ({ id, status }) => {
+            const res = await applicationService.updateApplication(id, status);
+            return res;
+        },
         onSuccess: () => {
             toast.success("Application status updated successfully ✅");
             queryClient.invalidateQueries([queryKeys.applications]);

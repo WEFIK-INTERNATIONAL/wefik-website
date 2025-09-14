@@ -7,14 +7,25 @@ export async function POST(req) {
     try {
         await dbConnect();
         const body = await req.json();
+
         const job = await Job.create(body);
 
         return successResponse(job, "Job created successfully", 201);
     } catch (error) {
-        if (error.code === 11000) {
-            return errorResponse("This job already exists", 400);
+        if (error?.name === "ValidationError") {
+            const messages = Object.values(error.errors || {})
+                .map((e) => e.message)
+                .join(", ");
+            return errorResponse(messages || "Validation error", 400);
         }
-        return errorResponse(error.message || "Internal Server Error", 500);
+        if (error?.code === 11000) {
+            return errorResponse("This job already exists", 409);
+        }
+        if (error instanceof SyntaxError) {
+            return errorResponse("Invalid JSON payload", 400);
+        }
+        // TODO: log error server-side
+        return errorResponse("Internal Server Error", 500);
     }
 }
 
@@ -29,7 +40,7 @@ export async function GET(req) {
         const search = searchParams.get("search") || "";
         const sort = searchParams.get("sort") || "newest";
 
-        const skip = (page - 1) * limit;        
+        const skip = (page - 1) * limit;
 
         // 🔎 Search filter
         const query = search
@@ -67,6 +78,7 @@ export async function GET(req) {
             200
         );
     } catch (error) {
-        return errorResponse(error.message || "Internal Server Error", 500);
+        console.log(error);
+        return errorResponse("Internal Server Error", 500);
     }
 }

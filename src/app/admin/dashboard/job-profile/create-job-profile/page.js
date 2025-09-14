@@ -253,7 +253,6 @@ export default function JobProfileForm() {
                         </div>
 
                         {/* Submit */}
-                        {/* Submit */}
                         <Button
                             type="submit"
                             className="w-full hover:cursor-pointer"

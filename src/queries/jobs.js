@@ -5,7 +5,7 @@ import jobServices from "@/services/JobServices";
 import { generateJobId } from "@/utils/generateJobId";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
-// Job-Profile
+/* ----------------- Get All Job Profiles ----------------- */
 export const useGetJobProfile = () => {
     return useQuery({
         queryKey: [queryKeys.jobProfile],
@@ -14,6 +14,7 @@ export const useGetJobProfile = () => {
     });
 };
 
+/* ----------------- Create Job Profiles ----------------- */
 export const useCreateJobProfile = () => {
     const queryClient = useQueryClient();
     return useMutation({
@@ -30,7 +31,21 @@ export const useCreateJobProfile = () => {
     });
 };
 
-// Job
+/*
+! ==============================================================
+*/
+
+/* ----------------- Generate Job Id ----------------- */
+export const useGenerateJobId = () => {
+    return useMutation({
+        mutationFn: async (jobProfileCode) => {
+            const res = await generateJobId(jobProfileCode);
+            return res;
+        },
+    });
+};
+
+/* ----------------- Get Jobs ----------------- */
 export const useGetJobs = (page, limit, search, sort) => {
     return useQuery({
         queryKey: [queryKeys.jobs, page, limit, search, sort],
@@ -47,6 +62,7 @@ export const useGetJobs = (page, limit, search, sort) => {
     });
 };
 
+/* ----------------- Get Job By Id ----------------- */
 export const useGetJobById = (id) => {
     return useQuery({
         queryKey: [queryKeys.jobs, id],
@@ -57,20 +73,14 @@ export const useGetJobById = (id) => {
     });
 };
 
-export const useGenerateJobId = () => {
-    return useMutation({
-        mutationFn: async (jobProfileCode) => {
-            const res = await generateJobId(jobProfileCode);
-            return res;
-        },
-    });
-};
-
+/* ----------------- Create Job ----------------- */
 export const useCreateJob = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => jobServices.createJob(data),
+        mutationFn: async(data) => {
+            await jobServices.createJob(data)
+        },
         onSuccess: () => {
             toast.success("Job created successfully ✅");
             queryClient.invalidateQueries([queryKeys.jobs]);
@@ -83,6 +93,7 @@ export const useCreateJob = () => {
     });
 };
 
+/* ----------------- Delete Job ----------------- */
 export const useDeleteJob = () => {
     const queryClient = useQueryClient();
 
@@ -98,6 +109,7 @@ export const useDeleteJob = () => {
     });
 };
 
+/* ----------------- Update Job ----------------- */
 export const useUpdateJob = () => {
     const queryClient = useQueryClient();
 
@@ -116,6 +128,7 @@ export const useUpdateJob = () => {
     });
 };
 
+/* ----------------- Update Job Status ----------------- */
 export const useUpdateJobStatus = () => {
     const queryClient = useQueryClient();
 

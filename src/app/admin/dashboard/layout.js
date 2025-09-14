@@ -33,18 +33,18 @@ const Layout = ({ children }) => {
 
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-y-hidden">
+            <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
                 <aside className="hidden border-r md:block">
                     <div className="flex flex-col max-h-screen h-full gap-2">
-                        <div className="h-18 flex items-center border-b px-4">
+                        <div className="h-16 md:h-16 flex items-center border-b px-4">
                             <Link
                                 href="/"
                                 className="text-2xl font-extrabold flex justify-center items-center gap-4"
                             >
                                 <Image
                                     src={wefikLogo}
-                                    width={500}
-                                    height={500}
+                                    width={40}
+                                    height={40}
                                     alt="Wefik Logo"
                                     className="w-10 h-10"
                                 />
@@ -95,7 +95,7 @@ const Layout = ({ children }) => {
                     </div>
                 </aside>
 
-                <div className="flex flex-col w-screen md:w-full">
+                <div className="flex flex-col w-full min-w-0">
                     <header className="h-18 mb-2 px-4 flex items-center justify-between border-b">
                         <div className="flex items-center justify-center gap-4">
                             <Menu
@@ -129,7 +129,9 @@ const Layout = ({ children }) => {
                             </Button>
                         </div>
                     </header>
-                    <div className="px-4 py-2 md:px-4 md:py-2">{children}</div>
+                    <div className="flex-1 min-h-0 overflow-y-auto px-4 py-2 md:px-4 md:py-2">
+                      {children}
+                    </div>
                 </div>
             </div>
         </ThemeProvider>

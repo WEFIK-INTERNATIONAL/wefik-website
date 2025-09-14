@@ -10,7 +10,9 @@ export default function TanStackQueryProvider({ children }) {
     return (
         <QueryClientProvider client={client}>
             {children}
-            <ReactQueryDevtools initialIsOpen={true} />
+            {process.env.NODE_ENV !== "production" && (
+                <ReactQueryDevtools initialIsOpen={false} />
+            )}
         </QueryClientProvider>
     );
 }

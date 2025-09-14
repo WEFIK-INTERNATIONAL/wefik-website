@@ -3,10 +3,12 @@ import API from "@/lib/axiosConfig";
 
 class ApplicationService {
     // ✅ Get applications
-    async getApplications() {
+    async getApplications({ page = 1, limit = 10, search, sort }) {
         try {
-            const res = await API.get("/application");
-            return res.data;
+            const res = await API.get("/application", {
+                params: { page, limit, search, sort },
+            });                        
+            return res.data.data;
         } catch (err) {
             console.error("Error fetching applications:", err);
             throw err;
@@ -17,7 +19,7 @@ class ApplicationService {
     async getApplicationById(id) {
         try {
             const res = await API.get(`/application/${id}`);
-            return res.data;
+            return res.data.data;
         } catch (err) {
             console.error(`Error fetching application ${id}:`, err);
             throw err;
@@ -37,7 +39,7 @@ class ApplicationService {
 
     // ✅ Update application
     async updateApplication(id, data) {
-        try {            
+        try {
             const res = await API.patch(`/application/${id}`, data);
             return res.data;
         } catch (err) {

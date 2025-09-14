@@ -13,6 +13,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
+import { getStatusBadgeClasses } from "@/utils/statusBadge";
+
 /**
  * Reusable EditStatus Component
  * @param {string} entityName - Name of entity (Job, Application, etc.)
@@ -40,20 +42,6 @@ const EditStatusDialog = ({
             setSelectedStatus(currentStatus);
         }
     }, [open, currentStatus]);
-
-    const getStatusBadge = (status) => {
-        const colors = {
-            Pending: "bg-yellow-500 text-white",
-            Reviewed: "bg-blue-500 text-white",
-            Shortlisted: "bg-slate-900 dark:bg-slate-500 text-white",
-            Accepted: "bg-green-500 text-white",
-            Rejected: "bg-red-500 text-white",
-            Open: "bg-green-600 text-white",
-            Closed: "bg-gray-600 text-white",
-            Draft: "bg-orange-500 text-white",
-        };
-        return colors[status] || "bg-gray-500 text-white";
-    };
 
     const handleUpdate = async () => {
         await onUpdate({ id, status: selectedStatus });
@@ -92,7 +80,7 @@ const EditStatusDialog = ({
                                     disabled={isDisabled}
                                 />
                                 <Badge
-                                    className={`px-4 rounded-full ${getStatusBadge(
+                                    className={`px-4 rounded-full ${getStatusBadgeClasses(
                                         status
                                     )}`}
                                 >

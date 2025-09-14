@@ -35,6 +35,7 @@ yarn-error.log*
 
 # vercel
 .vercel
+.vscode
 
 # typescript
 *.tsbuildinfo
@@ -42,8 +43,4 @@ next-env.d.ts
 
 
 // temporary
-src/app/api/(dashboard)/stats
-src/app/form
 src/app/test
-src/components/forms
-src/components/dashboard/StatCards

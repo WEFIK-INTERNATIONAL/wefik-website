@@ -9,6 +9,8 @@ import TableFooter from "@/components/dashboard/TableFooter";
 import { useGetJobProfile } from "@/queries/jobs";
 import { usePagination, useSearchAndSort } from "@/app/hooks";
 
+import { Plus } from "lucide-react";
+
 const Page = () => {
     const { data: jobProfiles, isLoading, isError, error } = useGetJobProfile();
     const [searchTerm, setSearchTerm] = useState("");
@@ -20,13 +22,11 @@ const Page = () => {
         searchFields: ["code", "department", "roles.name", "roles.code"],
     });
 
-    // ✅ Pagination
     const pagination = usePagination({
         data: filteredJobProfile,
         itemsPerPage: 10,
     });
 
-    // ✅ Table Columns
     const jobRolesColumns = [
         {
             header: "Department",
@@ -59,8 +59,7 @@ const Page = () => {
     ];
 
     return (
-        <div className="p-6 space-y-4">
-            {/* ✅ Header with Search + CTA */}
+        <div className="">
             <TableHeader
                 title="Job Profile Table"
                 subtitle="Manage all Job Profiles"
@@ -68,13 +67,12 @@ const Page = () => {
             >
                 <Link
                     href="/admin/dashboard/job-profile/create-job-profile"
-                    className="px-4 py-2 bg-[#9AE600] text-white font-medium rounded-md shadow hover:bg-[#87cc00] transition"
+                    className="flex justify-center items-center gap-2 px-4 py-[5px] bg-[#CDD2DA] text-black font-bold rounded-md shadow hover:bg-[#b1b5bd] transition"
                 >
-                    + Create Job Profile
+                    <Plus size={18}/> Create
                 </Link>
             </TableHeader>
 
-            {/* ✅ Table */}
             <DataTable
                 isLoading={isLoading}
                 columns={jobRolesColumns}
@@ -82,7 +80,6 @@ const Page = () => {
                 emptyMessage="No job profiles found"
             />
 
-            {/* ✅ Pagination */}
             <TableFooter isLoading={isLoading} pagination={pagination} />
         </div>
     );

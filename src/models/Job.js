@@ -58,7 +58,16 @@ const JobSchema = new mongoose.Schema(
 
         skills: [SkillSchema],
 
-        contactEmail: { type: String, required: true },
+        contactEmail: { 
+            type: String, 
+            required: true,
+            validate: {
+                validator: function(v) {
+                    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+                },
+                message: props => `${props.value} is not a valid email address!`
+            }
+        },
 
         applicationDeadline: { type: Date ,required: true },
 
