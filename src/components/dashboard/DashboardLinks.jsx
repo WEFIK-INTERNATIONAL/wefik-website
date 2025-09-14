@@ -8,6 +8,7 @@ import {
     Briefcase,
     Users,
     Settings,
+    NotebookPen,
 } from "lucide-react";
 
 const DashboardLinks = () => {
@@ -22,7 +23,8 @@ const DashboardLinks = () => {
             href: "/admin/dashboard/applications",
             icon: Users,
         },
-        { id: 3, name: "Settings", href: "/admin/settings", icon: Settings },
+        { id: 3, name: "Blog Post", href: "/admin/dashboard/blog", icon: NotebookPen },
+        { id: 4, name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
     return (

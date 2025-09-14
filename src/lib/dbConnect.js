@@ -19,7 +19,7 @@ async function connectDB() {
 
     if (!cached.promise) {
         cached.promise = mongoose
-            .connect(MONGODB_URI, { dbName: "wefik_db" })
+            .connect(MONGODB_URI, { dbName: "testing_1" })
             .then((mongoose) => {
                 console.log("✅ MongoDB connected");
                 return mongoose;

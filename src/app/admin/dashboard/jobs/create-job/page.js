@@ -8,6 +8,8 @@ import { toast } from "sonner";
 
 export default function JobPostForm() {
   const [formData, setFormData] = useState({
+    name: "",
+    jobCategory: "",
     jobProfile: "",
     description: "",
     location: "",
@@ -72,6 +74,7 @@ export default function JobPostForm() {
       await jobServices.createJob(payload);
       toast.success("Job created successfully!");
       setFormData({
+        jobCategory: "",
         jobProfile: "",
         description: "",
         location: "",
@@ -115,6 +118,24 @@ export default function JobPostForm() {
           onSubmit={handleSubmit}
           className="grid grid-cols-1 md:grid-cols-2 gap-6"
         >
+
+          {/* Job Category */}
+          <SelectField
+            label="Job Category"
+            id="jobCategory"
+            name="jobCategory"
+            value={formData.category}
+            onChange={handleChange}
+            options={["Development", "Design", "Marketing", "Customer Service", "HR", "Other"]}
+          />
+          <InputField
+            label="Job Name"
+            id="name"
+            name="name"
+            value={formData.name}
+            onChange={handleChange}
+            placeholder="e.g. Software Engineer"
+          />
           {/* Job Profile */}
           <InputField
             label="Job Profile"

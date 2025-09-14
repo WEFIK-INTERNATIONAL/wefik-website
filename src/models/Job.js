@@ -26,9 +26,16 @@ const JobSchema = new mongoose.Schema(
             index: true,
             default: () => "JOB-" + Math.floor(1000 + Math.random() * 9000),
         },
+        name: { type: String, required: true, trim: true },
         jobProfile: { type: String, required: true, trim: true, index: true },
-        description:{ type: String, required: true, trim: true },
+        description: { type: String, required: true, trim: true },
         location: { type: String, required: true, trim: true, index: true },
+        jobCategory: {
+            type: String,
+            enum: ["Development", "Design", "Marketing", "Customer Service", "HR", "Other"],
+            required: true,
+            index: true
+        },
         type: {
             type: String,
             enum: ["Full-time", "Part-time", "Internship"],

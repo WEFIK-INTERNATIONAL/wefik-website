@@ -9,6 +9,7 @@ const JobDetails = ({ job }) => {
   }
 
   const {
+    jobCategory,
     jobProfile,
     compensationType,
     salary,
@@ -40,6 +41,10 @@ const JobDetails = ({ job }) => {
           </CardTitle>
         </CardHeader>
         <CardContent className="grid md:grid-cols-2 gap-4 text-gray-700 dark:text-gray-300">
+          <div>
+            <p className="font-semibold text-gray-800 dark:text-gray-200">Job Category</p>
+            <p>{jobCategory || "N/A"}</p>
+          </div>
           <div>
             <p className="font-semibold text-gray-800 dark:text-gray-200">Job Profile</p>
             <p>{jobProfile || "N/A"}</p>
