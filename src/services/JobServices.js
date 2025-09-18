@@ -92,6 +92,31 @@ class JobService {
         }
     }
 
+    // ✅ Search job
+    async searchJob({
+        search,
+        location,
+        department,
+        type,
+        page = 1,
+        limit = 3,
+    }) {
+        try {
+            console.log(department);
+            const res = await API.get("/job/search", {
+                params: { search, location, department, type, page, limit },
+            });
+
+            return {
+                jobs: res.data.data,
+                pagination: res.data.data.pagination,
+            };
+        } catch (err) {
+            console.error("Error fetching jobs:", err);
+            throw err;
+        }
+    }
+
     // Check JobId is Uniq or Not
     async checkJobId(jobId) {
         try {

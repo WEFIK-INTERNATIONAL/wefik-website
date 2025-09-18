@@ -1,105 +1,132 @@
 import mongoose from "mongoose";
 
-const CandidateInfoSchema = new mongoose.Schema({
-    fullName: { type: String, required: true, trim: true },
-    email: {
-        type: String,
-        required: true,
-        trim: true,
-        lowercase: true,
-        index: true,
-    },
-    phone: {
-        type: String,
-        required: true,
-        trim: true,
-        match: [/^\+?[1-9]\d{7,14}$/, "Invalid phone number"],
-    },
+const CandidateInfoSchema = new mongoose.Schema(
+    {
+        fullName: { type: String, required: true, trim: true, maxlength: 100 },
 
-    address: { type: String, trim: true },
-    country: { type: String, trim: true },
-    city: { type: String, trim: true },
-    state: { type: String, trim: true },
-    pinCode: { type: String, trim: true },
-});
+        email: {
+            type: String,
+            required: true,
+            trim: true,
+            lowercase: true,
+            match: [/^\S+@\S+\.\S+$/, "Invalid email address"],
+            index: true,
+        },
 
-const ResumeSchema = new mongoose.Schema({
-    url: { type: String, required: true },
-    filename: { type: String },
-});
+        phone: {
+            type: String,
+            required: true,
+            trim: true,
+            match: [/^\+?[1-9]\d{7,14}$/, "Invalid phone number"],
+        },
 
-const SocialLinksSchema = new mongoose.Schema({
-    github: {
-        type: String,
-        match: [/^https?:\/\/(www\.)?github\.com\/.+$/, "Invalid GitHub URL"],
+        address: { type: String, trim: true, maxlength: 255 },
+        country: { type: String, trim: true },
+        city: { type: String, trim: true },
+        state: { type: String, trim: true },
+        pinCode: { type: String, trim: true, maxlength: 20 },
     },
-    linkedin: {
-        type: String,
-        match: [
-            /^https?:\/\/(www\.)?linkedin\.com\/.+$/,
-            "Invalid LinkedIn URL",
-        ],
-    },
-    portfolio: { type: String, match: [/^https?:\/\/.+$/, "Invalid URL"] },
-});
+    { _id: false }
+);
 
-const EducationInfoSchema = new mongoose.Schema({
-    degree: { type: String, required: true, trim: true },
-    institution: { type: String, required: true, trim: true },
-    fieldOfStudy: { type: String, trim: true },
-    startDate: { type: Date },
-    endDate: {
-        type: Date,
-        validate: {
-            validator: function (v) {
-                return !this.startDate || !v || v >= this.startDate;
+const ResumeSchema = new mongoose.Schema(
+    {
+        url: { type: String, required: true },
+        filename: { type: String },
+        size: { type: Number },
+        mimeType: { type: String },
+    },
+    { _id: false }
+);
+
+const SocialLinksSchema = new mongoose.Schema(
+    {
+        github: {
+            type: String,
+            match: [/^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+$/, "Invalid GitHub URL"],
+        },
+        linkedin: {
+            type: String,
+            match: [/^https?:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+$/, "Invalid LinkedIn URL"],
+        },
+        portfolio: { type: String, match: [/^https?:\/\/.+$/, "Invalid URL"] },
+    },
+    { _id: false }
+);
+
+const EducationInfoSchema = new mongoose.Schema(
+    {
+        degree: { type: String, required: true, trim: true },
+        institution: { type: String, required: true, trim: true },
+        fieldOfStudy: { type: String, trim: true },
+        startDate: { type: Date },
+        endDate: {
+            type: Date,
+            validate: {
+                validator: function (v) {
+                    return !this.startDate || !v || v >= this.startDate;
+                },
+                message: "End date must be after start date",
             },
-            message: "End date must be after start date",
+        },
+        grade: { type: String },
+    },
+    { _id: false }
+);
+
+const WorkExperienceSchema = new mongoose.Schema(
+    {
+        company: { type: String, required: true, trim: true },
+        role: { type: String, required: true, trim: true },
+        startDate: { type: Date, required: true },
+        endDate: { type: Date },
+        description: { type: String, trim: true, maxlength: 500 },
+    },
+    { _id: false }
+);
+
+const SkillSchema = new mongoose.Schema(
+    {
+        name: { type: String, required: true, trim: true, maxlength: 50 },
+        level: {
+            type: String,
+            enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
+            default: "Intermediate",
         },
     },
-
-    grade: { type: String },
-});
-
-const SkillSchema = new mongoose.Schema({
-    name: { type: String, required: true, trim: true },
-});
+    { _id: false }
+);
 
 const ApplicationSchema = new mongoose.Schema(
     {
-        jobId: {
-            type: String,
-            required: true,
-            index: true,
-        },
+        jobId: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true, index: true },
         jobTitle: { type: String, required: true, trim: true },
+
         candidateInfo: { type: CandidateInfoSchema, required: true },
+
         educationInfo: [EducationInfoSchema],
+        workExperience: [WorkExperienceSchema],
         skills: [SkillSchema],
+
         resume: { type: ResumeSchema, required: true },
         socialLinks: SocialLinksSchema,
+
         status: {
             type: String,
-            enum: [
-                "Pending",
-                "Reviewed",
-                "Shortlisted",
-                "Accepted",
-                "Rejected",
-            ],
+            enum: ["Pending", "Reviewed", "Shortlisted", "Accepted", "Rejected"],
             default: "Pending",
+            index: true,
         },
+
         appliedAt: { type: Date, default: Date.now, index: true },
     },
     { timestamps: true }
 );
 
+// ✅ Indexes for performance
+ApplicationSchema.index({ jobId: 1, "candidateInfo.email": 1 }, { unique: true });
 ApplicationSchema.index({ status: 1 });
 ApplicationSchema.index({ appliedAt: -1 });
-ApplicationSchema.index(
-    { jobId: 1, "candidateInfo.email": 1 },
-    { unique: true }
-);
 
 export default mongoose.models.Application ||
     mongoose.model("Application", ApplicationSchema);
