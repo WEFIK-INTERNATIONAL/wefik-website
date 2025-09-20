@@ -31,14 +31,14 @@ export const useGetApplicationById = (id) => {
     });
 };
 
-/* ----------------- Create Application ----------------- */
-export const useCreateApplication = () => {
+/* ----------------- Apply Job Application ----------------- */
+export const useApplyJobApplication = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (data) => applicationService.createApplication(data),
+        mutationFn: (data) => applicationService.applyApplication(data),
         onSuccess: () => {
-            toast.success("Application created successfully ✅");
+            toast.success("Application submitted successfully ✅");
             queryClient.invalidateQueries([queryKeys.applications]);
         },
         onError: (err) => {

@@ -31,6 +31,7 @@ const CandidateInfoSchema = new mongoose.Schema(
 
 const ResumeSchema = new mongoose.Schema(
     {
+        fileId: { type: String, required: true },
         url: { type: String, required: true },
         filename: { type: String },
         size: { type: Number },
@@ -43,11 +44,17 @@ const SocialLinksSchema = new mongoose.Schema(
     {
         github: {
             type: String,
-            match: [/^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+$/, "Invalid GitHub URL"],
+            match: [
+                /^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+$/,
+                "Invalid GitHub URL",
+            ],
         },
         linkedin: {
             type: String,
-            match: [/^https?:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+$/, "Invalid LinkedIn URL"],
+            match: [
+                /^https?:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+$/,
+                "Invalid LinkedIn URL",
+            ],
         },
         portfolio: { type: String, match: [/^https?:\/\/.+$/, "Invalid URL"] },
     },
@@ -76,9 +83,9 @@ const EducationInfoSchema = new mongoose.Schema(
 
 const WorkExperienceSchema = new mongoose.Schema(
     {
-        company: { type: String, required: true, trim: true },
-        role: { type: String, required: true, trim: true },
-        startDate: { type: Date, required: true },
+        company: { type: String, trim: true },
+        role: { type: String, trim: true },
+        startDate: { type: Date },
         endDate: { type: Date },
         description: { type: String, trim: true, maxlength: 500 },
     },
@@ -91,7 +98,7 @@ const SkillSchema = new mongoose.Schema(
         level: {
             type: String,
             enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
-            default: "Intermediate",
+            default: "Beginner",
         },
     },
     { _id: false }
@@ -99,13 +106,22 @@ const SkillSchema = new mongoose.Schema(
 
 const ApplicationSchema = new mongoose.Schema(
     {
-        jobId: { type: mongoose.Schema.Types.ObjectId, ref: "Job", required: true, index: true },
+        jobId: {
+            type: String,
+            required: true,
+            index: true,
+        },
         jobTitle: { type: String, required: true, trim: true },
 
         candidateInfo: { type: CandidateInfoSchema, required: true },
 
         educationInfo: [EducationInfoSchema],
-        workExperience: [WorkExperienceSchema],
+        workExperience: {
+            type: [WorkExperienceSchema],
+            required: false,
+            default: [],
+        },
+
         skills: [SkillSchema],
 
         resume: { type: ResumeSchema, required: true },
@@ -113,7 +129,13 @@ const ApplicationSchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ["Pending", "Reviewed", "Shortlisted", "Accepted", "Rejected"],
+            enum: [
+                "Pending",
+                "Reviewed",
+                "Shortlisted",
+                "Accepted",
+                "Rejected",
+            ],
             default: "Pending",
             index: true,
         },
@@ -124,8 +146,10 @@ const ApplicationSchema = new mongoose.Schema(
 );
 
 // ✅ Indexes for performance
-ApplicationSchema.index({ jobId: 1, "candidateInfo.email": 1 }, { unique: true });
-ApplicationSchema.index({ status: 1 });
+ApplicationSchema.index(
+    { jobId: 1, "candidateInfo.email": 1 },
+    { unique: true }
+);
 ApplicationSchema.index({ appliedAt: -1 });
 
 export default mongoose.models.Application ||

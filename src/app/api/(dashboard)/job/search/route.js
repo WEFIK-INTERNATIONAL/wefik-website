@@ -43,7 +43,7 @@ export async function GET(req) {
         }
 
         const [data, total] = await Promise.all([
-            Job.find(query).skip(skip).limit(limit),
+            Job.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit),
             Job.countDocuments(query),
         ]);
 

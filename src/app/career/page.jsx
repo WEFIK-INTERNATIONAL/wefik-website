@@ -25,6 +25,8 @@ import {
 
 import { ArrowUpRight, Search, Clock3, Calendar1, Pin } from "lucide-react";
 
+import Loader from "@/components/Loader";
+
 import { useSearchJob, useGetJobProfile } from "@/queries/jobs";
 
 export default function CareersPage() {
@@ -72,7 +74,7 @@ export default function CareersPage() {
     const handlePageChange = (num) => setPageNo(num);
 
     return (
-        <main className="min-h-screen bg-black text-white mt-16">
+        <main className="min-h-screen bg-black text-white mt-16 overflow-x-hidden">
             {/* Header */}
             <header className="max-w-6xl mx-auto px-6 py-12 text-center">
                 <span className="bg-[#9AE300] text-black text-sm font-medium px-3 py-1 rounded-full">
@@ -99,7 +101,7 @@ export default function CareersPage() {
                     className={`rounded-full transition hover:cursor-pointer ${
                         activeDepartment === "View all"
                             ? "bg-[#9AE300] text-black hover:bg-[#85c600]"
-                            : "border-zinc-700 text-black"
+                            : "border-zinc-700 text-white"
                     }`}
                 >
                     View All
@@ -118,7 +120,7 @@ export default function CareersPage() {
                         className={`rounded-full transition hover:cursor-pointer ${
                             activeDepartment === dept.department
                                 ? "bg-[#9AE300] text-black hover:bg-[#85c600]"
-                                : "border-zinc-700 text-black"
+                                : "border-zinc-700 text-white"
                         }`}
                     >
                         {dept.department}
@@ -184,8 +186,12 @@ export default function CareersPage() {
 
             {/* Job Listings */}
             <section className="max-w-7xl mx-auto px-6 space-y-6 pb-20">
-                {jobs?.length > 0 ? (
-                    jobs?.map((job) => (
+                {searchLoading ? (
+                    <div className="h-40 flex justify-center items-center">
+                        <Loader size={200} />
+                    </div>
+                ) : jobs && jobs.length > 0 ? (
+                    jobs.map((job) => (
                         <Card
                             key={job.jobId}
                             className="bg-zinc-900/70 border border-zinc-700 rounded-2xl text-white hover:bg-zinc-800/80 transition shadow-lg hover:shadow-xl"
@@ -242,7 +248,7 @@ export default function CareersPage() {
 
                                 {/* Apply Button */}
                                 <Link
-                                    href={`/career/${job.title}`}
+                                    href={`/career/${job.jobId}`}
                                     className="shrink-0 text-xl font-semibold text-[#9AE300] hover:text-white bg-[#9AE300]/10 border border-[#9AE300]/30 px-5 py-2 rounded-xl flex items-center gap-2 hover:bg-[#9AE300]/20 transition"
                                 >
                                     Apply <ArrowUpRight className="w-6 h-6" />
@@ -251,21 +257,29 @@ export default function CareersPage() {
                         </Card>
                     ))
                 ) : (
-                    <p className="text-center text-gray-500">No jobs found.</p>
+                    <div className="flex flex-col justify-center items-center text-center py-20">
+                        <p className="text-2xl font-bold text-white">
+                            Currently, we don’t have any openings.
+                        </p>
+                        <p className="text-gray-400 mt-2">
+                            Please check back later or explore other
+                            opportunities.
+                        </p>
+                    </div>
                 )}
             </section>
 
             {/* Pagination */}
-            <div className="max-w-7xl mx-auto px-6 mb-12 flex justify-center">
+            <div className="max-w-full md:max-w-7xl mx-auto px-2 sm:px-6 md:px-16 mb-12 flex justify-center">
                 <Pagination>
-                    <PaginationContent className="flex gap-2">
+                    <PaginationContent className="flex gap-1 sm:gap-2 flex-wrap justify-center items-center">
                         {/* Prev button */}
                         <PaginationItem>
                             <PaginationPrevious
                                 onClick={() =>
                                     handlePageChange(Math.max(1, page - 1))
                                 }
-                                className={`px-4 py-2 rounded-xl flex items-center gap-1 text-[#9AE300] border border-[#9AE300]/30 bg-[#9AE300]/10 hover:bg-[#9AE300]/20 hover:text-[#9AE300] transition cursor-pointer ${
+                                className={`px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm md:text-base flex items-center gap-1 text-[#9AE300] border border-[#9AE300]/30 bg-[#9AE300]/10 hover:bg-[#9AE300]/20 hover:text-[#9AE300] transition cursor-pointer ${
                                     page === 1
                                         ? "pointer-events-none opacity-50"
                                         : ""
@@ -275,22 +289,70 @@ export default function CareersPage() {
                             </PaginationPrevious>
                         </PaginationItem>
 
-                        {/* Page numbers */}
-                        {Array.from({ length: pages }).map((_, i) => (
-                            <PaginationItem key={i}>
-                                <PaginationLink
-                                    isActive={page === i + 1}
-                                    onClick={() => handlePageChange(i + 1)}
-                                    className={`px-4 py-2 rounded-xl flex items-center justify-center gap-1 transition border ${
-                                        page === i + 1
-                                            ? "bg-[#9AE300]/10 text-white border-[#9AE300]/30 font-semibold hover:bg-[#9AE300]/20 hover:text-[#9AE300]"
-                                            : "bg-transparent text-[#9AE300] border-[#9AE300]/30 hover:bg-[#9AE300]/20 hover:text-[#9AE300]"
-                                    } cursor-pointer`}
-                                >
-                                    {i + 1}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
+                        {/* Page numbers (dynamic) */}
+                        {Array.from({ length: pages }).map((_, i) => {
+                            const pageNumber = i + 1;
+
+                            // On small devices, show only current page
+                            const isSmall = window.innerWidth < 640;
+                            if (isSmall && pageNumber !== page) return null;
+
+                            // On medium/large screens, show first, last, current ±2
+                            if (!isSmall) {
+                                if (
+                                    pageNumber === 1 ||
+                                    pageNumber === pages ||
+                                    (pageNumber >= page - 2 &&
+                                        pageNumber <= page + 2)
+                                ) {
+                                    return (
+                                        <PaginationItem key={i}>
+                                            <PaginationLink
+                                                isActive={page === pageNumber}
+                                                onClick={() =>
+                                                    handlePageChange(pageNumber)
+                                                }
+                                                className={`px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm md:text-base flex items-center justify-center transition border ${
+                                                    page === pageNumber
+                                                        ? "bg-[#9AE300]/10 text-white border-[#9AE300]/30 font-semibold hover:bg-[#9AE300]/20 hover:text-[#9AE300]"
+                                                        : "bg-transparent text-[#9AE300] border-[#9AE300]/30 hover:bg-[#9AE300]/20 hover:text-[#9AE300]"
+                                                } cursor-pointer`}
+                                            >
+                                                {pageNumber}
+                                            </PaginationLink>
+                                        </PaginationItem>
+                                    );
+                                }
+
+                                // Insert ellipses
+                                if (
+                                    pageNumber === page - 3 ||
+                                    pageNumber === page + 3
+                                ) {
+                                    return (
+                                        <PaginationItem key={i}>
+                                            <span className="px-2 sm:px-3 md:px-4 py-1 sm:py-2 text-[#9AE300]/60 text-xs sm:text-sm md:text-base">
+                                                ...
+                                            </span>
+                                        </PaginationItem>
+                                    );
+                                }
+
+                                return null;
+                            }
+
+                            // If small and current page, show it
+                            return (
+                                <PaginationItem key={i}>
+                                    <PaginationLink
+                                        isActive
+                                        className="px-2 py-1 rounded-lg bg-[#9AE300]/10 text-white border border-[#9AE300]/30 text-xs sm:text-sm md:text-base cursor-default"
+                                    >
+                                        {page}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            );
+                        })}
 
                         {/* Next button */}
                         <PaginationItem>
@@ -298,7 +360,7 @@ export default function CareersPage() {
                                 onClick={() =>
                                     handlePageChange(Math.min(pages, page + 1))
                                 }
-                                className={`px-4 py-2 rounded-xl flex items-center gap-1 text-[#9AE300] border border-[#9AE300]/30 bg-[#9AE300]/10 hover:bg-[#9AE300]/20 hover:text-[#9AE300] transition cursor-pointer ${
+                                className={`px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-lg sm:rounded-xl text-xs sm:text-sm md:text-base flex items-center gap-1 text-[#9AE300] border border-[#9AE300]/30 bg-[#9AE300]/10 hover:bg-[#9AE300]/20 hover:text-[#9AE300] transition cursor-pointer ${
                                     page === pages
                                         ? "pointer-events-none opacity-50"
                                         : ""
