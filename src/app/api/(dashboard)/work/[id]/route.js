@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import Work from "@/models/Work";
-import { successResponse, errorResponse } from "@/lib/apiResponses";
+import { successResponse, errorResponse } from "@/utils/apiResponse";
 
 /* ----------------- Get Work by ID ----------------- */
 export async function GET(req, { params }) {
