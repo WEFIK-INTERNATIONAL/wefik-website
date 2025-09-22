@@ -33,7 +33,7 @@ const Layout = ({ children }) => {
 
     return (
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
+            <div className="grid h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] overflow-y-hidden">
                 <aside className="hidden border-r md:block">
                     <div className="flex flex-col max-h-screen h-full gap-2">
                         <div className="h-16 md:h-16 flex items-center border-b px-4">
@@ -96,7 +96,7 @@ const Layout = ({ children }) => {
                 </aside>
 
                 <div className="flex flex-col w-full min-w-0">
-                    <header className="h-18 mb-2 px-4 flex items-center justify-between border-b">
+                    <header className="h-16 px-4 flex items-center justify-between border-b">
                         <div className="flex items-center justify-center gap-4">
                             <Menu
                                 className="md:hidden"
@@ -129,8 +129,8 @@ const Layout = ({ children }) => {
                             </Button>
                         </div>
                     </header>
-                    <div className="flex-1 min-h-0 overflow-y-auto px-4 py-2 md:px-4 md:py-2">
-                      {children}
+                    <div className="flex-1 min-h-0 overflow-y-scroll px-4 py-2 md:px-4 md:py-2">
+                        {children}
                     </div>
                 </div>
             </div>

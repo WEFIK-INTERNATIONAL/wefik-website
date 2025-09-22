@@ -6,6 +6,7 @@ export const ALLOWED_TYPES = {
         "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
     ],
     image: ["image/jpeg", "image/jpg", "image/png"],
+    work: ["image/jpeg", "image/jpg", "image/png"],
     video: ["video/mp4", "video/mov", "video/avi"],
 };
 
@@ -17,6 +18,8 @@ export function getFolderByCategory(fileCategory) {
             return "/Wefik/resumes";
         case "image":
             return "/Wefik/images";
+        case "work":
+            return "/Wefik/works";
         case "video":
             return "/Wefik/videos";
         default:
