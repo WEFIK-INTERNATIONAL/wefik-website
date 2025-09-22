@@ -78,8 +78,8 @@ export const useCreateJob = () => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: async(data) => {
-            await jobServices.createJob(data)
+        mutationFn: async (data) => {
+            await jobServices.createJob(data);
         },
         onSuccess: () => {
             toast.success("Job created successfully ✅");
@@ -144,5 +144,17 @@ export const useUpdateJobStatus = () => {
         onError: () => {
             toast.error("Failed to update job status ❌");
         },
+    });
+};
+
+/* ----------------- Search Job ----------------- */
+export const useSearchJob = (filters) => {
+    return useQuery({
+        queryKey: [queryKeys.jobs, filters],
+        queryFn: async () => {
+            const res = await jobServices.searchJob(filters);
+            return res;
+        },
+        keepPreviousData: true,
     });
 };

@@ -2,12 +2,28 @@
 import API from "@/lib/axiosConfig";
 
 class ApplicationService {
+    // ✅ Create new application
+    async applyApplication(data) {
+        try {
+            console.log(data);
+            const res = await API.post("/application", data, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+            return res.data;
+        } catch (err) {
+            console.error("Error creating application:", err);
+            throw err;
+        }
+    }
+
     // ✅ Get applications
     async getApplications({ page = 1, limit = 10, search, sort }) {
         try {
             const res = await API.get("/application", {
                 params: { page, limit, search, sort },
-            });                        
+            });
             return res.data.data;
         } catch (err) {
             console.error("Error fetching applications:", err);
@@ -22,17 +38,6 @@ class ApplicationService {
             return res.data.data;
         } catch (err) {
             console.error(`Error fetching application ${id}:`, err);
-            throw err;
-        }
-    }
-
-    // ✅ Create new application
-    async createApplication(data) {
-        try {
-            const res = await API.post("/application", data);
-            return res.data;
-        } catch (err) {
-            console.error("Error creating application:", err);
             throw err;
         }
     }

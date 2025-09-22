@@ -33,12 +33,11 @@ const JobSchema = new mongoose.Schema(
         jobRole: { type: String, required: true, trim: true },
 
         description: { type: String, required: true, trim: true },
-        location: { type: String, required: true, trim: true, index: true },
-        jobCategory: {
+        location: {
             type: String,
-            enum: ["Development", "Design", "Marketing", "Customer Service", "HR", "Other"],
+            enum: ["Onsite", "Remote", "Hybrid"],
             required: true,
-            index: true
+            index: true,
         },
         type: {
             type: String,
@@ -56,7 +55,13 @@ const JobSchema = new mongoose.Schema(
 
         experienceLevel: {
             type: String,
-            enum: ["0-1 years", "1-2 years", "1-3 years", "3-5 years", "5+ years"],
+            enum: [
+                "0-1 years",
+                "1-2 years",
+                "1-3 years",
+                "3-5 years",
+                "5+ years",
+            ],
             default: "0-1 years",
         },
         education: { type: String, default: "Graduate" },
@@ -64,18 +69,19 @@ const JobSchema = new mongoose.Schema(
 
         skills: [SkillSchema],
 
-        contactEmail: { 
-            type: String, 
+        contactEmail: {
+            type: String,
             required: true,
             validate: {
-                validator: function(v) {
+                validator: function (v) {
                     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
                 },
-                message: props => `${props.value} is not a valid email address!`
-            }
+                message: (props) =>
+                    `${props.value} is not a valid email address!`,
+            },
         },
 
-        applicationDeadline: { type: Date ,required: true },
+        applicationDeadline: { type: Date, required: true },
 
         status: {
             type: String,

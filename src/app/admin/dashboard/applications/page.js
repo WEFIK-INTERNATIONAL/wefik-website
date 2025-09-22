@@ -52,7 +52,7 @@ export default function ApplicationsPage() {
             header: "Resume",
             accessor: "resume.url",
             cell: (row) => (
-                <Link href={`/${row.resume?.url}`} className="text-blue-500">
+                <Link href={row.resume?.url} className="text-blue-500">
                     View Resume
                 </Link>
             ),

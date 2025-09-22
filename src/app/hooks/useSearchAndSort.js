@@ -20,7 +20,7 @@ export function useSearchAndSort({
 }) {
     return useMemo(() => {
         // let result = [...data];
-        let result = []
+        let result = [];
 
         // 🔍 Filtering
         if (searchTerm.trim() !== "") {
@@ -47,7 +47,7 @@ export function useSearchAndSort({
         }
 
         return result;
-    }, [data, searchTerm, sortOrder, searchFields, sortField]);
+    }, [searchTerm, sortOrder, searchFields, sortField]);
 }
 
 // ✅ Helper: support deep object paths like "candidateInfo.email"

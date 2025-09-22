@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { Home, Briefcase, Users, Settings } from "lucide-react";
+import { Home, Briefcase, Users, Settings, Presentation } from "lucide-react";
 
 const DashboardLinks = () => {
     const pathname = usePathname();
@@ -23,7 +23,13 @@ const DashboardLinks = () => {
             href: "/admin/dashboard/applications",
             icon: Users,
         },
-        { id: 4, name: "Settings", href: "/admin/settings", icon: Settings },
+        {
+            id: 4,
+            name: "Work",
+            href: "/admin/dashboard/works",
+            icon: Presentation,
+        },
+        { id: 5, name: "Settings", href: "/admin/settings", icon: Settings },
     ];
 
     return (
