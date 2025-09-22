@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { CircleArrowLeft } from "lucide-react";
 import JobPostForm from "@/components/forms/JobPostForm";
 
-const page = () => {
+const Page = () => {
     const router = useRouter();
     return (
         <div className="p-2 space-y-6">
@@ -36,4 +36,4 @@ const page = () => {
     );
 };
 
-export default page;
+export default Page;
