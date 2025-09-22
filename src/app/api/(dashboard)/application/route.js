@@ -21,8 +21,10 @@ export async function POST(req) {
             return errorResponse("You already applied for this job", 400);
         }
 
+        console.log(file);
+
         const response = await uploadFiles({
-            file,
+            files: file,
             fileCategory: "resume",
         });
 

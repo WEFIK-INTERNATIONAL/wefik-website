@@ -15,7 +15,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" className={`dark ${ppNeueMontreal.variable}`}>
+        <html
+            lang="en"
+            className={`dark ${ppNeueMontreal.variable}`}
+            suppressHydrationWarning={true}
+        >
             <body className="antialiased">
                 <AppLayoutClient>
                     <ImageKitProvider>
