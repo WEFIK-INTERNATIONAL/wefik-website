@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { uploadFile } from "@/services/uploadService";
+import { uploadFiles } from "@/services/uploadService";
 
 export async function POST(req) {
     try {
@@ -13,7 +13,7 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const uploadResponse = await uploadFile(body);
+        const uploadResponse = await uploadFiles(body);
 
         return NextResponse.json(
             {

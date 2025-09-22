@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import Application from "@/models/Application";
 import { successResponse, errorResponse } from "@/utils/apiResponse";
-import { uploadFile } from "@/services/uploadService";
+import { uploadFiles } from "@/services/uploadService";
 
 // POST -- Create a new application
 export async function POST(req) {
@@ -21,7 +21,7 @@ export async function POST(req) {
             return errorResponse("You already applied for this job", 400);
         }
 
-        const response = await uploadFile({
+        const response = await uploadFiles({
             file,
             fileCategory: "resume",
         });
