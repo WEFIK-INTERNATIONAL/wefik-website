@@ -1,13 +1,20 @@
 "use client";
-import React, { useState } from "react";
+
+import React, { useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
-
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 
-import InputField from "./InputField";
-import SelectField from "./SelectField";
-import RadioField from "./RadioField";
+import {
+    Form,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormControl,
+    FormMessage,
+} from "@/components/ui/form";
+import { Button } from "@/components/ui/button";
 import RichTextEditor from "./RichTextEditor";
 
 import {
@@ -16,102 +23,111 @@ import {
     useGenerateJobId,
     useUpdateJob,
 } from "@/queries/jobs";
+import FormInput from "./components/FormInput";
+import FormSelect from "./components/FormSelect";
+import FormRadio from "./components/FormRadio";
+
+import { JobSchema } from "@/schemas/jobSchema";
 
 export default function JobPostForm({ job = null }) {
     const router = useRouter();
-    
     const { mutate: generateJobId } = useGenerateJobId();
     const { data: jobProfiles = [], isLoading } = useGetJobProfile();
     const { mutate: createJob, isPending: isCreating } = useCreateJob();
     const { mutate: updateJob, isPending: isUpdating } = useUpdateJob();
 
-    const normalizeJob = (job) => {
-        if (!job) return {};
-
+    const normalizeJob = (j) => {
+        if (!j) return {};
         return {
-            ...job,
-            salary: job.salary || { amount: "", currency: "INR" },
-
-            skills: job.skills
-                ? job.skills
+            ...j,
+            salary: j.salary || { amount: "", currency: "INR" },
+            skills: j.skills
+                ? j.skills
                       .map((s) => (typeof s === "string" ? s : s.name))
                       .join(", ")
                 : "",
-
-            applicationDeadline: job.applicationDeadline
-                ? new Date(job.applicationDeadline).toISOString().split("T")[0]
+            applicationDeadline: j.applicationDeadline
+                ? new Date(j.applicationDeadline).toISOString().split("T")[0]
                 : "",
         };
     };
 
-    const [formData, setFormData] = useState({
-        companyName: "Wefik",
-        jobProfile: "",
-        jobId: "",
+    const defaultValues = useMemo(
+        () => ({
+            companyName: "Wefik",
+            jobProfile: "",
+            jobId: "",
+            department: "",
+            jobRole: "",
+            description: "",
+            location: "",
+            type: "",
+            compensationType: "",
+            salary: { amount: "", currency: "INR" },
+            experienceLevel: "",
+            openings: "",
+            education: "",
+            skills: "",
+            contactEmail: "",
+            applicationDeadline: "",
+            status: "Open",
+            ...normalizeJob(job),
+        }),
+        [job]
+    );
 
-        department: "",
-        jobRole: "",
-
-        description: "",
-        location: "",
-        type: "",
-
-        compensationType: "",
-        salary: { amount: "", currency: "INR" },
-
-        experienceLevel: "",
-        openings: "",
-        education: "",
-
-        skills: "",
-        contactEmail: "",
-        applicationDeadline: "",
-        status: "Open",
-
-        ...normalizeJob(job),
+    const form = useForm({
+        resolver: zodResolver(JobSchema),
+        defaultValues,
     });
 
+    const { watch, setValue, handleSubmit, control } = form;
+    const formData = watch();
+
     const roles =
-        jobProfiles.find((dept) => dept.code === formData.department)?.roles ||
-        [];
+        jobProfiles.find((d) => d.code === formData.department)?.roles || [];
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        if (name === "amount" || name === "currency") {
-            setFormData((prev) => ({
-                ...prev,
-                salary: { ...prev.salary, [name]: value },
-            }));
-        } else {
-            setFormData((prev) => ({ ...prev, [name]: value }));
+    useEffect(() => {
+        if (formData.jobRole && !job) {
+            setValue(
+                "jobProfile",
+                roles.find((r) => r.code === formData.jobRole)?.name || ""
+            );
+            setValue("jobId", "Generating...");
+
+            generateJobId(formData.jobRole, {
+                onSuccess: (newId) => setValue("jobId", newId),
+                onError: () => {
+                    toast.error("Failed to generate Job ID");
+                    setValue("jobId", "");
+                },
+            });
         }
-    };
+    }, [formData.jobRole, job, roles, generateJobId, setValue]);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!formData.jobRole || !formData.contactEmail) {
+    const onSubmit = (values) => {
+        if (!values.jobRole || !values.contactEmail) {
             toast.error("Job Role and Contact Email are required.");
             return;
         }
 
         const payload = {
-            ...formData,
+            ...values,
             salary: {
                 amount:
-                    formData.compensationType === "Paid"
-                        ? Number(formData.salary.amount) || 0
+                    values.compensationType === "Paid"
+                        ? Number(values.salary.amount) || 0
                         : 0,
-                currency: formData.salary.currency || "INR",
+                currency: values.salary.currency || "INR",
             },
-            skills: formData.skills
-                ? formData.skills
+            skills: values.skills
+                ? values.skills
                       .split(",")
                       .map((s) => ({ name: s.trim() }))
                       .filter((s) => s.name)
                 : [],
-            applicationDeadline: formData.applicationDeadline
-                ? new Date(formData.applicationDeadline)
+            applicationDeadline: values.applicationDeadline
+                ? new Date(values.applicationDeadline)
                 : null,
         };
 
@@ -124,248 +140,197 @@ export default function JobPostForm({ job = null }) {
     };
 
     return (
-        <form
-            onSubmit={handleSubmit}
-            className="grid grid-cols-1 md:grid-cols-2 gap-6"
-        >
-            <div className="md:col-span-2 flex gap-10">
-                <InputField
-                    label="Company Name"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    placeholder="e.g. Wefik Solutions"
-                    className="md:w-full"
-                />
+        <Form {...form}>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-x-6 gap-y-6">
+                    <div className="col-span-2 grid md:grid-cols-3 gap-5">
+                        <FormInput
+                            form={form}
+                            name="companyName"
+                            label="Company Name"
+                            placeholder="e.g. Wefik Solutions"
+                        />
+                        <FormInput
+                            form={form}
+                            name="jobProfile"
+                            label="Job Profile"
+                            placeholder="Job Profile"
+                            readOnly
+                        />
+                        <FormInput
+                            form={form}
+                            name="jobId"
+                            label="Job ID"
+                            placeholder="e.g. ENG-WEB-2025-0021"
+                            readOnly
+                        />
+                    </div>
 
-                <InputField
-                    label="Job Profile"
-                    name="jobProfile"
-                    value={formData.jobProfile}
-                    placeholder="Job Profile"
-                    readOnly
-                    className="md:w-full cursor-not-allowed"
-                />
+                    <FormSelect
+                        form={form}
+                        name="department"
+                        label="Department"
+                        options={
+                            jobProfiles.length > 0
+                                ? jobProfiles.map((d) => ({
+                                      value: d.code,
+                                      label: d.department,
+                                  }))
+                                : [
+                                      {
+                                          value: "none",
+                                          label: "⚠️ Create Job Profile First",
+                                      },
+                                  ]
+                        }
+                        className="w-full"
+                    />
 
-                <InputField
-                    label="Job ID"
-                    name="jobId"
-                    value={formData.jobId}
-                    placeholder="e.g. ENG-WEB-2025-0021"
-                    readOnly
-                    className="md:w-full cursor-not-allowed"
-                />
-            </div>
+                    <FormSelect
+                        form={form}
+                        name="jobRole"
+                        label="Job Role"
+                        options={roles.map((r) => ({
+                            value: r.code,
+                            label: r.name,
+                        }))}
+                        disabled={!formData.department || job}
+                        className="w-full"
+                    />
 
-            {/* Department */}
-            <SelectField
-                label="Department"
-                name="department"
-                value={formData.department}
-                onChange={(e) =>
-                    setFormData((prev) => ({
-                        ...prev,
-                        department: e.target.value,
-                        jobRole: "",
-                        jobProfile: "",
-                        jobId: "",
-                    }))
-                }
-                options={
-                    jobProfiles.length > 0
-                        ? jobProfiles.map((d) => ({
-                              value: d.code,
-                              label: d.department,
-                          }))
-                        : [
-                              {
-                                  value: null,
-                                  label: "⚠️ Create Job Profile First",
-                                  disabled: true,
-                              },
-                          ]
-                }
-                disabled={isLoading || job}
-            />
+                    <FormSelect
+                        form={form}
+                        name="type"
+                        label="Job Type"
+                        options={[
+                            { label: "Internship", value: "Internship" },
+                            { label: "Full-time", value: "Full-time" },
+                            { label: "Part-time", value: "Part-time" },
+                        ]}
+                        className="w-full"
+                    />
 
-            {/* Job Role */}
-            <SelectField
-                label="Job Role"
-                name="jobRole"
-                value={formData.jobRole}
-                onChange={(e) => {
-                    const value = e.target.value;
-                    const selectedRole = roles.find((r) => r.code === value);
+                    <FormSelect
+                        form={form}
+                        name="location"
+                        label="Location"
+                        options={[
+                            { label: "On-site", value: "On-site" },
+                            { label: "Remote", value: "Remote" },
+                            { label: "Hybrid", value: "Hybrid" },
+                        ]}
+                        className="w-full"
+                    />
 
-                    setFormData((prev) => ({
-                        ...prev,
-                        jobRole: value,
-                        jobProfile: selectedRole ? selectedRole.name : "",
-                        jobId: "Generating...",
-                    }));
+                    <FormRadio
+                        form={form}
+                        name="compensationType"
+                        label="Compensation Type"
+                        options={[
+                            { label: "Paid", value: "Paid" },
+                            { label: "Unpaid", value: "Unpaid" },
+                        ]}
+                        className="hover:cursor-pointer"
+                    />
 
-                    generateJobId(value, {
-                        onSuccess: (newJobId) => {
-                            setFormData((prev) => ({
-                                ...prev,
-                                jobId: newJobId,
-                            }));
-                        },
-                        onError: () => {
-                            toast.error("Failed to generate Job ID");
-                            setFormData((prev) => ({ ...prev, jobId: "" }));
-                        },
-                    });
-                }}
-                options={roles.map((r) => ({
-                    value: r.code,
-                    label: r.name,
-                }))}
-                disabled={!formData.department || job}
-            />
+                    <FormInput
+                        form={form}
+                        name="salary.amount"
+                        label="Salary / Stipend"
+                        placeholder="e.g. ₹10,000 per month"
+                        disabled={formData.compensationType === "Unpaid"}
+                    />
 
-            {/* Job Type */}
-            <SelectField
-                label="Job Type"
-                name="type"
-                value={formData.type}
-                onChange={handleChange}
-                options={[
-                    { label: "Internship", value: "Internship" },
-                    { label: "Full-time", value: "Full-time" },
-                    { label: "Part-time", value: "Part-time" },
-                ]}
-            />
+                    <FormSelect
+                        form={form}
+                        name="experienceLevel"
+                        label="Experience Level"
+                        options={[
+                            { label: "0-1 years", value: "0-1 years" },
+                            { label: "1-2 years", value: "1-2 years" },
+                            { label: "1-3 years", value: "1-3 years" },
+                            { label: "3-5 years", value: "3-5 years" },
+                            { label: "5+ years", value: "5+ years" },
+                        ]}
+                        className="w-full"
+                    />
 
-            {/* Location */}
-            <SelectField
-                label="Location"
-                name="location"
-                value={formData.location}
-                onChange={handleChange}
-                options={[
-                    { label: "On-site", value: "On-site" },
-                    { label: "Remote", value: "Remote" },
-                    { label: "Hybrid", value: "Hybrid" },
-                ]}
-            />
+                    <FormInput
+                        form={form}
+                        name="openings"
+                        label="Number of Openings"
+                        type="number"
+                        placeholder="e.g. 3"
+                        min={1}
+                        className="w-full"
+                    />
 
-            {/* Compensation */}
-            <RadioField
-                label="Compensation Type"
-                name="compensationType"
-                value={formData.compensationType}
-                onChange={handleChange}
-                options={[
-                    { label: "Paid", value: "Paid" },
-                    { label: "Unpaid", value: "Unpaid" },
-                ]}
-            />
+                    <FormInput
+                        form={form}
+                        name="applicationDeadline"
+                        label="Application Deadline"
+                        type="date"
+                        min={new Date().toISOString().split("T")[0]}
+                        className="w-full"
+                    />
 
-            {/* Salary */}
-            <InputField
-                label="Salary / Stipend"
-                id="amount"
-                name="amount"
-                value={formData.salary.amount}
-                onChange={handleChange}
-                placeholder="e.g. ₹10,000 per month"
-                disabled={formData.compensationType === "Unpaid"}
-            />
+                    <FormSelect
+                        form={form}
+                        name="education"
+                        label="Education"
+                        options={[
+                            { label: "Graduate", value: "Graduate" },
+                            { label: "B.E/B.Tech", value: "B.E/B.Tech" },
+                            { label: "BSC", value: "BSC" },
+                        ]}
+                        className="w-full"
+                    />
 
-            {/* Experience */}
-            <SelectField
-                label="Experience Level"
-                name="experienceLevel"
-                value={formData.experienceLevel}
-                onChange={handleChange}
-                options={[
-                    { label: "0-1 years", value: "0-1 years" },
-                    { label: "1-2 years", value: "1-2 years" },
-                    { label: "1-3 years", value: "1-3 years" },
-                    { label: "3-5 years", value: "3-5 years" },
-                    { label: "5+ years", value: "5+ years" },
-                ]}
-            />
+                    <FormInput
+                        form={form}
+                        name="contactEmail"
+                        label="Contact Email"
+                        placeholder="hr@company.com"
+                        className="w-full md:col-span-2"
+                    />
 
-            {/* Openings */}
-            <InputField
-                label="Number of Openings"
-                type="number"
-                name="openings"
-                min="1"
-                value={formData.openings}
-                onChange={handleChange}
-                placeholder="e.g. 3"
-            />
+                    <FormInput
+                        form={form}
+                        name="skills"
+                        label="Required Skills (Comma separated)"
+                        placeholder="e.g. React, Node.js, SQL"
+                        className="w-full md:col-span-2"
+                    />
 
-            {/* Application Deadline */}
-            <InputField
-                label="Application Deadline"
-                type="date"
-                name="applicationDeadline"
-                value={formData.applicationDeadline}
-                onChange={handleChange}
-                min={new Date().toISOString().split("T")[0]}
-            />
+                    <div className="col-span-2">
+                        <Controller
+                            control={control}
+                            name="description"
+                            render={({ field }) => (
+                                <RichTextEditor
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                />
+                            )}
+                        />
+                    </div>
 
-            {/* Education */}
-            <SelectField
-                label="Education"
-                name="education"
-                value={formData.education}
-                onChange={handleChange}
-                options={[
-                    { label: "Graduate", value: "Graduate" },
-                    { label: "B.E/B.Tech", value: "B.E/B.Tech" },
-                    { label: "BSC", value: "BSC" },
-                ]}
-            />
-
-            {/* Contact Email */}
-            <InputField
-                label="Contact Email"
-                name="contactEmail"
-                value={formData.contactEmail}
-                onChange={handleChange}
-                placeholder="hr@company.com"
-                className="md:col-span-2"
-            />
-
-            {/* Skills */}
-            <InputField
-                label="Required Skills (Comma separated)"
-                name="skills"
-                value={formData.skills}
-                onChange={handleChange}
-                placeholder="e.g. React, Node.js, SQL"
-                className="md:col-span-2"
-            />
-
-            <div className="md:col-span-2 w-full">
-                <RichTextEditor
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                />
-            </div>
-
-            {/* Submit */}
-            <div className="md:col-span-2 flex justify-end gap-4">
-                <Button
-                    type="submit"
-                    // variant="outline"
-                    className="px-8 py-2 rounded-lg transition hover:cursor-pointer"
-                >
-                    {job
-                        ? isUpdating
-                            ? "Updating..."
-                            : "Update Job"
-                        : isCreating
-                          ? "Posting..."
-                          : "Post Job"}
-                </Button>
-            </div>
-        </form>
+                    <div className="md:col-span-2 flex justify-end gap-4">
+                        <Button
+                            type="submit"
+                            className="px-8 py-2 rounded-lg hover:cursor-pointer"
+                        >
+                            {job
+                                ? isUpdating
+                                    ? "Updating..."
+                                    : "Update Job"
+                                : isCreating
+                                  ? "Posting..."
+                                  : "Post Job"}
+                        </Button>
+                    </div>
+                </div>
+            </form>
+        </Form>
     );
 }

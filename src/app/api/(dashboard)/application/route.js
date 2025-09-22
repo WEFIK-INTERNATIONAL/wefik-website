@@ -1,12 +1,43 @@
 import dbConnect from "@/lib/dbConnect";
 import Application from "@/models/Application";
 import { successResponse, errorResponse } from "@/utils/apiResponse";
+import { uploadFiles } from "@/services/uploadService";
 
 // POST -- Create a new application
 export async function POST(req) {
     try {
         await dbConnect();
-        const body = await req.json();
+        const form = await req.formData();
+
+        const file = form.get("resume");
+        const data = JSON.parse(form.get("data"));
+
+        const existing = await Application.findOne({
+            jobId: data.jobId,
+            "candidateInfo.email": data.candidateInfo.email,
+        });
+
+        if (existing) {
+            return errorResponse("You already applied for this job", 400);
+        }
+
+        console.log(file);
+
+        const response = await uploadFiles({
+            files: file,
+            fileCategory: "resume",
+        });
+
+        const body = {
+            ...data,
+            resume: {
+                fileId: response.fileId,
+                url: response.url,
+                filename: response.filename,
+                size: response.size,
+                mimeType: response.mimeType,
+            },
+        };
 
         const application = await Application.create(body);
 

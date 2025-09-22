@@ -3,6 +3,7 @@ import { ppNeueMontreal } from "./fonts";
 
 import { Toaster } from "@/components/ui/sonner";
 import AppLayoutClient from "@/components/common/AppLayoutClient";
+import { ImageKitProvider } from "@/providers/ImageKitProvider";
 import TanStackQueryProvider from "@/providers/TanStackQueryProvider";
 
 export const metadata = {
@@ -14,10 +15,18 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" className={ppNeueMontreal.variable}>
+        <html
+            lang="en"
+            className={`dark ${ppNeueMontreal.variable}`}
+            suppressHydrationWarning={true}
+        >
             <body className="antialiased">
                 <AppLayoutClient>
-                    <TanStackQueryProvider>{children}</TanStackQueryProvider>
+                    <ImageKitProvider>
+                        <TanStackQueryProvider>
+                            {children}
+                        </TanStackQueryProvider>
+                    </ImageKitProvider>
                 </AppLayoutClient>
                 <Toaster position="top-right" richColors />
             </body>
