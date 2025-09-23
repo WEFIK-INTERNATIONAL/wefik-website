@@ -1,165 +1,117 @@
 "use client";
-import { useState } from "react";
-import Image from "next/image";
-import axios from "axios";
-import { Divide } from "lucide-react";
+import React, { useState } from "react";
+import Link from "next/link";
 
-export default function CreateBlogForm() {
-  const initialForm = {
-    title: "",
-    category: "",
-    author: "",
-    description: "",
-    image: null,
-  };
+import TableHeader from "@/components/dashboard/TableHeader";
+import DataTable from "@/components/dashboard/DataTable";
+import TableFooter from "@/components/dashboard/TableFooter";
+import ActionDropdown from "@/components/dashboard/ActionDropdown";
 
-  const [form, setForm] = useState(initialForm);
-  const [preview, setPreview] = useState(null);
-  const [loading, setLoading] = useState(false);
+import { Badge } from "@/components/ui/badge";
+import { formatDate } from "@/utils/formatDate";
 
-  const inputClass =
-    "w-full p-3 rounded-lg bg-gray-50 dark:bg-neutral-800 border border-gray-300 dark:border-neutral-700 text-gray-800 dark:text-white placeholder-gray-400 dark:placeholder-gray-500 focus:ring-2 focus:ring-emerald-500 focus:outline-none";
+import { Plus } from "lucide-react";
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (files) {
-      const file = files[0];
-      setForm((prev) => ({ ...prev, [name]: file }));
-      setPreview(URL.createObjectURL(file));
-    } else {
-      setForm((prev) => ({ ...prev, [name]: value }));
-    }
-  };
+import { useDeleteBlog,useCreateBlog,useUpdateBlog, useGetBlogs } from "@/queries/blog";
+import { getStatusBadgeClasses } from "@/utils/statusBadge";
 
-  const resetForm = () => {
-    setForm(initialForm);
-    setPreview(null);
-  };
+export default function BlogsPage() {
+  const limit = 9;
+  const [page, setPage] = useState(1);
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState("");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  const { data: blogs, isLoading } = useGetBlogs(page, limit, search, sort);
+  const { mutate: updateStatus, isPending: updateIsPending } = useUpdateBlog();
+  const { mutate: deleteBlog, isPending: deleteIsPending } = useDeleteBlog();
 
-    const formData = new FormData();
-    Object.entries(form).forEach(([key, value]) => {
-      if (value) formData.append(key, value);
-    });
-
-    try {
-      const res = await axios.post("/api/blogs", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-      });
-
-      alert(res.data.message || "✅ Blog posted successfully!");
-      resetForm();
-    } catch (error) {
-      console.error("Error:", error);
-      alert("❌ " + (error.response?.data?.message || "Failed to post Blog"));
-    } finally {
-      setLoading(false);
-    }
-  };
+  // 📝 Columns for Blogs Table
+  const columns = [
+    { header: "Blog ID", accessor: "blogId" },
+    { header: "Title", accessor: "title" },
+    { header: "Author", accessor: "author", align: "center" },
+    {
+      header: "Published On",
+      accessor: "publishedAt",
+      cell: (row) => formatDate(row.publishedAt),
+    },
+    {
+      header: "Status",
+      accessor: "status",
+      align: "center",
+      cell: (row) => (
+        <Badge
+          className={`px-6 py-1 font-semibold rounded-full ${getStatusBadgeClasses(row.status)}`}
+        >
+          {row.status}
+        </Badge>
+      ),
+    },
+    {
+      header: "Actions",
+      accessor: "_id",
+      align: "center",
+      cell: (row) => (
+        <div className="flex justify-center">
+          <ActionDropdown
+            viewDetailsPath={`/admin/dashboard/blogs/${row.blogId}`}
+            editAction={{
+              blogId: row.blogId,
+              triggerLabel: "Edit Blog",
+            }}
+            statusAction={{
+              id: row._id,
+              entityName: "Blog",
+              currentStatus: row.status,
+              statuses: ["Published", "Draft", "Archived"],
+              callback: updateStatus,
+              isUpdating: updateIsPending,
+              triggerLabel: "Edit Status",
+            }}
+            deleteAction={{
+              id: row._id,
+              entityName: "Blog",
+              callback: deleteBlog,
+              isDeleting: deleteIsPending,
+              triggerLabel: "Delete Blog",
+            }}
+          />
+        </div>
+      ),
+    },
+  ];
 
   return (
-    <div className="h-[80vh] overflow-y-scroll flex justify-center">
-      <form
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-        className="bg-white dark:bg-neutral-900 text-black dark:text-white p-8 rounded-2xl w-full max-w-md shadow-lg border border-gray-200 dark:border-neutral-700 transition-colors"
+    <div className="flex flex-col">
+      <TableHeader
+        title="Blogs Table"
+        subtitle="Manage all blog posts"
+        onSearch={setSearch}
+        onSort={setSort}
+        sortOptions={[
+          { label: "Newest", value: "newest" },
+          { label: "Oldest", value: "oldest" },
+        ]}
       >
-        <h2 className="text-xl font-semibold mb-6 text-center">Create a Blog</h2>
+        <Link
+          href="/admin/dashboard/blogs/create-blog"
+          className="flex justify-center items-center gap-1 px-3 py-[5px] font-bold text-black bg-[#CDD2DA] rounded transition"
+        >
+          <Plus size={18} /> Create Blog
+        </Link>
+      </TableHeader>
 
-        {/* Blog Title */}
-        <div className="mb-5">
-          <label className="block text-sm font-medium mb-1">Blog Title</label>
-          <input
-            type="text"
-            name="title"
-            value={form.title}
-            onChange={handleChange}
-            placeholder="Enter your article title"
-            className={inputClass}
-            required
-          />
-        </div>
+      <DataTable
+        isLoading={isLoading}
+        columns={columns}
+        data={blogs?.data}
+      />
 
-        {/* Image Upload */}
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">Upload Image</label>
-          <input
-            type="file"
-            name="image"
-            accept="image/*"
-            onChange={handleChange}
-            className={`${inputClass} p-2`}
-            required
-          />
-          {preview && (
-            <div className="relative w-full h-40 mt-3 rounded-lg overflow-hidden border dark:border-neutral-700">
-              <Image src={preview} alt="Preview" fill style={{ objectFit: "cover" }} priority />
-            </div>
-          )}
-        </div>
-
-        {/* Category */}
-        <div className="mb-5">
-          <label className="block text-sm font-medium mb-1">Category</label>
-          <input
-            type="text"
-            name="category"
-            value={form.category}
-            onChange={handleChange}
-            placeholder="Enter category"
-            className={inputClass}
-            required
-          />
-        </div>
-
-        {/* Author */}
-        <div className="mb-5">
-          <label className="block text-sm font-medium mb-1">Author</label>
-          <input
-            type="text"
-            name="author"
-            value={form.author}
-            onChange={handleChange}
-            placeholder="Enter author name"
-            className={inputClass}
-            required
-          />
-        </div>
-
-        {/* Description */}
-        <div className="mb-5">
-          <label className="block text-sm font-medium mb-1">Description</label>
-          <textarea
-            name="description"
-            value={form.description}
-            onChange={handleChange}
-            placeholder="Write your blog content..."
-            className={`${inputClass} h-28 resize-none`}
-            required
-          />
-        </div>
-
-        {/* Buttons */}
-        <div className="flex justify-between items-center">
-          <button
-            type="button"
-            onClick={resetForm}
-            className="px-4 py-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-white transition"
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="px-6 py-2 bg-emerald-500 hover:bg-emerald-600 rounded-md font-semibold text-white transition"
-          >
-            {loading ? "Posting..." : "Post Blog"}
-          </button>
-        </div>
-      </form>
+      <TableFooter
+        isLoading={isLoading}
+        pagination={blogs?.pagination}
+        onPageChange={setPage}
+      />
     </div>
   );
 }
