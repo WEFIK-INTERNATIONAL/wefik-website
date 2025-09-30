@@ -6,10 +6,10 @@ import { generateJobId } from "@/utils/generateJobId";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 /* ----------------- Get All Job Profiles ----------------- */
-export const useGetJobProfile = () => {
+export const useGetJobProfile = (page, limit, search) => {
     return useQuery({
-        queryKey: [queryKeys.jobProfile],
-        queryFn: jobServices.getJobProfiles,
+        queryKey: [queryKeys.jobProfile, page, limit, search],
+        queryFn: () => jobServices.getJobProfiles({ page, limit, search }),
         select: (res) => res.data,
     });
 };

@@ -12,7 +12,6 @@ import {
     DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 
-
 import EditStatusDialog from "./EditStatusDialog";
 import DeleteConfirmDialog from "./DeleteConfirmDialog";
 
@@ -39,11 +38,11 @@ const ActionDropdown = ({
     const router = useRouter();
 
     const handleEditClick = () => {
-        if (editAction?.jobId) {
-            router.push(`/admin/dashboard/jobs/edit-job/${editAction.jobId}`);
+        if (editAction?.path) {
+            router.push(editAction.path);
         }
     };
-    
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger className="hover:cursor-pointer">

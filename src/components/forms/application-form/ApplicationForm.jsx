@@ -17,7 +17,7 @@ import SocialLinksForm from "./SocialLinksForm";
 import CandidateInfoForm from "./CandidateInfoForm";
 import WorkExperienceForm from "./WorkExperienceForm";
 
-import { useApplyJobApplication } from "@/queries/applications";
+import { useApplyJob } from "@/queries/clientQueries";
 
 // --------------------
 // Zod Schema
@@ -55,8 +55,8 @@ const schema = z.object({
                     .string()
                     .min(2, "Each skill must be at least 2 characters long"),
                 level: z
-                    .enum(["Beginner", "Intermediate", "Advanced", "Expert"])
-                    .default("Beginner"),
+                    .enum(["beginner", "Intermediate", "Advanced", "Expert"])
+                    .default("beginner"),
             })
         )
         .min(1, "You must add at least 1 skill")
@@ -87,8 +87,7 @@ const schema = z.object({
 // Main Component
 // --------------------
 export default function ApplicationForm({ formTitle, jobId, jobTitle }) {
-    const { mutateAsync: applyJobApplication, isPending } =
-        useApplyJobApplication();
+    const { mutateAsync: applyJobApplication, isPending } = useApplyJob();
 
     const [skillInput, setSkillInput] = useState("");
 
@@ -134,12 +133,10 @@ export default function ApplicationForm({ formTitle, jobId, jobTitle }) {
             }
 
             // Append job info
-            formData.append("jobId", jobId);
             formData.append("jobTitle", jobTitle);
 
             // Prepare the rest of the data
             const payload = {
-                jobId,
                 jobTitle,
                 ...data,
             };
@@ -149,7 +146,7 @@ export default function ApplicationForm({ formTitle, jobId, jobTitle }) {
                 JSON.stringify({ ...payload, resume: undefined })
             );
 
-            await applyJobApplication(formData);
+            await applyJobApplication({ id: jobId, data: formData });
         } catch (error) {
             console.error("Error submitting form:", error);
         }

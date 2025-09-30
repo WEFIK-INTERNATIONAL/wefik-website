@@ -14,7 +14,7 @@ export default function RichTextEditor({ name, value, onChange }) {
                 height: 350,
                 width: "100%",
                 menubar: false,
-                skin: "material-classic",
+                skin: "oxide-dark",
                 content_css: "dark",
                 plugins: [
                     "advlist",

@@ -2,10 +2,10 @@
 import API from "@/lib/axiosConfig";
 
 class JobService {
-    // ✅ Get all job
+    // Get all job
     async getJobs({ page = 1, limit = 10, search, sort }) {
         try {
-            const res = await API.get("/job", {
+            const res = await API.get("/admin/job", {
                 params: { page, limit, search, sort },
             });
             return res.data.data;
@@ -15,10 +15,10 @@ class JobService {
         }
     }
 
-    // ✅ Get job by ID
+    // Get job by ID
     async getJobById(id) {
         try {
-            const res = await API.get(`/job/${id}`);
+            const res = await API.get(`/admin/job/${id}`);
             return res.data.data;
         } catch (err) {
             console.error(`Error fetching job ${id}:`, err);
@@ -26,10 +26,12 @@ class JobService {
         }
     }
 
-    // ✅ Create new job
-    async getJobProfiles() {
+    // Create new job
+    async getJobProfiles({ page = 1, limit = 10, search }) {
         try {
-            const res = await API.get("/job-profile");
+            const res = await API.get("/admin/job-profile", {
+                params: { page, limit, search },
+            });
             return res.data;
         } catch (err) {
             console.error("Error to fetch job-profiles:", err);
@@ -37,10 +39,10 @@ class JobService {
         }
     }
 
-    // ✅ Create new job
+    // Create new job
     async createJob(data) {
         try {
-            const res = await API.post("/job", data);
+            const res = await API.post("/admin/job", data);
             return res.data;
         } catch (err) {
             console.error("Error creating job:", err);
@@ -48,10 +50,10 @@ class JobService {
         }
     }
 
-    // ✅ Create new job profile
+    // Create new job profile
     async createJobProfile(data) {
         try {
-            const res = await API.post("/job-profile", data);
+            const res = await API.post("/admin/job-profile", data);
             return res.data;
         } catch (err) {
             console.error("Error creating job-profile:", err);
@@ -59,10 +61,10 @@ class JobService {
         }
     }
 
-    // ✅ Update job
+    // Update job
     async updateJob(id, data) {
         try {
-            const res = await API.patch(`/job/${id}`, data);
+            const res = await API.patch(`/admin/job/${id}`, data);
             return res.data;
         } catch (err) {
             console.error(`Error updating job ${id}:`, err);
@@ -70,10 +72,10 @@ class JobService {
         }
     }
 
-    // ✅ Update job Status
+    // Update job Status
     async updateJobStatus(id, data) {
         try {
-            const res = await API.patch(`/job/${id}`, data);
+            const res = await API.patch(`/admin/job/${id}`, data);
             return res.data;
         } catch (err) {
             console.error(`Error updating job ${id}:`, err);
@@ -81,10 +83,10 @@ class JobService {
         }
     }
 
-    // ✅ Delete job
+    // Delete job
     async deleteJob(id) {
         try {
-            const res = await API.delete(`/job/${id}`);
+            const res = await API.delete(`/admin/job/${id}`);
             return res.data;
         } catch (err) {
             console.error(`Error deleting job ${id}:`, err);
@@ -92,7 +94,7 @@ class JobService {
         }
     }
 
-    // ✅ Search job
+    // Search job
     async searchJob({
         search,
         location,
@@ -102,8 +104,7 @@ class JobService {
         limit = 3,
     }) {
         try {
-            console.log(department);
-            const res = await API.get("/job/search", {
+            const res = await API.get("/admin/job/search", {
                 params: { search, location, department, type, page, limit },
             });
 
@@ -120,7 +121,7 @@ class JobService {
     // Check JobId is Uniq or Not
     async checkJobId(jobId) {
         try {
-            const res = await API.get(`/job/check-id?jobId=${jobId}`);
+            const res = await API.get(`/admin/job/check-id?jobId=${jobId}`);
             return res.data.exists;
         } catch (err) {
             console.error(`Error checking jobId ${jobId}:`, err);

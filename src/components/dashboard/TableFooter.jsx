@@ -11,7 +11,7 @@ import {
 const TableFooter = ({ isLoading, pagination, onPageChange }) => {
     if (!pagination) return null;
 
-    const { page, pages, total, limit } = pagination;
+    const { page, pages = 1, total, limit } = pagination;
 
     // Calculate range
     const indexOfFirst = (page - 1) * limit + 1;
@@ -38,35 +38,43 @@ const TableFooter = ({ isLoading, pagination, onPageChange }) => {
                         {/* Prev button */}
                         <PaginationItem>
                             <PaginationPrevious
-                                onClick={() => onPageChange(page - 1)}
+                                disabled={page === 1}
+                                onClick={() =>
+                                    page > 1 && onPageChange(page - 1)
+                                }
                                 className={`cursor-pointer ${
                                     page === 1
-                                        ? "pointer-events-none opacity-50"
+                                        ? "opacity-50 pointer-events-none"
                                         : ""
                                 }`}
                             />
                         </PaginationItem>
 
                         {/* Page numbers */}
-                        {Array.from({ length: pages }).map((_, i) => (
-                            <PaginationItem key={i}>
-                                <PaginationLink
-                                    isActive={page === i + 1}
-                                    onClick={() => onPageChange(i + 1)}
-                                    className="cursor-pointer"
-                                >
-                                    {i + 1}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
+                        {Array.from({ length: pages }, (_, i) => i + 1).map(
+                            (p) => (
+                                <PaginationItem key={p}>
+                                    <PaginationLink
+                                        isActive={page === p}
+                                        onClick={() => onPageChange(p)}
+                                        className={`cursor-pointer ${page === p ? "font-semibold" : ""}`}
+                                    >
+                                        {p}
+                                    </PaginationLink>
+                                </PaginationItem>
+                            )
+                        )}
 
                         {/* Next button */}
                         <PaginationItem>
                             <PaginationNext
-                                onClick={() => onPageChange(page + 1)}
+                                disabled={page === pages}
+                                onClick={() =>
+                                    page < pages && onPageChange(page + 1)
+                                }
                                 className={`cursor-pointer ${
                                     page === pages
-                                        ? "pointer-events-none opacity-50"
+                                        ? "opacity-50 pointer-events-none"
                                         : ""
                                 }`}
                             />

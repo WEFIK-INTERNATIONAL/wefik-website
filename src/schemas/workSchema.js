@@ -14,8 +14,5 @@ export const workSchema = z.object({
         .refine((files) => files?.length <= 5, "Maximum 5 images allowed"),
     isFeatured: z.boolean().optional().default(false),
     priority: z.number().min(1).max(5).optional().default(5),
-    status: z
-        .enum(["draft", "published", "archived"])
-        .optional()
-        .default("draft"),
+    status: z.enum(["draft", "public", "private"]).optional().default("draft"),
 });

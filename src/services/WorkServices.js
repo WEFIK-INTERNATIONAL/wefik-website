@@ -2,11 +2,11 @@
 import API from "@/lib/axiosConfig";
 
 class WorkService {
-    // ✅ Create new Work
+    // Post new Work
     async postWork(data) {
         try {
             // console.log(data);
-            const res = await API.post("/work", data, {
+            const res = await API.post("/admin/work", data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -18,10 +18,12 @@ class WorkService {
         }
     }
 
-    // ✅ Get all Works
-    async getWorks({ page = 1, limit = 10, search, sort } = {}) {
+    // Get all Works
+    async fetchWorks({ page = 1, limit = 10, search, sort }) {
         try {
-            const res = await API.get("/work", {
+            console.log("fetchWorks input:", { page, limit, search, sort });
+
+            const res = await API.get("/admin/work", {
                 params: { page, limit, search, sort },
             });
             return res.data.data;
@@ -31,10 +33,10 @@ class WorkService {
         }
     }
 
-    // ✅ Get Work by ID
-    async getWorkById(id) {
+    // Get Work by ID
+    async fetchWorkById(id) {
         try {
-            const res = await API.get(`/work/${id}`);
+            const res = await API.get(`/admin/work/${id}`);
             return res.data;
         } catch (err) {
             console.error(`Error fetching work ${id}:`, err);
@@ -42,10 +44,11 @@ class WorkService {
         }
     }
 
-    // ✅ Update Work
+    // Update Work
     async updateWork(id, data) {
         try {
-            const res = await API.patch(`/work/${id}`, data, {
+            console.log("Updating work...", id, data);
+            const res = await API.patch(`/admin/work/${id}`, data, {
                 headers: {
                     "Content-Type": "multipart/form-data",
                 },
@@ -57,10 +60,10 @@ class WorkService {
         }
     }
 
-    // ✅ Delete Work
+    // Delete Work
     async deleteWork(id) {
         try {
-            const res = await API.delete(`/work/${id}`);
+            const res = await API.delete(`/admin/work/${id}`);
             return res.data;
         } catch (err) {
             console.error(`Error deleting work ${id}:`, err);

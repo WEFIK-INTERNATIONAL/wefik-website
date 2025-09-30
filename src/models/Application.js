@@ -97,8 +97,8 @@ const SkillSchema = new mongoose.Schema(
         name: { type: String, required: true, trim: true, maxlength: 50 },
         level: {
             type: String,
-            enum: ["Beginner", "Intermediate", "Advanced", "Expert"],
-            default: "Beginner",
+            enum: ["beginner", "intermediate", "advanced", "expert"],
+            default: "beginner",
         },
     },
     { _id: false }
@@ -130,13 +130,13 @@ const ApplicationSchema = new mongoose.Schema(
         status: {
             type: String,
             enum: [
-                "Pending",
-                "Reviewed",
-                "Shortlisted",
-                "Accepted",
-                "Rejected",
+                "pending",
+                "reviewed",
+                "shortlisted",
+                "accepted",
+                "rejected",
             ],
-            default: "Pending",
+            default: "pending",
             index: true,
         },
 
@@ -145,7 +145,6 @@ const ApplicationSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-// ✅ Indexes for performance
 ApplicationSchema.index(
     { jobId: 1, "candidateInfo.email": 1 },
     { unique: true }

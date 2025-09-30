@@ -8,9 +8,11 @@ import {
     TableRow,
 } from "@/components/ui/table";
 
+import { cn } from "@/lib/utils";
+
 const DataTable = ({ isLoading, columns, data }) => {
     return (
-        <div className="w-full overflow-x-auto rounded-xl border border-gray-300 shadow-sm">
+        <div className="w-full overflow-x-auto rounded-xl border shadow-sm">
             <Table>
                 {/* Table Header */}
                 <TableHeader>
@@ -38,7 +40,7 @@ const DataTable = ({ isLoading, columns, data }) => {
                         <TableRow>
                             <TableCell
                                 colSpan={columns.length}
-                                className="px-4 py-6 text-center text-gray-500"
+                                className="px-4 py-6 text-center text-gray-500 "
                             >
                                 Loading...
                             </TableCell>
@@ -47,7 +49,13 @@ const DataTable = ({ isLoading, columns, data }) => {
                         data.map((row, rowIndex) => (
                             <TableRow
                                 key={rowIndex}
-                                className="hover:bg-gray-50 transition-colors hover:text-black"
+                                className={`hover:bg-transparent ${
+                                    rowIndex % 2 === 0
+                                        ? cn(
+                                              "bg-muted/50 data-[state=selected]:bg-muted border-b"
+                                          )
+                                        : ""
+                                }`}
                             >
                                 {columns.map((col) => (
                                     <TableCell
