@@ -17,9 +17,12 @@ async function connectDB() {
         return cached.conn;
     }
 
+    // let dbName = "wefik_db";
+    let dbName = "wefik_test_db";
+
     if (!cached.promise) {
         cached.promise = mongoose
-            .connect(MONGODB_URI, { dbName: "wefik_db" })
+            .connect(MONGODB_URI, { dbName })
             .then((mongoose) => {
                 console.log("✅ MongoDB connected");
                 return mongoose;

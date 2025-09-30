@@ -10,15 +10,13 @@ const workSchema = new mongoose.Schema(
         techStack: [String],
         projectLink: String,
         githubLink: String,
-        images: [
-            {
-                fileId: { type: String, required: true },
-                url: { type: String, required: true },
-                filename: String,
-                size: Number,
-                mimeType: String,
-            },
-        ],
+        images: {
+            fileId: { type: String, required: true },
+            url: { type: String, required: true },
+            filename: String,
+            size: Number,
+            mimeType: String,
+        },
         isFeatured: { type: Boolean, default: false },
         priority: {
             type: Number,
@@ -28,13 +26,10 @@ const workSchema = new mongoose.Schema(
         },
         status: {
             type: String,
-            enum: ["draft", "published", "archived"],
+            enum: ["draft", "public", "private"],
             default: "draft",
         },
-        order: { type: Number, default: 0 },
         views: { type: Number, default: 0 },
-        likes: { type: Number, default: 0 },
-        publishedAt: { type: Date, default: Date.now },
     },
     { timestamps: true }
 );

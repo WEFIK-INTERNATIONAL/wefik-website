@@ -35,21 +35,21 @@ const JobSchema = new mongoose.Schema(
         description: { type: String, required: true, trim: true },
         location: {
             type: String,
-            enum: ["Onsite", "Remote", "Hybrid"],
+            enum: ["onsite", "remote", "hybrid"],
             required: true,
             index: true,
         },
         type: {
             type: String,
-            enum: ["Full-time", "Part-time", "Internship"],
+            enum: ["full-time", "part-time", "internship"],
             required: true,
             index: true,
         },
 
         compensationType: {
             type: String,
-            enum: ["Paid", "Unpaid"],
-            default: "Paid",
+            enum: ["paid", "unpaid"],
+            default: "paid",
         },
         salary: SalarySchema,
 
@@ -64,7 +64,7 @@ const JobSchema = new mongoose.Schema(
             ],
             default: "0-1 years",
         },
-        education: { type: String, default: "Graduate" },
+        education: { type: String, default: "graduate" },
         openings: { type: Number, default: 1 },
 
         skills: [SkillSchema],
@@ -85,8 +85,8 @@ const JobSchema = new mongoose.Schema(
 
         status: {
             type: String,
-            enum: ["Open", "Closed", "Draft"],
-            default: "Open",
+            enum: ["open", "closed", "draft"],
+            default: "open",
             index: true,
         },
     },

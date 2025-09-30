@@ -1,9 +1,9 @@
-import imagekit from "@/lib/imagekitConfig";
 import {
     validateFileSize,
     validateFileType,
     getFolderByCategory,
 } from "@/utils/fileValidation";
+import imagekit from "@/lib/imagekitConfig";
 
 /**
  * Upload one or multiple files to ImageKit
@@ -12,6 +12,7 @@ import {
  * @param {string} params.fileCategory - Category to determine the upload folder
  * @returns {Promise<Object|Array>} - ImageKit response (object if 1 file, array if multiple)
  */
+
 export async function uploadFiles({ files, fileCategory }) {
     if (!files || (Array.isArray(files) && files.length === 0)) {
         throw new Error("No files provided");

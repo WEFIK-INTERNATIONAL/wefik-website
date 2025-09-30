@@ -8,12 +8,9 @@ export const useGetWorks = (page, limit, search, sort) => {
     return useQuery({
         queryKey: [queryKeys.works, page, limit, search, sort],
         queryFn: async () => {
-            return await workService.getWorks({
-                page,
-                limit,
-                search,
-                sort,
-            });
+            console.log("fetchWorks input:", { page, limit, search, sort });
+
+            return await workService.fetchWorks({ page, limit, search, sort });
         },
         keepPreviousData: true,
     });
@@ -24,9 +21,9 @@ export const useGetWorkById = (id) => {
     return useQuery({
         queryKey: [queryKeys.works, id],
         queryFn: async () => {
-            return await workService.getWorkById(id);
+            return await workService.fetchWorkById(id);
         },
-        enabled: !!id, // ✅ prevent running when id is undefined/null
+        enabled: !!id,
     });
 };
 

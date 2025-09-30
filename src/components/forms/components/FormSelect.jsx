@@ -56,7 +56,7 @@ export default function FormSelect({
                                 disabled={disabled}
                             >
                                 <SelectTrigger
-                                    className={`${className} ${disabled ? "opacity-70 cursor-not-allowed" : ""}`}
+                                    className={`w-full ${className} ${disabled ? "opacity-70 cursor-not-allowed" : ""}`}
                                 >
                                     <SelectValue
                                         placeholder={`Select ${label}`}
@@ -67,7 +67,7 @@ export default function FormSelect({
                                         <SelectItem
                                             key={opt.value}
                                             value={String(opt.value)}
-                                            disabled={opt.disabled} // ✅ option-level disable
+                                            disabled={opt.disabled}
                                         >
                                             {opt.label}
                                         </SelectItem>

@@ -20,7 +20,7 @@ export default function SkillsForm({ form, skillInput, setSkillInput }) {
                 "skills",
                 [
                     ...form.getValues("skills"),
-                    { name: skillInput.trim(), level: "Beginner" },
+                    { name: skillInput.trim(), level: "beginner" },
                 ],
                 { shouldValidate: true }
             );

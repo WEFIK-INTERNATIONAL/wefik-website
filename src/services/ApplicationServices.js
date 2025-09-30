@@ -2,23 +2,7 @@
 import API from "@/lib/axiosConfig";
 
 class ApplicationService {
-    // ✅ Create new application
-    async applyApplication(data) {
-        try {
-            console.log(data);
-            const res = await API.post("/application", data, {
-                headers: {
-                    "Content-Type": "multipart/form-data",
-                },
-            });
-            return res.data;
-        } catch (err) {
-            console.error("Error creating application:", err);
-            throw err;
-        }
-    }
-
-    // ✅ Get applications
+    // Get applications
     async getApplications({ page = 1, limit = 10, search, sort }) {
         try {
             const res = await API.get("/application", {
@@ -31,7 +15,7 @@ class ApplicationService {
         }
     }
 
-    // ✅ Get application by ID
+    // Get application by ID
     async getApplicationById(id) {
         try {
             const res = await API.get(`/application/${id}`);
@@ -42,7 +26,7 @@ class ApplicationService {
         }
     }
 
-    // ✅ Update application
+    // Update application
     async updateApplication(id, data) {
         try {
             const res = await API.patch(`/application/${id}`, data);
@@ -53,7 +37,7 @@ class ApplicationService {
         }
     }
 
-    // ✅ Delete application
+    // Delete application
     async deleteApplication(id) {
         try {
             const res = await API.delete(`/application/${id}`);

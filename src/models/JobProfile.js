@@ -1,16 +1,33 @@
 import mongoose from "mongoose";
 
-const RoleSchema = new mongoose.Schema({
-    name: { type: String, required: true },
-    code: { type: String, required: true, set: (val) => val?.toUpperCase() },
-});
+const RoleSchema = new mongoose.Schema(
+    {
+        name: {
+            type: String,
+            required: [true, "Role name is required"],
+            trim: true,
+        },
+        code: {
+            type: String,
+            required: [true, "Role code is required"],
+            trim: true,
+            set: (val) => val?.toUpperCase(),
+        },
+    },
+    { _id: false }
+);
 
 const JobProfileSchema = new mongoose.Schema(
     {
-        department: { type: String, required: true },
+        department: {
+            type: String,
+            required: [true, "Department name is required"],
+            trim: true,
+        },
         code: {
             type: String,
-            required: true,
+            required: [true, "Department code is required"],
+            trim: true,
             unique: true,
             set: (val) => val?.toUpperCase(),
         },
@@ -18,8 +35,6 @@ const JobProfileSchema = new mongoose.Schema(
     },
     { timestamps: true }
 );
-
-JobProfileSchema.index({ code: 1, "roles.code": 1 }, { unique: true });
 
 export default mongoose.models.JobProfile ||
     mongoose.model("JobProfile", JobProfileSchema);
