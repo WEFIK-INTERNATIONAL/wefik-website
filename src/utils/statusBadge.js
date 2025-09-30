@@ -17,8 +17,10 @@ export const getStatusBadgeClasses = (status) => {
             return "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 backdrop-blur-md border border-emerald-500/30 shadow-lg";
         case "Closed":
             return "bg-red-500/20 text-red-700 dark:text-red-300 backdrop-blur-md border border-red-500/30 shadow-lg";
-        case "published":
+        case "Published":
             return "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 backdrop-blur-md border border-emerald-500/30 shadow-lg";
+        case "Archived":
+            return "bg-yellow-500/20 text-yellow-700 dark:text-yellow-300 backdrop-blur-md border border-yellow-500/30 shadow-lg";
         default:
             return "bg-neutral-500/20 text-neutral-700 dark:text-neutral-300 backdrop-blur-md border border-neutral-500/30 shadow-lg";
     }

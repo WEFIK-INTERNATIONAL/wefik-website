@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { CircleArrowLeft } from "lucide-react";
-import BlogPostForm from "@/components/forms/BlogPostForm"; // ✅ your blog form
+import BlogPostForm from "@/components/forms/BlogPostForm"; 
 
 const Page = () => {
   const router = useRouter();
@@ -30,7 +30,7 @@ const Page = () => {
         <h1 className="text-2xl font-semibold text-white mb-6">
           Create a New Blog
         </h1>
-        <BlogPostForm /> {/* ✅ Blog form goes here */}
+        <BlogPostForm />
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ import { formatDate } from "@/utils/formatDate";
 
 import { Plus } from "lucide-react";
 
-import { useDeleteBlog,useCreateBlog,useUpdateBlog, useGetBlogs } from "@/queries/blog";
+import { useDeleteBlog, useCreateBlog, useUpdateBlogStatus, useGetBlogs } from "@/queries/blog";
 import { getStatusBadgeClasses } from "@/utils/statusBadge";
 
 export default function BlogsPage() {
@@ -22,18 +22,17 @@ export default function BlogsPage() {
   const [sort, setSort] = useState("");
 
   const { data: blogs, isLoading } = useGetBlogs(page, limit, search, sort);
-  const { mutate: updateStatus, isPending: updateIsPending } = useUpdateBlog();
+  const { mutate: updateStatus, isPending: updateIsPending } = useUpdateBlogStatus();
   const { mutate: deleteBlog, isPending: deleteIsPending } = useDeleteBlog();
 
   // 📝 Columns for Blogs Table
   const columns = [
-    { header: "Blog ID", accessor: "blogId" },
     { header: "Title", accessor: "title" },
     { header: "Author", accessor: "author", align: "center" },
     {
       header: "Published On",
-      accessor: "publishedAt",
-      cell: (row) => formatDate(row.publishedAt),
+      accessor: "createdAt",
+      cell: (row) => formatDate(row.createdAt),
     },
     {
       header: "Status",
@@ -54,9 +53,10 @@ export default function BlogsPage() {
       cell: (row) => (
         <div className="flex justify-center">
           <ActionDropdown
-            viewDetailsPath={`/admin/dashboard/blogs/${row.blogId}`}
+            viewDetailsPath={`/admin/dashboard/blogs/${row._id}`}
             editAction={{
-              blogId: row.blogId,
+              id: row._id,
+              path: "blogs/edit-blog",
               triggerLabel: "Edit Blog",
             }}
             statusAction={{

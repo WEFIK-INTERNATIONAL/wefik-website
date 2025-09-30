@@ -1,6 +1,6 @@
 import { toast } from "sonner";
 import { queryKeys } from "@/lib/queryKeys";
-import blogServices from "@/services/BlogService"; // 👈 you need to create this
+import blogServices from "@/services/BlogService"; 
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 /* ----------------- Get All Blogs ----------------- */

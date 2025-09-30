@@ -3,4 +3,5 @@ export const queryKeys = {
     stats: "stats",
     jobProfile: "job-profiles",
     applications: "applications",
+    blogs: "blogs",
 };

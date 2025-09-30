@@ -57,30 +57,19 @@ export default function BlogPostForm({ blog = null }) {
   const { control, handleSubmit } = form;
 
   const onSubmit = (values) => {
+    console.log(values);
+    
     const payload = {
       ...values,
       createdAt: blog?.createdAt || new Date(),
     };
-
-    if (blog) {
+        
+    if (blog) { 
       updateBlog(
         { id: blog._id, data: payload },
-        {
-          onSuccess: () => {
-            toast.success("Blog updated successfully!");
-            router.push("/admin/dashboard/blogs");
-          },
-          onError: () => toast.error("Failed to update blog"),
-        }
       );
     } else {
-      createBlog(payload, {
-        onSuccess: () => {
-          toast.success("Blog created successfully!");
-          router.push("/admin/dashboard/blogs");
-        },
-        onError: () => toast.error("Failed to create blog"),
-      });
+      createBlog(payload);
     }
   };
 
@@ -141,8 +130,8 @@ export default function BlogPostForm({ blog = null }) {
           <div className="md:col-span-2 flex justify-end gap-4">
             <Button
               type="submit"
-              className="px-8 py-2 rounded-lg"
-              disabled={isCreating || isUpdating}
+              className="px-8 py-2 rounded-lg hover:cursor-pointer"
+              // disabled={isCreating || isUpdating}
             >
               {blog
                 ? isUpdating

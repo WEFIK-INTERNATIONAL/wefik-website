@@ -18,6 +18,8 @@ class BlogService {
     // ✅ Get blog by ID
     async getBlogById(id) {
         try {
+            console.log(id);
+            
             const res = await API.get(`/blog/${id}`);
             return res.data.data;
         } catch (err) {

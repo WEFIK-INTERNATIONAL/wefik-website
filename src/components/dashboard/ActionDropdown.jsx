@@ -38,9 +38,9 @@ const ActionDropdown = ({
 }) => {
     const router = useRouter();
 
-    const handleEditClick = () => {
-        if (editAction?.jobId) {
-            router.push(`/admin/dashboard/jobs/edit-job/${editAction.jobId}`);
+    const handleEditClick = () => { 
+        if (editAction?.id) {
+            router.push(`/admin/dashboard/${editAction.path}/${editAction.id}`);
         }
     };
     
